@@ -1,0 +1,297 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Icons {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-0">Registro de pacientes</h6>
+              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                  <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="#">Pacientes</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Registrar de pacientes</li>
+                </ol>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col-xl-12">
+          <div class="card">
+            <div class="card-header">
+              <div class="row align-items-center">
+                <div class="col-8">
+                  <h3 class="mb-0">Formulario de Evaluación</h3>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <form method="POST">
+                {% csrf_token %}
+                <!-- Información Personal -->
+                <h6 class="heading-small text-muted mb-4">Información Personal</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="nombres_apellidos">Nombres y Apellidos</label>
+                        <input type="text" id="nombres_apellidos" name="nombres_apellidos" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="tipo_documento">Tipo Documento</label>
+                        <select class="form-control" id="tipo_documento" name="tipo_documento">
+                          <option value="CC">Cédula de Ciudadanía</option>
+                          <option value="TI">Tarjeta de Identidad</option>
+                          <option value="CE">Cédula de Extranjería</option>
+                          <option value="PS">Pasaporte</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="numero_documento">Número de Documento</label>
+                        <input type="text" id="numero_documento" name="numero_documento" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="fecha_nacimiento">Fecha de Nacimiento</label>
+                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="edad">Edad</label>
+                        <input type="number" id="edad" name="edad" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="estado_civil">Estado Civil</label>
+                        <select class="form-control" id="estado_civil" name="estado_civil">
+                          <option value="soltero">Soltero(a)</option>
+                          <option value="casado">Casado(a)</option>
+                          <option value="divorciado">Divorciado(a)</option>
+                          <option value="viudo">Viudo(a)</option>
+                          <option value="union_libre">Unión Libre</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="escolaridad">Escolaridad</label>
+                        <select class="form-control" id="escolaridad" name="escolaridad">
+                          <option value="primaria">Primaria</option>
+                          <option value="secundaria">Secundaria</option>
+                          <option value="tecnico">Técnico</option>
+                          <option value="universitario">Universitario</option>
+                          <option value="postgrado">Postgrado</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <hr class="my-4" />
+    
+                <!-- Información de Contacto -->
+                <h6 class="heading-small text-muted mb-4">Información de Contacto y Adicional</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="ocupacion">Ocupación</label>
+                        <input type="text" id="ocupacion" name="ocupacion" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="eps">EPS</label>
+                        <input type="text" id="eps" name="eps" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="lateralidad">Lateralidad</label>
+                        <select class="form-control" id="lateralidad" name="lateralidad">
+                          <option value="diestro">Diestro</option>
+                          <option value="zurdo">Zurdo</option>
+                          <option value="ambidiestro">Ambidiestro</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="row">
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="direccion">Dirección</label>
+                        <input type="text" id="direccion" name="direccion" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="form-group">
+                        <label class="form-control-label" for="telefono">Teléfono</label>
+                        <input type="tel" id="telefono" name="telefono" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <hr class="my-4" />
+    
+                <!-- Información del Acompañante -->
+                <h6 class="heading-small text-muted mb-4">Información del Acompañante</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="nombre_acompanante">Nombre Acompañante</label>
+                        <input type="text" id="nombre_acompanante" name="nombre_acompanante" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="parentesco">Parentesco</label>
+                        <input type="text" id="parentesco" name="parentesco" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div class="form-group">
+                        <label class="form-control-label" for="telefono_acompanante">Teléfono Acompañante</label>
+                        <input type="tel" id="telefono_acompanante" name="telefono_acompanante" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <hr class="my-4" />
+    
+                <!-- Información Adicional y Evaluación -->
+                <h6 class="heading-small text-muted mb-4">Información Adicional y Evaluación</h6>
+                <div class="pl-lg-4">
+                  <div class="row">
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="grupo_sanguineo">Grupo Sanguíneo</label>
+                        <select class="form-control" id="grupo_sanguineo" name="grupo_sanguineo">
+                          <option value="O+">O+</option>
+                          <option value="O-">O-</option>
+                          <option value="A+">A+</option>
+                          <option value="A-">A-</option>
+                          <option value="B+">B+</option>
+                          <option value="B-">B-</option>
+                          <option value="AB+">AB+</option>
+                          <option value="AB-">AB-</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="religion">Religión</label>
+                        <input type="text" id="religion" name="religion" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="fecha_evaluacion">Fecha de Evaluación</label>
+                        <input type="date" id="fecha_evaluacion" name="fecha_evaluacion" class="form-control">
+                      </div>
+                    </div>
+                    <div class="col-lg-3">
+                      <div class="form-group">
+                        <label class="form-control-label" for="hora_evaluacion">Hora de Evaluación</label>
+                        <input type="time" id="hora_evaluacion" name="hora_evaluacion" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <div class="form-group">
+                        <label class="form-control-label" for="evaluador">Evaluador</label>
+                        <input type="text" id="evaluador" name="evaluador" class="form-control">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <div class="row align-items-lg-end">
+                <div class="col-2 text-right">
+                  <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+                </div>
+                <div class="col-2 text-right">
+                  <li class="nav-item dropdown">
+                    <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <div class="media align-items-center">
+                        <div class="media-body  ml-2  d-none d-lg-block">
+                          <span class="mb-0 text-sm  font-weight-bold">
+                            Agregar  Examén
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                    <div class="dropdown-menu  dropdown-menu-right ">
+                      <div class="dropdown-header noti-title">
+                        <h6 class="text-overflow m-0">Exámenes</h6>
+                      </div>
+                      <a href="sleepTest.html" class="dropdown-item" data-form="sleepTest">
+                        <i class="ni ni-single-02"></i>
+                        <span>Anamnesis de Sueño</span>
+                      </a>
+                      <a href="cognitiveTest.html" class="dropdown-item" data-form="cognitiveTest">
+                        <i class="ni ni-support-16"></i>
+                        <span>Anamnesis Cognitivo</span>
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a href="anamnesisTest.html" class="dropdown-item" data-form="anamnesisTest">
+                        <i class="ni ni-user-run text-red"></i>
+                        <span>EM_Anamnesis</span>
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a href="{% url 'logout' %}" class="dropdown-item">
+                        <i class="ni ni-user-run text-red"></i>
+                        <span>EM_Antecendentes</span>
+                      </a>
+                      <a href="{% url 'logout' %}" class="dropdown-item">
+                        <i class="ni ni-user-run text-red"></i>
+                        <span>Examen Fisíco</span>
+                      </a>
+                      <a href="{% url 'logout' %}" class="dropdown-item">
+                        <i class="ni ni-user-run text-red"></i>
+                        <span>Examen Neurologíco</span>
+                      </a>
+                    </div>
+                  </li>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="formularios-dinamicos"></div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src="/static/assets/vendor/clipboard/dist/clipboard.min.js"></script>
+
+{% endblock javascripts %}

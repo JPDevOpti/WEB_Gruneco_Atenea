@@ -1,0 +1,214 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Maps {% endblock title %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header bg-primary pb-6">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+              <h6 class="h2 text-white d-inline-block mb-0">Edición de pacientes</h6>
+              <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                  <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="#">Pacientes</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Lista de pacientes</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-5 text-right">
+              <div class="input-group">
+                <input type="text" class="form-control form-control-sm" id="searchPatient" placeholder="Buscar pacinte">
+                <div class="input-group-append">
+                  <button class="btn btn-sm btn-neutral" type="button">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <!-- Card header -->
+            <div class="card-header border-0">
+              <h3 class="mb-0">Historial de pacientes</h3>
+            </div>
+            <!-- Light table -->
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col" class="sort" data-sort="name">Nombre</th>
+                    <th scope="col" class="sort" data-sort="document">Documento</th>
+                    <th scope="col" class="sort" data-sort="age">Edad</th>
+                    <th scope="col" class="sort" data-sort="phone">Telefono</th>
+                    <th scope="col" class="sort" data-sort="status">Estado</th>
+                    <th scope="col" class="sort" data-sort="visit">última visita</th>
+                    <th scope="col">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody class="list">
+                  <tr>
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <a href="#" class="avatar rounded-circle mr-3">
+                          <img alt="Patient photo" src="/api/placeholder/30/30">
+                        </a>
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">John Doe</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td class="document">
+                      12345678
+                    </td>
+                    <td class="age">
+                      45
+                    </td>
+                    <td class="phone">
+                      (555) 123-4567
+                    </td>
+                    <td>
+                      <span class="badge badge-dot mr-4">
+                        <i class="bg-success"></i>
+                        <span class="status">active</span>
+                      </span>
+                    </td>
+                    <td class="visit">
+                      2024-03-15
+                    </td>
+                    <td>
+                      <div class="d-flex">
+                        <button class="btn btn-icon-only btn-sm mr-2" type="button" title="Edit">
+                          <i class="fas fa-edit text-primary"></i>
+                        </button>
+                        <button class="btn btn-icon-only btn-sm mr-2" type="button" title="Download">
+                          <i class="fas fa-download text-info"></i>
+                        </button>
+                        <div class="dropdown">
+                          <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                            <a class="dropdown-item" href="#">View Details</a>
+                            <a class="dropdown-item" href="#">Medical History</a>
+                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <!-- Additional patient records -->
+                  <tr>
+                    <th scope="row">
+                      <div class="media align-items-center">
+                        <a href="#" class="avatar rounded-circle mr-3">
+                          <img alt="Patient photo" src="/api/placeholder/30/30">
+                        </a>
+                        <div class="media-body">
+                          <span class="name mb-0 text-sm">Jane Smith</span>
+                        </div>
+                      </div>
+                    </th>
+                    <td class="document">
+                      87654321
+                    </td>
+                    <td class="age">
+                      32
+                    </td>
+                    <td class="phone">
+                      (555) 987-6543
+                    </td>
+                    <td>
+                      <span class="badge badge-dot mr-4">
+                        <i class="bg-warning"></i>
+                        <span class="status">pending</span>
+                      </span>
+                    </td>
+                    <td class="visit">
+                      2024-03-10
+                    </td>
+                    <td>
+                      <div class="d-flex">
+                        <button class="btn btn-icon-only btn-sm mr-2" type="button" title="Edit">
+                          <i class="fas fa-edit text-primary"></i>
+                        </button>
+                        <button class="btn btn-icon-only btn-sm mr-2" type="button" title="Download">
+                          <i class="fas fa-download text-info"></i>
+                        </button>
+                        <div class="dropdown">
+                          <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v"></i>
+                          </a>
+                          <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                            <a class="dropdown-item" href="#">View Details</a>
+                            <a class="dropdown-item" href="#">Medical History</a>
+                            <a class="dropdown-item text-danger" href="#">Delete</a>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Card footer -->
+            <div class="card-footer py-4">
+              <nav aria-label="...">
+                <ul class="pagination justify-content-end mb-0">
+                  <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">
+                      <i class="fas fa-angle-left"></i>
+                      <span class="sr-only">Previous</span>
+                    </a>
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link" href="#">1</a>
+                  </li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item">
+                    <a class="page-link" href="#">
+                      <i class="fas fa-angle-right"></i>
+                      <span class="sr-only">Next</span>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    {% include "includes/footer.html" %}
+  </div>
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+<script>
+  // Search functionality
+  document.getElementById('searchPatient').addEventListener('keyup', function() {
+    let searchText = this.value.toLowerCase();
+    let tableBody = document.querySelector('tbody');
+    let rows = tableBody.getElementsByTagName('tr');
+
+    for (let row of rows) {
+      let text = row.textContent.toLowerCase();
+      row.style.display = text.includes(searchText) ? '' : 'none';
+    }
+  });
+</script>
+{% endblock javascripts %}

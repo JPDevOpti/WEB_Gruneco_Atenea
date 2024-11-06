@@ -1,0 +1,161 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block content %}
+
+<div class="header pb-6 d-flex align-items-center" 
+     style="min-height: 500px; background-image: url(/static/assets/img/theme/tem_university.jpg); background-size: cover; background-position: center top;">
+  <!-- Mask -->
+  <span class="mask bg-gradient-default opacity-8"></span>
+  <!-- Header container -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+        <h1 class="display-2 text-white"> 
+          Grupo Neuropsicología y Conducta
+        </h1>
+        <p class="text-white mt-0 mb-5">Somos un grupo interdisciplinar de investigación, perteneciente a la Facultad de Medicina de la Universidad de Antioquia, 
+          que a través de la estructuración y ejecución de proyectos de investigación formamos talento humano en investigación en los niveles de pre y posgrado, 
+          al igual que contribuimos a la generación de conocimiento enfocado en soluciones clínicas y tecnológicas en el área de las neurociencias cognitivas.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-4 order-xl-2">
+      <div class="card card-profile">
+        <img src="/static/assets/img/theme/universidad-antioquia.jpg" alt="Image placeholder" class="card-img-top">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <a href="#">
+                <img src="/static/assets/img/theme/team-4.jpg" class="rounded-circle">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body pt-0">
+          <div class="text-center">
+            <h5 class="h3">
+              {{ request.user.username }}
+            </h5>
+            <div class="h5 font-weight-300">
+              {{ request.user.email }}
+            </div>
+            <div class="h5 mt-4">
+              <i class="ni business_briefcase-24 mr-2"></i>Estudiante
+            </div>
+            <div>
+              <i class="ni education_hat mr-2"></i>Universidad de Antioquia
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Información del Grupo</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-2">
+                      <i class="ni ni-compass-04 text-primary ni-3x"></i>
+                    </div>
+                    <div class="col-10">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Líneas de Investigación</h5>
+                      <ul class="list-unstyled">
+                        <li>Neurociencias Cognitivas</li>
+                        <li>Neurociencias e Ingeniería</li>
+                        <li>Neurociencias Clínicas</li>
+                        <li>Aprendizaje y Enseñanza de la Investigación</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-2">
+                      <i class="ni ni-trophy text-primary ni-3x"></i>
+                    </div>
+                    <div class="col-10">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Visión</h5>
+                      <p>En el 2030 GRUNECO será reconocido a nivel internacional por la calidad científica de las investigaciones desarrolladas con una estructura administrativa sostenible que le permitirá brindar espacios continuos de formación investigativa interdisciplinar de alto nivel en pregrado y posgrado.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-2">
+                      <i class="ni ni-hat-3 text-primary ni-3x"></i>
+                    </div>
+                    <div class="col-10">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Misión</h5>
+                      <p>Somos un grupo interdisciplinar de investigación que a través de la estructuración y ejecución de proyectos de investigación formamos talento humano en investigación en los niveles de pre y posgrado, al igual que contribuimos a la generación de conocimiento enfocado en soluciones clínicas y tecnológicas en el área de las neurociencias cognitivas.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-2">
+                      <i class="ni ni-atom text-primary ni-3x"></i>
+                    </div>
+                    <div class="col-10">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Principios</h5>
+                      <ul class="list-unstyled">
+                        <li>Trabajo en equipo</li>
+                        <li>Responsabilidad</li>
+                        <li>Respeto</li>
+                        <li>Disciplina</li>
+                        <li>Pasión</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include "includes/footer.html" %}
+
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}
+
