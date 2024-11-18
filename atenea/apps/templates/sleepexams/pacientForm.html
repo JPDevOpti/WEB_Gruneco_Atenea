@@ -17,7 +17,7 @@
               <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
                 <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                   <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-                  <li class="breadcrumb-item"><a href="#">Pacientes</a></li>
+                  <li class="breadcrumb-item"> <a class="nav-link {% if 'pacientForm' in segment %} active {% endif %}" href="/pacientForm.html">Pacientes</a></li>
                   <li class="breadcrumb-item active" aria-current="page">Registrar de pacientes</li>
                 </ol>
               </nav>
@@ -149,7 +149,7 @@
                     <div class="col-lg-6">
                       <div class="form-group">
                         <label class="form-control-label" for="telefono">Teléfono</label>
-                        <input type="tel" id="telefono" name="telefono" class="form-control">
+                        <input type="number" id="telefono" name="telefono" class="form-control">
                       </div>
                     </div>
                   </div>
@@ -176,7 +176,7 @@
                     <div class="col-lg-4">
                       <div class="form-group">
                         <label class="form-control-label" for="telefono_acompanante">Teléfono Acompañante</label>
-                        <input type="tel" id="telefono_acompanante" name="telefono_acompanante" class="form-control">
+                        <input type="number" id="telefono_acompanante" name="telefono_acompanante" class="form-control">
                       </div>
                     </div>
                   </div>
