@@ -27,34 +27,59 @@
 <div class="container-fluid mt--6">
   <div class="row">
     <div class="col-xl-4 order-xl-2">
-      <div class="card card-profile">
-        <img src="/static/assets/img/theme/universidad-antioquia.jpg" alt="Image placeholder" class="card-img-top">
-        <div class="row justify-content-center">
-          <div class="col-lg-3 order-lg-2">
-            <div class="card-profile-image">
-              <a href="#">
-                <img src="/static/assets/img/theme/team-4.jpg" class="rounded-circle">
-              </a>
+      <div div class="row justify-content-center">
+        <div class="card card-profile">
+          <img src="/static/assets/img/theme/universidad-antioquia.jpg" alt="Image placeholder" class="card-img-top">
+          <div class="row justify-content-center">
+            <div class="col-lg-3 order-lg-2">
+              <div class="card-profile-image">
+                <a href="#">
+                  <img src="/static/assets/img/theme/team-4.jpg" class="rounded-circle">
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="card-body pt-0">
-          <div class="text-center">
-            <h5 class="h3">
-              {{ request.user.username }}
-            </h5>
-            <div class="h5 font-weight-300">
-              {{ request.user.email }}
-            </div>
-            <div class="h5 mt-4">
-              <i class="ni business_briefcase-24 mr-2"></i>Estudiante
-            </div>
-            <div>
-              <i class="ni education_hat mr-2"></i>Universidad de Antioquia
+          <div class="card-body pt-0">
+            <div class="text-center">
+              <h5 class="h3">
+                {{ request.user.username }}
+              </h5>
+              <div class="h5 font-weight-300">
+                {{ request.user.email }}
+              </div>
+              <div class="h5 mt-4">
+                <i class="ni business_briefcase-24 mr-2"></i>Estudiante
+              </div>
+              <div>
+                <i class="ni education_hat mr-2"></i>Universidad de Antioquia
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div div class="row justify-content-center">
+        <div class="col-md-14">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-2">
+                  <i class="ni ni-compass-04 text-primary ni-3x"></i>
+                </div>
+                <div class="col-10">
+                  <h5 class="card-title text-uppercase text-muted mb-0">Líneas de Investigación</h5>
+                  <ul class="list-unstyled">
+                    <li>Neurociencias Cognitivas</li>
+                    <li>Neurociencias e Ingeniería</li>
+                    <li>Neurociencias Clínicas</li>
+                    <li>Aprendizaje y Enseñanza de la Investigación</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+     
     </div>
     <div class="col-xl-8 order-xl-1">
       <div class="card">
@@ -66,28 +91,6 @@
           </div>
         </div>
         <div class="card-body">
-          <div class="row mt-4">
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row">
-                    <div class="col-2">
-                      <i class="ni ni-compass-04 text-primary ni-3x"></i>
-                    </div>
-                    <div class="col-10">
-                      <h5 class="card-title text-uppercase text-muted mb-0">Líneas de Investigación</h5>
-                      <ul class="list-unstyled">
-                        <li>Neurociencias Cognitivas</li>
-                        <li>Neurociencias e Ingeniería</li>
-                        <li>Neurociencias Clínicas</li>
-                        <li>Aprendizaje y Enseñanza de la Investigación</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="row mt-4">
             <div class="col-md-12">
               <div class="card">
