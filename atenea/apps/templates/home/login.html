@@ -3,7 +3,19 @@
 {% block title %} Login {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+  .form-control-lg {
+    font-size: 1.25rem; /* Tamaño de letra más grande */
+  }
+  .input-group-text-lg {
+    font-size: 1.25rem; /* Tamaño de letra más grande para los iconos */
+  }
+  .btn-lg {
+    font-size: 1.25rem; /* Tamaño de letra más grande para el botón */
+  }
+</style>
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -12,45 +24,37 @@
       <div class="row justify-content-center">
         <div class="col-lg-5 col-md-7">
           <div class="card bg-secondary border-0 mb-0">
-            <div class="card-header bg-transparent pb-5">
-              <div class="text-muted text-center mt-2 mb-3"><small>Ingresar</small></div>
+            <div class="card-header bg-transparent pb-2">
+              <div class="text-muted text-center mt-1 mb-1"><h1>Ingresar</h1></div>
               <div class="btn-wrapper text-center">
                
               </div>
             </div>
             <div class="card-body px-lg-5 py-lg-5">
               <div class="text-center text-muted mb-4">
-                <small>Ingresa con tus credenciales</small>
+                <h2>Ingresa con tus credenciales</h3>
               </div>
               <form role="form" action="/">
                 <div class="form-group mb-3">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                      <span class="input-group-text input-group-text-lg"><i class="ni ni-email-83"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Correo" type="Email">
+                    <input class="form-control form-control-lg" placeholder="Correo" type="email">
                   </div>
                 </div>
                 <div class="form-group">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                      <span class="input-group-text input-group-text-lg"><i class="ni ni-lock-circle-open"></i></span>
                     </div>
-                    <input class="form-control" placeholder="Contrasena" type="Contrasena">
+                    <input class="form-control form-control-lg" placeholder="Contraseña" type="password">
                   </div>
                 </div>
                 <div class="text-center">
-                  <button type="button" class="btn btn-primary my-4"></button>
+                  <button type="button" class="btn btn-primary btn-lg my-4">Ingresar</button>
                 </div>
               </form>
-            </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-6">
-              <a href="/register.html" class="text-light"><small>Crear Cuenta</small></a>
-            </div>
-            <div class="col-6 text-right">
-              <a href="https://appseed.us?ref=j2-argon-demo" class="text-light"><small>Soporte</small></a>
             </div>
           </div>
         </div>
@@ -58,6 +62,3 @@
     </div>
 
 {% endblock content %}
-
-<!-- Specific JS goes HERE --> 
-{% block javascripts %}{% endblock javascripts %}
