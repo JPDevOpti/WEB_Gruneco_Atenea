@@ -65,30 +65,9 @@ class SignUpForm(UserCreationForm):
 from django import forms
 
 
+# atenea/apps/authentication/forms.py
+from django import forms
+
 class DoctorLoginForm(forms.Form):
-    correo = forms.EmailField(
-        widget=forms.EmailInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Correo",
-                "autocomplete": "email"
-            }
-        ))
-    contraseña = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Contraseña",
-                "autocomplete": "current-password"
-            }
-        ))
-
-    def clean(self):
-        cleaned_data = super().clean()
-        correo = cleaned_data.get('correo')
-        contraseña = cleaned_data.get('contraseña')
-
-        if not correo or not contraseña:
-            raise forms.ValidationError('Por favor, completa todos los campos.')
-
-        return cleaned_data
+    correo = forms.EmailField(label='Correo', max_length=45)
+    contraseña = forms.CharField(label='Contraseña', widget=forms.PasswordInput, max_length=45)

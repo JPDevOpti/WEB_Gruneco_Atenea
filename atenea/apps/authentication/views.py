@@ -1,8 +1,8 @@
+# atenea/apps/authentication/views.py
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import DoctorLoginForm
 from .models import Doctor
-
 
 def login_view(request):
     form = DoctorLoginForm()
@@ -25,4 +25,4 @@ def login_view(request):
             except Doctor.DoesNotExist:
                 messages.error(request, 'Credenciales incorrectas. Por favor, verifica tu correo y contraseña.')
 
-    return render(request, "accounts/login.html", {"form": form})
+    return render(request, "authentication/login.html", {"form": form})

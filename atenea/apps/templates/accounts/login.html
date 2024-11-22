@@ -1,84 +1,51 @@
+<!-- atenea/apps/templates/authentication/login.html -->
 {% extends 'layouts/base-fullscreen.html' %}
 
 {% block title %} Login {% endblock title %}
+
+{% block stylesheets %}
+<style>
+  .form-control-lg {
+    font-size: 1.25rem;
+  }
+  .input-group-text-lg {
+    font-size: 1.25rem;
+  }
+  .btn-lg {
+    font-size: 1.25rem;
+  }
+</style>
+{% endblock stylesheets %}
 
 {% block content %}
 <div class="container mt--8 pb-5">
   <div class="row justify-content-center">
     <div class="col-lg-5 col-md-7">
       <div class="card bg-secondary border-0 mb-0">
-        <div class="card-header bg-transparent pb-5">
-          <div class="text-muted text-center mt-2 mb-3">
-            <small>Ingresar</small>
-          </div>
+        <div class="card-header bg-transparent pb-2">
+          <div class="text-muted text-center mt-1 mb-1"><h1>Ingresar</h1></div>
         </div>
         <div class="card-body px-lg-5 py-lg-5">
           <div class="text-center text-muted mb-4">
-            <small>Ingresa con tus credenciales</small>
+            <h2>Ingresa con tus credenciales</h2>
           </div>
-
-          {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <span class="alert-icon"><i class="ni ni-like-2"></i></span>
-                <span class="alert-text">{{ message }}</span>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            {% endfor %}
-          {% endif %}
-
-          <form method="post">
+          <form role="form" method="POST">
             {% csrf_token %}
-            <div class="form-group mb-3">
-              <div class="input-group input-group-merge input-group-alternative {% if form.correo.errors %}has-danger{% endif %}">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                </div>
-                {{ form.correo }}
-              </div>
-              {% if form.correo.errors %}
-                <div class="text-danger small">{{ form.correo.errors }}</div>
-              {% endif %}
-            </div>
-            <div class="form-group">
-              <div class="input-group input-group-merge input-group-alternative {% if form.contraseña.errors %}has-danger{% endif %}">
-                <div class="input-group-prepend">
-                  <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                </div>
-                {{ form.contraseña }}
-              </div>
-              {% if form.contraseña.errors %}
-                <div class="text-danger small">{{ form.contraseña.errors }}</div>
-              {% endif %}
-            </div>
+            {{ form.as_p }}
             <div class="text-center">
-              <button type="submit" class="btn btn-primary my-4">ENTRAR</button>
+              <button type="submit" class="btn btn-primary btn-lg my-4">Ingresar</button>
             </div>
+            {% if messages %}
+            <div class="alert alert-danger" role="alert">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
           </form>
-        </div>
-      </div>
-      <div class="row mt-3">
-        <div class="col-6">
-          <a href="{% url 'register' %}" class="text-light"><small>Crear Cuenta</small></a>
-        </div>
-        <div class="col-6 text-right">
-          <a href="#" class="text-light"><small>Soporte</small></a>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock content %}
-
-{% block javascripts %}
-<script>
-  // Auto-hide alert after 5 seconds
-  window.setTimeout(function() {
-    $(".alert").fadeTo(500, 0).slideUp(500, function(){
-      $(this).remove();
-    });
-  }, 5000);
-</script>
-{% endblock javascripts %}
