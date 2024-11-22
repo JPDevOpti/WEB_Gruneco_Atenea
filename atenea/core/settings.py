@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps.home'  # Enable the inner home (home)
+    'apps.home',  # Enable the inner home (home)
+    'apps.authentication',
 ]
 
 MIDDLEWARE = [
@@ -37,10 +38,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+# Configuraciones de login
+LOGIN_URL = 'auth/login'  # URL para el login
+LOGIN_REDIRECT_URL = 'home'  # URL después de login exitoso
+LOGOUT_REDIRECT_URL = 'auth/login'  # URL después de logout
 
 ROOT_URLCONF = 'core.urls'
-LOGIN_REDIRECT_URL = "home"  # Route defined in home/urls.py
-LOGOUT_REDIRECT_URL = "home"  # Route defined in home/urls.py
 TEMPLATE_DIR = os.path.join(CORE_DIR, "apps/templates")  # ROOT dir for templates
 
 TEMPLATES = [
@@ -66,8 +69,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'AteneaGrunecoDB',
+        'USER': 'root',
+        'PASSWORD': '4123',
+        'HOST': 'localhost',  # O la dirección de tu servidor MySQL
+        'PORT': '3306',  # Puerto por defecto de MySQL
     }
 }
 

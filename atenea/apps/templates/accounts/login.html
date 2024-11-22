@@ -2,62 +2,83 @@
 
 {% block title %} Login {% endblock title %}
 
-<!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
-
 {% block content %}
+<div class="container mt--8 pb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="card bg-secondary border-0 mb-0">
+        <div class="card-header bg-transparent pb-5">
+          <div class="text-muted text-center mt-2 mb-3">
+            <small>Ingresar</small>
+          </div>
+        </div>
+        <div class="card-body px-lg-5 py-lg-5">
+          <div class="text-center text-muted mb-4">
+            <small>Ingresa con tus credenciales</small>
+          </div>
 
-    <!-- Page content -->
-    <div class="container mt--8 pb-5">
-      <div class="row justify-content-center">
-        <div class="col-lg-5 col-md-7">
-          <div class="card bg-secondary border-0 mb-0">
-            <div class="card-header bg-transparent pb-5">
-              <div class="text-muted text-center mt-2 mb-3"><small>Ingresar</small></div>
-              <div class="btn-wrapper text-center">
-               
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                <span class="alert-text">{{ message }}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
               </div>
-            </div>
-            <div class="card-body px-lg-5 py-lg-5">
-              <div class="text-center text-muted mb-4">
-                <small>Ingresa con tus credenciales</small>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group mb-3">
+              <div class="input-group input-group-merge input-group-alternative {% if form.correo.errors %}has-danger{% endif %}">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                </div>
+                {{ form.correo }}
               </div>
-              <form role="form" action="/">
-                <div class="form-group mb-3">
-                  <div class="input-group input-group-merge input-group-alternative">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-email-83"></i></span>
-                    </div>
-                    <input class="form-control" placeholder="Correo" type="Email">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="input-group input-group-merge input-group-alternative">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
-                    </div>
-                    <input class="form-control" placeholder="Contrasena" type="Contrasena">
-                  </div>
-                </div>
-                <div class="text-center">
-                  <button type="button" class="btn btn-primary my-4">ENTRAR</button>
-                </div>
-              </form>
+              {% if form.correo.errors %}
+                <div class="text-danger small">{{ form.correo.errors }}</div>
+              {% endif %}
             </div>
-          </div>
-          <div class="row mt-3">
-            <div class="col-6">
-              <a href="/register.html" class="text-light"><small>Crear Cuenta</small></a>
+            <div class="form-group">
+              <div class="input-group input-group-merge input-group-alternative {% if form.contraseña.errors %}has-danger{% endif %}">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                </div>
+                {{ form.contraseña }}
+              </div>
+              {% if form.contraseña.errors %}
+                <div class="text-danger small">{{ form.contraseña.errors }}</div>
+              {% endif %}
             </div>
-            <div class="col-6 text-right">
-              <a href="https://appseed.us?ref=j2-argon-demo" class="text-light"><small>Soporte</small></a>
+            <div class="text-center">
+              <button type="submit" class="btn btn-primary my-4">ENTRAR</button>
             </div>
-          </div>
+          </form>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-6">
+          <a href="{% url 'register' %}" class="text-light"><small>Crear Cuenta</small></a>
+        </div>
+        <div class="col-6 text-right">
+          <a href="#" class="text-light"><small>Soporte</small></a>
         </div>
       </div>
     </div>
-
+  </div>
+</div>
 {% endblock content %}
 
-<!-- Specific JS goes HERE --> 
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+  // Auto-hide alert after 5 seconds
+  window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+      $(this).remove();
+    });
+  }, 5000);
+</script>
+{% endblock javascripts %}

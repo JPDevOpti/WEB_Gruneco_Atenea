@@ -53,3 +53,9 @@ def pages(request):
         # Maneja cualquier otro error cargando una página 500
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
+
+from django.shortcuts import render
+
+def login_view(request):
+    # Your logic here
+    return render(request, 'login.html')
