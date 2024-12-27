@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault(); // Prevenir la navegación
 
             const formType = this.dataset.form;
+            console.log(formType)
 
             if (formulariosAbiertos.has(formType)) {
                 // Si el formulario está abierto, lo cerramos
@@ -16,13 +17,14 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 // Si el formulario está cerrado, lo abrimos
                 try {
-                    const response = await fetch(`templates/sleepexams/${formType}/`);
+                    const response = await fetch(`templates/sleepexams/${formType}`);
                     console.log("Response status:", response.status);
                     if (response.ok) {
                         const formHtml = await response.text();
                         const container = document.createElement('div');
                         container.id = `container-${formType}`;
-                        container.className = 'row mb-4';
+                        container.className = 'container-fluid mt--6';
+                        container.style.paddingTop = '150px';
                         container.innerHTML = formHtml;
                         document.getElementById('formularios-dinamicos').appendChild(container);
                         formulariosAbiertos.add(formType);
@@ -79,4 +81,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Función para cerrar un formulario dinámico desde el botón Cancelar
+    window.cerrarFormulario = function(button) {
+    // Buscar el contenedor del formulario a partir del botón
+    const container = button.closest('div[id^="container-"]');
+    
+    if (container) {
+        // Obtener el identificador del formulario desde el contenedor
+        const formType = container.id.replace('container-', '');
+        
+        // Eliminar el contenedor del DOM
+        container.remove();
+        
+        // Quitar el formulario del estado de abiertos
+        if (formulariosAbiertos.has(formType)) {
+            formulariosAbiertos.delete(formType);
+        }
+    }}
 });

@@ -25,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.home',  # Enable the inner home (home)
-    'apps.authentication',
 ]
 
 MIDDLEWARE = [
@@ -72,7 +71,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'AteneaGrunecoDB',
         'USER': 'root',
-        'PASSWORD': '4123',
+        'PASSWORD': '1234',
         'HOST': 'localhost',  # O la dirección de tu servidor MySQL
         'PORT': '3306',  # Puerto por defecto de MySQL
     }
