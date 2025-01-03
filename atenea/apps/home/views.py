@@ -10,7 +10,7 @@ from django.urls import reverse
 import os
 from django.conf import settings
 from django.shortcuts import render
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import  redirect
 
 
@@ -57,6 +57,10 @@ def pages(request):
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
 
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login') 
 
 def login_view(request):
     if request.method == 'POST':
