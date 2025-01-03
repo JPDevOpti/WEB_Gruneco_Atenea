@@ -9,37 +9,14 @@
             <div class="card-header border-0">
               <div class="row align-items-center">
                 <div class="col">
-                  <h3 class="mb-0">Patient Information</h3>
+                  <h3 class="mb-0">Amnanesis cognitivo</h3>
                 </div>
               </div>
             </div>
             <!-- Card body -->
             <div class="card-body">
               <form>
-                <!-- Patient basic info section -->
-                <div class="row">
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label class="form-control-label">Patient Name</label>
-                      <input type="text" class="form-control" readonly value="John Doe">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label class="form-control-label">Document</label>
-                      <input type="text" class="form-control" readonly value="12345678">
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <label class="form-control-label">Date</label>
-                      <input type="date" class="form-control" value="2024-03-20">
-                    </div>
-                  </div>
-                </div>
-
                 <hr class="my-4">
-
                 <!-- Anamnesis form -->
                 <div class="row">
                   <div class="col-md-6">
@@ -60,6 +37,9 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="form-control-label">Estado de Alerta</label>
+                      <div class="mt-3">
+                        <input type="text" id="alerta" class="form-control" placeholder="Estado de Alerta">
+                      </div>
                       <select class="form-control">
                         <option value="alerta">Alerta</option>
                         <option value="somnoliento">Somnoliento</option>
@@ -115,12 +95,24 @@
                   <div class="col-md-4">
                     <div class="form-group">
                       <label class="form-control-label">Estado de Ánimo</label>
-                      <select class="form-control">
-                        <option value="eutimico">Eutímico</option>
-                        <option value="deprimido">Deprimido</option>
-                        <option value="ansioso">Ansioso</option>
-                        <option value="irritable">Irritable</option>
-                      </select>
+                      <div class="checkbox-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="eutimico" name="estado_animo" value="eutimico">
+                          <label class="form-check-label" for="eutimico">Eutímico</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="deprimido" name="estado_animo" value="deprimido">
+                          <label class="form-check-label" for="deprimido">Deprimido</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="ansioso" name="estado_animo" value="ansioso">
+                          <label class="form-check-label" for="ansioso">Ansioso</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" id="irritable" name="estado_animo" value="irritable">
+                          <label class="form-check-label" for="irritable">Irritable</label>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   <div class="col-md-4">

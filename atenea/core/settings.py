@@ -1,6 +1,7 @@
 import os
 from decouple import config
 from unipath import Path
+from django.contrib.messages import constants as message_constants
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = Path(__file__).parent
@@ -38,9 +39,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 # Configuraciones de login
-LOGIN_URL = 'auth/login'  # URL para el login
+LOGIN_URL = 'accounts/login'  # URL para el login
 LOGIN_REDIRECT_URL = 'home'  # URL después de login exitoso
-LOGOUT_REDIRECT_URL = 'auth/login'  # URL después de logout
+LOGOUT_REDIRECT_URL = 'accounts/login'  # URL después de logout
 
 ROOT_URLCONF = 'core.urls'
 TEMPLATE_DIR = os.path.join(CORE_DIR, "apps/templates")  # ROOT dir for templates
@@ -124,7 +125,7 @@ STATICFILES_DIRS = (
 
 #############################################################
 #############################################################
-from django.contrib.messages import constants as message_constants
+
 
 MESSAGE_TAGS = {
     message_constants.DEBUG: 'debug',
