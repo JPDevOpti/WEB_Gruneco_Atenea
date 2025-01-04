@@ -65,38 +65,24 @@
                 </tr>
               </thead>
               <tbody class="list">
+                {% for paciente in pacientes %}
                 <tr>
-                  <td>1</td>
-                  <td>Juan Pérez</td>
-                  <td>45</td>
-                  <td>Masculino</td>
-                  <td>Activo</td>
-                  <td>2023-01-15</td>
-                  <td>Diabetes</td>
-                  <td>555-1234</td>
-                  <td>juan.perez@example.com</td>
-                  <td>
-                    <a href="#" class="btn btn-sm btn-neutral">Ver</a>
-                    <a href="#" class="btn btn-sm btn-neutral">Editar</a>
-                  </td>
+                    <td>{{ paciente.id }}</td>
+                    <td>{{ paciente.nombres_apellidos }}</td>
+                    <td>{{ paciente.edad }}</td>
+                    <td>{{ paciente.get_genero_display }}</td> <!-- Si 'género' es un campo de elección -->
+                    <td>{{ paciente.estado }}</td>
+                    <td>{{ paciente.fecha_evaluacion }}</td>
+                    <td>{{ paciente.diagnostico }}</td>
+                    <td>{{ paciente.telefono }}</td>
+                    <td>{{ paciente.correo_electronico }}</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-neutral">Ver</a>
+                        <a href="#" class="btn btn-sm btn-neutral">Editar</a>
+                    </td>
                 </tr>
-                <tr>
-                  <td>2</td>
-                  <td>María López</td>
-                  <td>30</td>
-                  <td>Femenino</td>
-                  <td>Inactivo</td>
-                  <td>2023-02-20</td>
-                  <td>Hipertensión</td>
-                  <td>555-5678</td>
-                  <td>maria.lopez@example.com</td>
-                  <td>
-                    <a href="#" class="btn btn-sm btn-neutral">Ver</a>
-                    <a href="#" class="btn btn-sm btn-neutral">Editar</a>
-                  </td>
-                </tr>
-                <!-- Agrega más filas de pacientes según sea necesario -->
-              </tbody>
+                {% endfor %}
+            </tbody>
             </table>
           </div>
         </div>

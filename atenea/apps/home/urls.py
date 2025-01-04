@@ -13,6 +13,9 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    
+    path('pacientForm/', views.registro_demografico, name='pacientForm.html'),
+    path('listPacient/', views.lista_pacientes, name='tables.html'),
 
     # Matches any html file
     re_path(r'^(?!login).*\.*', views.pages, name='pages'),
