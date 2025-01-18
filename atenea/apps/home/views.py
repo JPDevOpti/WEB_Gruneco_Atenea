@@ -16,10 +16,14 @@ from django.contrib import messages
 from .models import DatosDemograficos
 
 
+def home(request):
+    context = {'segment': 'home'}
+    html_template = loader.get_template('home/home-page.html')
+    return HttpResponse(html_template.render(context,request))
+
 @login_required(login_url="/login/")
 def index(request):
     context = {'segment': 'index'}
-
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 
@@ -112,7 +116,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('home')  # Redirige a la página principal
+            return redirect('index')  # Redirige a la página principal
         else:
             # Manejo de error de autenticación
             return render(request, 'home/login.html', {'error': 'Credenciales inválidas'})

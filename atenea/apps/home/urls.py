@@ -10,7 +10,8 @@ from .views import login_view
 urlpatterns = [
 
     # The home page
-    path('', views.index, name='home'),
+    path('', views.home, name='home'),
+    path('index/', views.index, name='index'),
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     
