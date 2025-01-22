@@ -88,21 +88,10 @@ class DatosDemograficos(models.Model):
     direccion = models.CharField(max_length=200)
     telefono = models.CharField(max_length=20)
     
-    # Información del Acompañante
-    nombre_acompanante = models.CharField(max_length=200, blank=True, null=True)
-    parentesco = models.CharField(max_length=100, blank=True, null=True)
-    telefono_acompanante = models.CharField(max_length=20, blank=True, null=True)
-    
+
     # Información Adicional y Evaluación
     grupo_sanguineo = models.CharField(max_length=3, choices=GRUPO_SANGUINEO_CHOICES)
     religion = models.CharField(max_length=100, blank=True, null=True)
-    fecha_evaluacion = models.DateField()
-    hora_evaluacion = models.TimeField()
-    evaluador = models.CharField(max_length=200)
-    
-    # Campos automáticos
-    fecha_registro = models.DateTimeField(auto_now_add=True)
-    ultima_actualizacion = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.nombres_apellidos} - {self.numero_documento}"

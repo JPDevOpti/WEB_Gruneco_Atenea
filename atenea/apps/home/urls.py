@@ -15,7 +15,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     
-    path('pacientForm/', views.registro_demografico, name='pacientForm.html'),
+    path('registro_demografico/', views.registro_demografico, name='registro_demografico'),
     path('listPacient/', views.lista_pacientes, name='tables.html'),
 
     # Matches any html file

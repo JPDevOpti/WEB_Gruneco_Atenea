@@ -29,7 +29,6 @@ def index(request):
 
 @login_required
 def lista_pacientes(request):
-    print("aqui")
     pacientes = DatosDemograficos.objects.all()  # Obtiene todos los registros
     return render(request, 'home/tables.html', {'pacientes': pacientes})
 
@@ -37,8 +36,6 @@ def lista_pacientes(request):
 def registro_demografico(request):
     if request.method == 'POST':
         try:
-            print("aqui 3")
-            print(request.POST['nombres_apellidos'])
             datos = DatosDemograficos(
                 nombres_apellidos=request.POST['nombres_apellidos'],
                 tipo_documento=request.POST['tipo_documento'],
@@ -52,26 +49,25 @@ def registro_demografico(request):
                 lateralidad=request.POST['lateralidad'],
                 direccion=request.POST['direccion'],
                 telefono=request.POST['telefono'],
-                nombre_acompanante=request.POST['nombre_acompanante'],
-                parentesco=request.POST['parentesco'],
-                telefono_acompanante=request.POST['telefono_acompanante'],
                 grupo_sanguineo=request.POST['grupo_sanguineo'],
                 religion=request.POST['religion'],
-                fecha_evaluacion=request.POST['fecha_evaluacion'],
-                hora_evaluacion=request.POST['hora_evaluacion'],
-                evaluador=request.POST['evaluador']
             )
             datos.save()
             messages.success(request, 'Datos demográficos guardados exitosamente.')
-            return redirect('lista_pacientes')  # Ajusta según tu URL
+           
+        
         except Exception as e:
             messages.error(request, f'Error al guardar los datos: {str(e)}')
-    
-    return render(request, 'sleepexams/pacientForm.html')  # Ajusta según tu template
+            
+        pacientes = DatosDemograficos.objects.all() 
+        return render(request, 'home/tables.html', {'pacientes': pacientes})  # Ajusta según tu URL
+     # Si es una solicitud GET, solo devolver el formulario sin procesar nada
+    if request.method == 'GET':
+        return render(request, 'sleepexams/pacientForm.html')  
 
 @login_required(login_url="/login/")
 def pages(request):
-    print("prueba")
+    print("prueba paginas")
     context = {}
     # All resource paths end in .html.
     # Pick out the html file name from the url. And load that template.
