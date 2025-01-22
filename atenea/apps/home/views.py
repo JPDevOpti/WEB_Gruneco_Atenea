@@ -9,7 +9,7 @@ from django.template import loader
 from django.urls import reverse
 import os
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import  redirect
 from django.contrib import messages
@@ -65,6 +65,22 @@ def registro_demografico(request):
     if request.method == 'GET':
         return render(request, 'sleepexams/pacientForm.html')  
 
+@login_required
+def detalle_paciente(request, paciente_id):
+    paciente = get_object_or_404(DatosDemograficos, numero_documento=paciente_id)
+    return render(request, 'sleepexams/pacient.html', {'paciente': paciente})
+
+@login_required
+def eliminar_paciente(request, numero_documento):
+    if request.method == 'POST':
+        paciente = get_object_or_404(DatosDemograficos, numero_documento=numero_documento)
+        paciente.delete()
+        messages.success(request, f"El paciente con documento {numero_documento} ha sido eliminado.")
+        return redirect('tables.html')  # Asegúrate de tener esta vista configurada
+    else:
+        messages.error(request, "Método no permitido.")
+        return redirect('tables.html')
+    
 @login_required(login_url="/login/")
 def pages(request):
     print("prueba paginas")
@@ -99,6 +115,7 @@ def pages(request):
         # Maneja cualquier otro error cargando una página 500
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
+
 
 @login_required
 def logout_view(request):

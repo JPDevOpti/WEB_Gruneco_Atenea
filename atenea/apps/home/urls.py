@@ -16,8 +16,10 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     
     path('registro_demografico/', views.registro_demografico, name='registro_demografico'),
-    path('listPacient/', views.lista_pacientes, name='tables.html'),
-
+    path('pacientes/', views.lista_pacientes, name='tables.html'),
+    path('paciente/<int:paciente_id>/', views.detalle_paciente, name='detalle_paciente'),
+    path('paciente/<int:numero_documento>/eliminar/', views.eliminar_paciente, name='eliminar_paciente'),
+    
     # Matches any html file
     re_path(r'^(?!login).*\.*', views.pages, name='pages'),
     

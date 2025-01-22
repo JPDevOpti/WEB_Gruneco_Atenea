@@ -13,7 +13,7 @@
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
               <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
                 <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-                <li class="breadcrumb-item"><a  href="/listPacient/">Pacientes</a></li>
+                <li class="breadcrumb-item"><a  href="/pacientes/">Pacientes</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Listado de Pacientes</li>
               </ol>
             </nav>
@@ -71,8 +71,14 @@
                     <td>{{ paciente.eps }}</td>
                     <td>{{ paciente.grupo_sanguineo }}</td>
                     <td>
-                        <a href="#" class="btn btn-sm btn-neutral">Ver</a>
-                        <a href="#" class="btn btn-sm btn-neutral">Editar</a>
+                      <a href="{% url 'detalle_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Ver</a>
+                      <a href="#" class="btn btn-sm btn-neutral">Editar</a>
+                      <a>
+                        <form action="{% url 'eliminar_paciente' paciente.numero_documento %}" method="post" style="display: inline;">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este paciente?');">Eliminar</button>
+                        </form>
+                      </a>
                     </td>
                 </tr>
                 {% endfor %}
