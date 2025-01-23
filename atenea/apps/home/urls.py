@@ -19,9 +19,9 @@ urlpatterns = [
     path('pacientes/', views.lista_pacientes, name='tables.html'),
     path('paciente/<int:paciente_id>/', views.detalle_paciente, name='detalle_paciente'),
     path('paciente/<int:numero_documento>/eliminar/', views.eliminar_paciente, name='eliminar_paciente'),
-    
+    #path('agregar-proyecto/<int:paciente_id>/', views.agregar_proyecto, name='agregar_proyecto'),
     # Matches any html file
-    re_path(r'^(?!login).*\.*', views.pages, name='pages'),
+    #re_path(r'^(?!login).*\.*', views.pages, name='pages'),
     
 ]
 

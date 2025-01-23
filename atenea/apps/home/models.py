@@ -3,7 +3,6 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 from django.db import models
-from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser, Group, Permission
 
 class CustomUser(AbstractUser):
@@ -100,7 +99,6 @@ class DatosDemograficos(models.Model):
         verbose_name = "Datos Demográficos"
         verbose_name_plural = "Datos Demográficos"
 
-
 class Doctor(models.Model):
     idDoctor = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=45)
@@ -109,3 +107,40 @@ class Doctor(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+
+class Proyecto(models.Model):
+    nombre = models.CharField(max_length=200)
+    
+    def __str__(self):
+        return self.nombre
+    
+    class Meta:
+        verbose_name = "Proyecto"
+        verbose_name_plural = "Proyectos"
+          
+class AsignacionPaciente(models.Model):
+    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="proyectos_asignados")
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name="pacientes_asignados")
+    
+    def __str__(self):
+        return f"{self.paciente.nombres_apellidos} - {self.proyecto.nombre}"
+    
+    class Meta:
+        verbose_name = "Asignación de Paciente"
+        verbose_name_plural = "Asignaciones de Pacientes"
+        
+class Visita(models.Model):
+    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="visitas")
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name="visitas")
+    fecha_visita = models.DateField()
+    hora_visita = models.TimeField()
+    evaluador = models.CharField(max_length=200)
+    observaciones = models.TextField(blank=True, null=True)
+    
+    def __str__(self):
+        return f"Visita a {self.paciente.nombres_apellidos} - Proyecto {self.proyecto.nombre} - {self.fecha_visita}"
+    
+    class Meta:
+        verbose_name = "Visita"
+        verbose_name_plural = "Visitas"

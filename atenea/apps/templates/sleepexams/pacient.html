@@ -33,7 +33,21 @@
                   <i class="ni business_briefcase-24 mr-2"></i>Estudiante
                 </p>
                 <div class="mt-3">
-                  <a href="#" class="btn btn-sm btn-neutral">Agregar proyecto</a>
+                  <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                      <label for="proyecto">Seleccionar Proyecto</label>
+                      <select name="proyecto" id="proyecto" class="form-control" required>
+                        {% for proyecto in proyectos %}
+                          <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                    
+                      <button type="submit" class="btn btn-sm btn-neutral" onclick="return confirm('¿Estás seguro de que deseas agregar el paciente al proyecto?');">Agregar al proyecto</button>
+                    
+                  </form>
                 </div>
               </div>
             </div>

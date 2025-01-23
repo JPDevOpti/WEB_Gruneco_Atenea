@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
 
+
 class CustomLoginForm(AuthenticationForm):
     username = forms.EmailField(
         label="Correo Electrónico",
@@ -30,3 +31,6 @@ class CustomLoginForm(AuthenticationForm):
         
         return cleaned_data
 
+
+#class AsignarPacienteForm(forms.Form):
+#    proyecto = forms.ModelChoiceField(queryset=Proyecto.objects.all(), required=True)

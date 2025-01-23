@@ -14,7 +14,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import  redirect
 from django.contrib import messages
 from .models import DatosDemograficos
-
+#from .forms import AsignarPacienteForm
 
 def home(request):
     context = {'segment': 'home'}
@@ -68,6 +68,16 @@ def registro_demografico(request):
 @login_required
 def detalle_paciente(request, paciente_id):
     paciente = get_object_or_404(DatosDemograficos, numero_documento=paciente_id)
+    # Obtener todos los proyectos
+    #proyectos = Proyecto.objects.all()
+    # Si el formulario es enviado, procesar la asignación del paciente
+    #if request.method == 'POST':
+    #    proyecto_id = request.POST.get('proyecto')
+    #    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+#
+    #    # Crear la asignación del paciente al proyecto
+    #    AsignacionPaciente.objects.create(paciente=paciente, proyecto=proyecto)
+    
     return render(request, 'sleepexams/pacient.html', {'paciente': paciente})
 
 @login_required
@@ -80,6 +90,31 @@ def eliminar_paciente(request, numero_documento):
     else:
         messages.error(request, "Método no permitido.")
         return redirect('tables.html')
+ 
+#@login_required   
+##def agregar_proyecto(request, paciente_id):
+#    print("aqui")
+#    # Obtener el paciente
+#    paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+#    # Obtener todos los proyectos
+#    proyectos = Proyecto.objects.all()
+#
+#    # Si el formulario es enviado, procesar la asignación del paciente
+#    if request.method == 'POST':
+#        proyecto_id = request.POST.get('proyecto')
+#        proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+#
+#        # Crear la asignación del paciente al proyecto
+#        AsignacionPaciente.objects.create(paciente=paciente, proyecto=proyecto)
+#
+#        # Redirigir a una página de éxito (puedes modificar esto como quieras)
+#        paciente = get_object_or_404(DatosDemograficos, numero_documento=paciente_id)
+#        return render(request, 'sleepexams/pacient.html', {'paciente': paciente})
+#
+#    return render(request, 'agregar_proyecto.html', {
+#        'paciente': paciente,
+#        'proyectos': proyectos,
+#    })
     
 @login_required(login_url="/login/")
 def pages(request):
@@ -115,7 +150,6 @@ def pages(request):
         # Maneja cualquier otro error cargando una página 500
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
-
 
 @login_required
 def logout_view(request):
