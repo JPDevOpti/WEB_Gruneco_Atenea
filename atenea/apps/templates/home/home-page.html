@@ -3,7 +3,7 @@
 {% block stylesheets %}
 <style>
   .form-control-lg {
-    font-size: 1.25rem;
+    font-size: 0.1rem;
   }
   .input-group-text-lg {
     font-size: 1.25rem;
@@ -11,49 +11,177 @@
   .btn-lg {
     font-size: 1.25rem;
   }
+  .centered-image {
+    display: block;
+    margin: 0 auto;
+  }
+  .featurette-heading {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.2;
+    letter-spacing: -0.05rem;
+  }
+  .lead {
+    font-size: 1.25rem;
+    font-weight: 300;
+  }
+  .rounded-circle {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .rounded-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  .container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 0.3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  .mt--16 {
+    margin-top: -1rem;
+  }
+  .pt-7 {
+    padding-top: 5rem;
+  }
+  .pb-5 {
+    padding-bottom: 3rem;
+  }
+  .mt--15 {
+    margin-top: -1rem;
+  }
+  .pt-6 {
+    padding-top: 1rem;
+  }
+  .pb-4 {
+    padding-bottom: 1rem;
+  }
+  .text-center h2 {
+    margin-top: 1.1rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  .text-center p {
+    margin-top: 1.6rem;
+    font-size: 1.2rem;
+    color: #555;
+  }
+  .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+  }
+  .card:hover {
+    transform: translateY(-20px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+  .card-title {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333;
+  }
+  .card-text {
+    font-size: 1.8rem;
+    color: #555;
+    line-height: 1.6;
+  }
+  .principles-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  .principles-list li {
+    margin-top: 1.6rem;
+    font-size: 1.3rem;
+    color: #555;
+  }
 </style>
 {% endblock stylesheets %}
 
 {% block content %}
-<div class="container mt--16  pt-7 pb-5">
+<div class="container mt--16 pt-7 pb-5">
   <div class="row justify-content-center">
     <div class="row">
-        <div div class="row justify-content-center">
-            <div class="row featurette">
-                <div class="col-md-7">
-                    <h2 class="featurette-heading fw-normal lh-1">Apuesta <span class="text-body-secondary">estratégica.</span></h2>
-                    <p class="lead">Somos un grupo interdisciplinar de investigación, perteneciente a la Facultad de Medicina de la Universidad de Antioquia, 
-                        que a través de la estructuración y ejecución de proyectos de investigación formamos talento humano en investigación en los niveles de pre 
-                        y posgrado, al igual que contribuimos a la generación de conocimiento enfocado en soluciones clínicas y tecnológicas en el área de las neurociencias 
-                        cognitivas.</p>
-                </div>
-                <div class="col-md-5">
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <image href="/static/assets/img/theme/GGRUNECO.jpeg" width="100%" height="100%" />
-                      </svg>
-                      
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row pt-7">
-        <div class="col-lg-4 justify-content-center">
-            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
-                <image href="/static/assets/img/theme/imagen_2.png" width="100%" height="100%" />
+      <div class="row justify-content-center">
+        <div class="row featurette">
+          <div class="col-md-7">
+            <h2 class="featurette-heading fw-normal lh-1">Grupo Neuropsicología y Conducta <span class="text-body-secondary"></span></h2>
+            <p class="lead">Somos un grupo interdisciplinar de investigación, perteneciente a la Facultad de Medicina de la Universidad de Antioquia, que a través de la estructuración y ejecución de proyectos de investigación formamos talento humano en investigación en los niveles de pre y posgrado, al igual que contribuimos a la generación de conocimiento enfocado en soluciones clínicas y tecnológicas en el área de las neurociencias cognitivas.</p>
+          </div>
+          <div class="col-md-5">
+            <svg class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" width="500" height="500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 500x500" preserveAspectRatio="xMidYMid slice" focusable="false">
+              <image href="/static/assets/img/theme/Gruneco_Miembros.jpeg" width="100%" height="100%" />
             </svg>
-            <h2 class="fw-normal">Carlos Andrés Tobón Quintero, MD, PhD</h2>
-            <p>Coordinador(a) del Grupo</p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4 justify-content-center">
-            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect></svg>
-            <h2 class="fw-normal">Heading</h2>
-            <p>Another exciting bit of representative placeholder content. This time, we've moved on to the second column.</p>
-        </div><!-- /.col-lg-4 -->
-        <div class="col-lg-4 justify-content-center">
-            <svg class="bd-placeholder-img rounded-circle" width="140" height="140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect></svg>
-            <h2 class="fw-normal">Heading</h2>
-            <p>And lastly this, the third column of representative placeholder content.</p>
-        </div><!-- /.col-lg-4 -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjetas de Visión, Misión y Principios -->
+    <div class="row pt-3">
+      <!-- Tarjeta de Visión -->
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center p-4">
+          <div class="card-body">
+            <h3 class="card-title">Visión</h3>
+            <p class="card-text">
+              En el 2030 GRUNECO será reconocido a nivel internacional por la calidad científica de las investigaciones desarrolladas con una estructura administrativa sostenible que le permitirá brindar espacios continuos de formación investigativa interdisciplinar de alto nivel en pregrado y posgrado.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Misión -->
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center p-4">
+          <div class="card-body">
+            <h3 class="card-title">Misión</h3>
+            <p class="card-text">
+              Somos un grupo interdisciplinar de investigación que a través de la estructuración y ejecución de proyectos de investigación formamos talento humano en investigación en los niveles de pre y posgrado, al igual que contribuimos a la generación de conocimiento enfocado en soluciones clínicas y tecnológicas en el área de las neurociencias cognitivas.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Principios -->
+      <div class="col-md-4 mb-4">
+        <div class="card h-100 text-center p-4">
+          <div class="card-body">
+            <h3 class="card-title">Principios</h3>
+            <ul class="principles-list">
+              <li>Trabajo en equipo</li>
+              <li>Responsabilidad</li>
+              <li>Respeto</li>
+              <li>Disciplina</li>
+              <li>Pasión</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row pt-7">
+      <!-- Miembro 1 -->
+      <div class="col-lg-6 text-center">
+        <svg class="bd-placeholder-img rounded-circle centered-image" width="140" height="140" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <title>Placeholder</title>
+          <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
+          <image href="/static/assets/img/theme/Carlos_imagen.jpeg" width="100%" height="100%" />
+        </svg>
+        <h2 class="fw-normal mt-3">Carlos Andrés Tobón Quintero, MD, PhD</h2>
+        <p>Coordinador del Grupo</p>
+      </div>
+      <!-- Miembro 2 -->
+      <div class="col-lg-6 text-center">
+        <svg class="bd-placeholder-img rounded-circle centered-image" width="140" height="140" role="img" aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <title>Placeholder</title>
+          <rect width="100%" height="100%" fill="var(--bs-secondary-color)"></rect>
+          <image href="/static/assets/img/theme/Jonh_Imagen.png" width="100%" height="100%" />
+        </svg>
+        <h2 class="fw-normal mt-3">John Fredy Ochoa Ph.D.</h2>
+        <p>Coordinador académico del Grupo</p>
+      </div>
     </div>
   </div>
 </div>

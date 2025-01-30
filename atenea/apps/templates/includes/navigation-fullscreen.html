@@ -1,17 +1,23 @@
 <nav id="navbar-main" class="navbar navbar-horizontal navbar-transparent navbar-main navbar-expand-lg navbar-light">
   <div class="container">
-    <a class="navbar-brand" href="/">
-      <img src="/static/assets/img/brand/GRUNECO_LT_T.png" alt="Argon Design - Template Starter Logo.">
+    <!-- Logo -->
+    <a class="navbar-brand ml-3" href="/">
+      <img src="/static/assets/img/brand/Logo_GRUNECO_Sin_Fondo.png" alt="Logo GRUNECO" class="logo-img">
     </a>
+
+    <!-- Botón de menú para móviles -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+    <!-- Contenido colapsable -->
     <div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">
+      <!-- Encabezado del menú colapsado (para móviles) -->
       <div class="navbar-collapse-header">
         <div class="row">
           <div class="col-6 collapse-brand">
             <a href="/">
-              <img src="/static/assets/img/brand/GRUNECO_LT_T.png">
+              <img src="/static/assets/img/brand/GRUNECO_LT_B.jpg" alt="Logo GRUNECO">
             </a>
           </div>
           <div class="col-6 collapse-close">
@@ -22,22 +28,69 @@
           </div>
         </div>
       </div>
+
+      <!-- Elementos del menú -->
       <ul class="navbar-nav align-items-lg-center ml-lg-auto">
+        <!-- Enlace a Atenea -->
         <li class="nav-item">
-          <a class="nav-link {% if 'index' in segment %} active {% endif %}" href="index/"
-          target="_blank" data-toggle="tooltip" data-original-title="Ingresar">
+          <a class="nav-link atenea-text" href="index/" target="_blank" data-toggle="tooltip" data-original-title="Ingresar">
             <i class="ni ni-tv-2 text-green"></i>
-            <span class="mb-0 text-sm  font-weight-bold">Atenea</span>
+            <span class="mb-0 text-sm font-weight-bold">Atenea</span>
           </a>
         </li>
+
+        <!-- Enlace a GitHub -->
         <li class="nav-item">
-          <a class="nav-link nav-link-icon" href="https://github.com/GRUNECO" 
-             target="_blank" data-toggle="tooltip" data-original-title="GitHub">
-            <i class="fab fa-github"></i>
-            <span class="nav-link-inner--text d-lg-none">GitHub</span>
+          <a class="nav-link nav-link-icon github-link" href="https://github.com/GRUNECO" target="_blank" data-toggle="tooltip" data-original-title="GitHub">
+            <i class="fab fa-github github-logo"></i>
+          </a>
+        </li>
+
+        <!-- Enlace a Instagram -->
+        <li class="nav-item">
+          <a class="nav-link nav-link-icon instagram-link" href="https://instagram.com/GRUNECO" target="_blank" data-toggle="tooltip" data-original-title="Instagram">
+            <i class="fab fa-instagram instagram-logo"></i>
           </a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
+<!-- Estilos personalizados -->
+<style>
+  .logo-img {
+    height: 50px;
+    transition: transform 0.3s ease;
+    margin-left: 15px;
+  }
+  .logo-img:hover {
+    transform: scale(1.1);
+  }
+  .atenea-text {
+    color: black !important;
+  }
+  .github-logo, .instagram-logo {
+    font-size: 1.25rem;
+    color: black !important;
+  }
+  .nav-link {
+    color: #333;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+  .nav-link:hover {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+    border-radius: 5px;
+  }
+  .nav-link.active {
+    color: #007bff;
+    font-weight: bold;
+  }
+  .navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 1rem;
+  }
+</style>

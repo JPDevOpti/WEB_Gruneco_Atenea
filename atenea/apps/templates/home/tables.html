@@ -55,9 +55,9 @@
                   <th scope="col" class="sort" data-sort="id">ID del Paciente</th>
                   <th scope="col" class="sort" data-sort="name">Nombre</th>
                   <th scope="col" class="sort" data-sort="age">Edad</th>
-                  <th scope="col" class="sort" data-sort="gender">fecha_nacimiento</th>
-                  <th scope="col" class="sort" data-sort="status">eps</th>
-                  <th scope="col" class="sort" data-sort="admission_date">grupo_sanguineo</th>
+                  <th scope="col" class="sort" data-sort="gender">Fecha nacimiento</th>
+                  <th scope="col" class="sort" data-sort="status">Última visita</th>
+                  <th scope="col" class="sort" data-sort="admission_date">Proyecto</th>
                   <th scope="col">Acciones</th>
                 </tr>
               </thead>
@@ -68,8 +68,8 @@
                     <td>{{ paciente.nombres_apellidos }}</td>
                     <td>{{ paciente.edad }}</td>
                     <td>{{ paciente.fecha_nacimiento}}</td> <!-- Si 'género' es un campo de elección -->
-                    <td>{{ paciente.eps }}</td>
-                    <td>{{ paciente.grupo_sanguineo }}</td>
+                    <td>{{ paciente.ultima_visita }}</td>
+                    <td>{{ paciente.proyecto }}</td>
                     <td>
                       <a href="{% url 'detalle_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Ver</a>
                       <a href="#" class="btn btn-sm btn-neutral">Editar</a>
@@ -124,16 +124,16 @@
   function searchTable() {
    // Obtener el valor del campo de búsqueda
    const searchTerm = document.getElementById("searchPatient").value.toLowerCase();
-   
+
    // Obtener todas las filas de la tabla (se debe apuntar a la tabla directamente)
    const table = document.querySelector("table");  // Selecciona la tabla de la página
    const rows = table.getElementsByTagName("tr");
-   
+
    // Iterar sobre todas las filas (comenzando desde la fila 1 para omitir la cabecera)
    for (let i = 1; i < rows.length; i++) {  // Asegúrate de que empieces en la fila 1 para evitar la cabecera
      let row = rows[i];
      let cells = row.getElementsByTagName("td");
-     
+
      let match = false;
      // Iterar sobre las celdas de la fila y comprobar si alguna contiene el término de búsqueda
      for (let j = 0; j < cells.length; j++) {
@@ -143,21 +143,11 @@
          break;
        }
      }
-     
+
      // Mostrar u ocultar la fila según si hay coincidencia
      row.style.display = match ? "" : "none";
    }
  }
- 
- </script>
- <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const toastElements = document.querySelectorAll('.toast');
-    toastElements.forEach(function (toastElement) {
-      const toast = new bootstrap.Toast(toastElement);
-      toast.show();
-    });
-  });
-</script>
 
+ </script>
 {% endblock javascripts %}

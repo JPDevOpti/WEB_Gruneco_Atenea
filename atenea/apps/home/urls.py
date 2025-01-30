@@ -14,14 +14,18 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    
+
     path('registro_demografico/', views.registro_demografico, name='registro_demografico'),
     path('pacientes/', views.lista_pacientes, name='tables.html'),
     path('paciente/<int:paciente_id>/', views.detalle_paciente, name='detalle_paciente'),
     path('paciente/<int:numero_documento>/eliminar/', views.eliminar_paciente, name='eliminar_paciente'),
-    #path('agregar-proyecto/<int:paciente_id>/', views.agregar_proyecto, name='agregar_proyecto'),
-    # Matches any html file
-    #re_path(r'^(?!login).*\.*', views.pages, name='pages'),
-    
-]
 
+    # Nueva ruta para proyectos
+    path('proyectos/', views.proyectos, name='proyectos'),
+
+
+    path('consulta/', views.consulta_view, name='patinet_consult'),
+
+    # Matches any html file
+    # re_path(r'^(?!login).*\.*', views.pages, name='pages'),
+]

@@ -1,0 +1,172 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-5">
+          <h6 class="h2 text-white d-inline-block mb-0">Gestión de Proyectos</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item active" aria-current="page">Proyectos</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-8 order-xl-1">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="mb-0">Lista de Proyectos</h3>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span class="font-weight-bold">Sueño</span>
+              <div>
+                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalDescripcionProyecto" data-proyecto="Sueño" data-fecha="2024-01-01" data-pacientes="Juan Pérez, Carlos Ramírez" data-consultas="5" data-especialistas="Dr. Gómez, Dra. López">Ver Descripción</button>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAgregarPaciente" data-proyecto-id="1">Agregar Paciente</button>
+              </div>
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+              <span class="font-weight-bold">Envejecimiento</span>
+              <div>
+                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalDescripcionProyecto" data-proyecto="Envejecimiento" data-fecha="2023-06-15" data-pacientes="María Gómez, Carlos Ramírez" data-consultas="8" data-especialistas="Dr. Pérez, Dra. Fernández">Ver Descripción</button>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAgregarPaciente" data-proyecto-id="2">Agregar Paciente</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-4 order-xl-2">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="mb-0">Pacientes Asociados</h3>
+        </div>
+        <div class="card-body">
+          <!-- Barra de búsqueda -->
+          <input type="text" id="busquedaPaciente" class="form-control mb-3" placeholder="Buscar Paciente..." onkeyup="filtrarPacientes()">
+          <ul class="list-group" id="pacientesLista">
+            <li class="list-group-item">
+              <strong>Juan Pérez</strong><br>
+              Cédula: 123456789<br>
+              Proyectos: <span class="badge badge-info">Sueño</span>
+            </li>
+            <li class="list-group-item">
+              <strong>María Gómez</strong><br>
+              Cédula: 987654321<br>
+              Proyectos: <span class="badge badge-info">Envejecimiento</span>
+            </li>
+            <li class="list-group-item">
+              <strong>Carlos Ramírez</strong><br>
+              Cédula: 112233445<br>
+              Proyectos: <span class="badge badge-info">Sueño</span>, <span class="badge badge-info">Envejecimiento</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Agregar Paciente -->
+<div class="modal fade" id="modalAgregarPaciente" tabindex="-1" role="dialog" aria-labelledby="modalAgregarPacienteLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalAgregarPacienteLabel">Agregar Paciente al Proyecto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form>
+        <div class="modal-body">
+          <input type="hidden" name="proyecto_id" id="proyecto_id">
+          <div class="form-group">
+            <label for="paciente">Seleccionar o Ingresar Paciente</label>
+            <input list="listaPacientes" name="paciente" id="paciente" class="form-control" required>
+            <datalist id="listaPacientes">
+              <option value="Juan Pérez">
+              <option value="María Gómez">
+              <option value="Carlos Ramírez">
+            </datalist>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para Ver Descripción del Proyecto -->
+<div class="modal fade" id="modalDescripcionProyecto" tabindex="-1" role="dialog" aria-labelledby="modalDescripcionProyectoLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalDescripcionProyectoLabel">Descripción del Proyecto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Nombre:</strong> <span id="descNombre"></span></p>
+        <p><strong>Fecha de Inicio:</strong> <span id="descFecha"></span></p>
+        <p><strong>Pacientes:</strong> <span id="descPacientes"></span></p>
+        <p><strong>Consultas Hechas:</strong> <span id="descConsultas"></span></p>
+        <p><strong>Especialistas:</strong> <span id="descEspecialistas"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Función para filtrar pacientes
+  function filtrarPacientes() {
+    var input, filter, ul, li, a, i, txtValue;
+    input = document.getElementById('busquedaPaciente');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("pacientesLista");
+    li = ul.getElementsByTagName('li');
+    for (i = 0; i < li.length; i++) {
+      a = li[i].getElementsByTagName("strong")[0];
+      txtValue = a.textContent || a.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        li[i].style.display = "";
+      } else {
+        li[i].style.display = "none";
+      }
+    }
+  }
+
+  // Modal agregar paciente
+  $('#modalAgregarPaciente').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    var proyectoId = button.data('proyecto-id');
+    var modal = $(this);
+    modal.find('#proyecto_id').val(proyectoId);
+  });
+
+  // Modal descripción proyecto
+  $('#modalDescripcionProyecto').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);
+    $('#descNombre').text(button.data('proyecto'));
+    $('#descFecha').text(button.data('fecha'));
+    $('#descPacientes').text(button.data('pacientes'));
+    $('#descConsultas').text(button.data('consultas'));
+    $('#descEspecialistas').text(button.data('especialistas'));
+  });
+</script>
+
+{% endblock %}
