@@ -10,7 +10,7 @@
           <h6 class="h2 text-white d-inline-block mb-0">Gestión de Proyectos</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="/index/"><i class="fas fa-home"></i></a></li>
               <li class="breadcrumb-item active" aria-current="page">Proyectos</li>
             </ol>
           </nav>
@@ -21,89 +21,114 @@
 </div>
 
 <div class="container-fluid mt--6">
+  {% if messages %}
+  <div class="alert alert-success">
+      {% for message in messages %}
+      {{ message }}
+      {% endfor %}
+  </div>
+  {% endif %}
   <div class="row">
-    <div class="col-xl-8 order-xl-1">
+    <div class="col-xl-6 order-xl-1">
+      <div class="card">
+          <div class="card-header">
+              <h3 class="mb-0">Crear Nuevo Proyecto</h3>
+          </div>
+          <div class="card-body">
+              <form method="POST" action="{% url 'proyectos' %}">
+                  {% csrf_token %}
+                  <div class="form-group">
+                      <label for="nombreProyecto">Nombre del Proyecto</label>
+                      <input type="text" class="form-control" id="nombreProyecto" name="nombre" placeholder="Nombre del Proyecto" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="descripcionProyecto">Descripción del Proyecto</label>
+                      <textarea class="form-control" id="descripcionProyecto" name="descripcion" placeholder="Descripción del Proyecto"></textarea>
+                  </div>
+                  <div class="form-group">
+                      <label for="investigadorPrincipal">Investigador Principal</label>
+                      <input type="text" class="form-control" id="investigadorPrincipal" name="investigador_principal" placeholder="Investigador Principal">
+                  </div>
+                  <div class="form-group">
+                      <label for="codigoProyecto">Código del Proyecto</label>
+                      <input type="text" class="form-control" id="codigoProyecto" name="codigo_siu" placeholder="Código del Proyecto">
+                  </div>
+                  <div class="form-group">
+                      <label for="fechaInicio">Fecha de Inicio</label>
+                      <input type="date" class="form-control" id="fechaInicio" name="fecha_inicio">
+                  </div>
+                  <div class="form-group">
+                      <label for="fechaFinanciacion">Fecha de Financiación</label>
+                      <input type="date" class="form-control" id="fechaFinanciacion" name="fecha_financiacion">
+                  </div>
+                  <button type="submit" class="btn btn-primary">Crear Proyecto</button>
+              </form>
+          </div>
+      </div>
+    </div>
+    <!-- Mostrar Proyectos Existentes -->
+    <div class="col-xl-6 order-xl-2">
       <div class="card">
         <div class="card-header">
-          <h3 class="mb-0">Lista de Proyectos</h3>
+          <h3 class="mb-0">Proyectos Existentes</h3>
         </div>
         <div class="card-body">
           <ul class="list-group">
+            {% for proyecto in proyectos %}
             <li class="list-group-item d-flex justify-content-between align-items-center">
-              <span class="font-weight-bold">Sueño</span>
-              <div>
-                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalDescripcionProyecto" data-proyecto="Sueño" data-fecha="2024-01-01" data-pacientes="Juan Pérez, Carlos Ramírez" data-consultas="5" data-especialistas="Dr. Gómez, Dra. López">Ver Descripción</button>
-                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAgregarPaciente" data-proyecto-id="1">Agregar Paciente</button>
-              </div>
+                <span class="font-weight-bold">{{ proyecto.nombre }}</span>
+                <div>
+                  <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalDescripcionProyecto"
+                      data-nombre="{{ proyecto.nombre }}"
+                      data-fecha-inicio="{{ proyecto.fecha_inicio|date:'Y-m-d' }}"
+                      data-fecha-financiacion="{{ proyecto.fecha_financiacion|date:'Y-m-d' }}"
+                      data-investigador="{{ proyecto.investigador_principal }}"
+                      data-codigo-siu="{{ proyecto.codigo_siu }}"
+                      data-descripcion="{{ proyecto.descripcion }}">
+                      Ver Descripción
+                  </button>
+                  <button class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modalAgregarVisita"
+                      data-proyecto-id="{{ proyecto.id }}"
+                      data-nombre="{{ proyecto.nombre }}">
+                      Agregar visita
+                  </button>
+                </div>
             </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-              <span class="font-weight-bold">Envejecimiento</span>
-              <div>
-                <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalDescripcionProyecto" data-proyecto="Envejecimiento" data-fecha="2023-06-15" data-pacientes="María Gómez, Carlos Ramírez" data-consultas="8" data-especialistas="Dr. Pérez, Dra. Fernández">Ver Descripción</button>
-                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalAgregarPaciente" data-proyecto-id="2">Agregar Paciente</button>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <div class="col-xl-4 order-xl-2">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="mb-0">Pacientes Asociados</h3>
-        </div>
-        <div class="card-body">
-          <!-- Barra de búsqueda -->
-          <input type="text" id="busquedaPaciente" class="form-control mb-3" placeholder="Buscar Paciente..." onkeyup="filtrarPacientes()">
-          <ul class="list-group" id="pacientesLista">
-            <li class="list-group-item">
-              <strong>Juan Pérez</strong><br>
-              Cédula: 123456789<br>
-              Proyectos: <span class="badge badge-info">Sueño</span>
-            </li>
-            <li class="list-group-item">
-              <strong>María Gómez</strong><br>
-              Cédula: 987654321<br>
-              Proyectos: <span class="badge badge-info">Envejecimiento</span>
-            </li>
-            <li class="list-group-item">
-              <strong>Carlos Ramírez</strong><br>
-              Cédula: 112233445<br>
-              Proyectos: <span class="badge badge-info">Sueño</span>, <span class="badge badge-info">Envejecimiento</span>
-            </li>
-          </ul>
+            {% endfor %}
+        </ul>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Modal para Agregar Paciente -->
-<div class="modal fade" id="modalAgregarPaciente" tabindex="-1" role="dialog" aria-labelledby="modalAgregarPacienteLabel" aria-hidden="true">
+<!-- Modal para Agregar Visita -->
+<div class="modal fade" id="modalAgregarVisita" tabindex="-1" role="dialog" aria-labelledby="modalAgregarVisita" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalAgregarPacienteLabel">Agregar Paciente al Proyecto</h5>
+        <h5 class="modal-title" id="modalAgregarVisita">Agregar Visita al Proyecto</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <form>
+      <form method="POST" action="#">
+        {% csrf_token %}
         <div class="modal-body">
           <input type="hidden" name="proyecto_id" id="proyecto_id">
+          <p><strong>Nombre del Proyecto:</strong> <span id="proyectoNombre"></span></p>
           <div class="form-group">
-            <label for="paciente">Seleccionar o Ingresar Paciente</label>
-            <input list="listaPacientes" name="paciente" id="paciente" class="form-control" required>
-            <datalist id="listaPacientes">
-              <option value="Juan Pérez">
-              <option value="María Gómez">
-              <option value="Carlos Ramírez">
-            </datalist>
+            <label for="fechaVisita">Fecha de la Visita</label>
+            <input type="date" class="form-control" id="fechaVisita" name="fecha_visita" required>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcionVisita">Descripción</label>
+            <textarea class="form-control" id="descripcionVisita" name="descripcion" placeholder="Descripción de la visita" required></textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Agregar</button>
+          <button type="submit" class="btn btn-primary">Guardar Visita</button>
         </div>
       </form>
     </div>
@@ -111,62 +136,83 @@
 </div>
 
 <!-- Modal para Ver Descripción del Proyecto -->
-<div class="modal fade" id="modalDescripcionProyecto" tabindex="-1" role="dialog" aria-labelledby="modalDescripcionProyectoLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalDescripcionProyectoLabel">Descripción del Proyecto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+<div class="modal fade" id="modalDescripcionProyecto" tabindex="-1" role="dialog" aria-labelledby="modalDescripcionProyecto" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalDescripcionProyecto">Descripción del Proyecto</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <div class="container-fluid">
+                  <div class="row">
+                      <div class="col-md-6">
+                          <p><strong>Nombre del Proyecto:</strong> <span id="proyectoNombre"></span></p>
+                          <p><strong>Fecha de Inicio:</strong> <span id="proyectoFechaInicio"></span></p>
+                          <p><strong>Fecha de Financiación:</strong> <span id="proyectoFechaFinanciacion"></span></p>
+                      </div>
+                      <div class="col-md-6">
+                          <p><strong>Investigador Principal:</strong> <span id="proyectoInvestigador"></span></p>
+                          <p><strong>Código SIU:</strong> <span id="proyectoCodigoSIU"></span></p>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-md-12">
+                          <p><strong>Descripción:</strong></p>
+                          <p id="proyectoDescripcion"></p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
       </div>
-      <div class="modal-body">
-        <p><strong>Nombre:</strong> <span id="descNombre"></span></p>
-        <p><strong>Fecha de Inicio:</strong> <span id="descFecha"></span></p>
-        <p><strong>Pacientes:</strong> <span id="descPacientes"></span></p>
-        <p><strong>Consultas Hechas:</strong> <span id="descConsultas"></span></p>
-        <p><strong>Especialistas:</strong> <span id="descEspecialistas"></span></p>
-      </div>
-    </div>
   </div>
 </div>
 
 <script>
-  // Función para filtrar pacientes
-  function filtrarPacientes() {
-    var input, filter, ul, li, a, i, txtValue;
-    input = document.getElementById('busquedaPaciente');
-    filter = input.value.toUpperCase();
-    ul = document.getElementById("pacientesLista");
-    li = ul.getElementsByTagName('li');
-    for (i = 0; i < li.length; i++) {
-      a = li[i].getElementsByTagName("strong")[0];
-      txtValue = a.textContent || a.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        li[i].style.display = "";
-      } else {
-        li[i].style.display = "none";
-      }
-    }
-  }
+  let visitaCount = 1;
+  document.addEventListener('DOMContentLoaded', function () {
+      // Escuchar el evento de apertura del modal
+      $('#modalDescripcionProyecto').on('show.bs.modal', function (event) {
+          const button = $(event.relatedTarget);  // Botón que activó el modal
 
-  // Modal agregar paciente
-  $('#modalAgregarPaciente').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget);
-    var proyectoId = button.data('proyecto-id');
+          // Obtener los datos del proyecto
+          const nombre = button.data('nombre');
+          const fechaInicio = button.data('fecha-inicio');
+          const fechaFinanciacion = button.data('fecha-financiacion');
+          const investigador = button.data('investigador');
+          const codigoSIU = button.data('codigo-siu');
+          const descripcion = button.data('descripcion');
+
+          // Actualizar el contenido del modal
+          const modal = $(this);
+          modal.find('#proyectoNombre').text(nombre);
+          modal.find('#proyectoFechaInicio').text(fechaInicio);
+          modal.find('#proyectoFechaFinanciacion').text(fechaFinanciacion);
+          modal.find('#proyectoInvestigador').text(investigador);
+          modal.find('#proyectoCodigoSIU').text(codigoSIU);
+          modal.find('#proyectoDescripcion').text(descripcion);
+      });
+  });
+
+  $('#modalAgregarVisita').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botón que activó el modal
+    var proyectoId = button.data('proyecto-id'); // Extraer el ID del proyecto
+    var proyectoId = button.data('nombre'); 
+    console.log(proyectoId)
+
     var modal = $(this);
-    modal.find('#proyecto_id').val(proyectoId);
+    modal.find('#proyecto_id').val(proyectoId); // Asignar el ID en el formulario
+    modal.find('#proyectoNombre').text(nombre)
   });
 
-  // Modal descripción proyecto
-  $('#modalDescripcionProyecto').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget);
-    $('#descNombre').text(button.data('proyecto'));
-    $('#descFecha').text(button.data('fecha'));
-    $('#descPacientes').text(button.data('pacientes'));
-    $('#descConsultas').text(button.data('consultas'));
-    $('#descEspecialistas').text(button.data('especialistas'));
-  });
+
+ 
+
 </script>
 
 {% endblock %}

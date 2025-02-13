@@ -72,7 +72,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'AteneaGrunecoDB',
         'USER': 'root',
-        'PASSWORD': '1234',
+        'PASSWORD': '@tene@2025',
         'HOST': 'localhost',  # O la dirección de tu servidor MySQL
         'PORT': '3306',  # Puerto por defecto de MySQL
     }

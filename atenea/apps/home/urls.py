@@ -19,13 +19,14 @@ urlpatterns = [
     path('pacientes/', views.lista_pacientes, name='tables.html'),
     path('paciente/<int:paciente_id>/', views.detalle_paciente, name='detalle_paciente'),
     path('paciente/<int:numero_documento>/eliminar/', views.eliminar_paciente, name='eliminar_paciente'),
+    path('editar_paciente/<int:numero_documento>/editar', views.editar_paciente, name='editar_paciente'),
 
     # Nueva ruta para proyectos
     path('proyectos/', views.proyectos, name='proyectos'),
-
+    path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
 
     path('consulta/', views.consulta_view, name='patinet_consult'),
 
     # Matches any html file
-    # re_path(r'^(?!login).*\.*', views.pages, name='pages'),
+    re_path(r'^(?!login).*\.*', views.pages, name='pages'),
 ]

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate
-
+from .models import DatosDemograficos, Proyecto
 
 class CustomLoginForm(AuthenticationForm):
     username = forms.EmailField(
@@ -31,6 +31,23 @@ class CustomLoginForm(AuthenticationForm):
         
         return cleaned_data
 
-
-#class AsignarPacienteForm(forms.Form):
-#    proyecto = forms.ModelChoiceField(queryset=Proyecto.objects.all(), required=True)
+class RegistroDemograficoForm(forms.ModelForm):
+    class Meta:
+        model = DatosDemograficos  # Usamos el modelo Paciente para el formulario
+        fields = [
+            'nombres_apellidos', 'tipo_documento', 'numero_documento', 'fecha_nacimiento', 'edad', 
+            'estado_civil', 'escolaridad', 'ocupacion', 'eps', 'lateralidad', 'direccion', 'telefono',
+            'grupo_sanguineo', 'religion'
+        ]
+        widgets = {
+            'fecha_nacimiento': forms.DateInput(attrs={'type': 'date'}),
+        }
+        
+class ProyectoForm(forms.ModelForm):
+    class Meta:
+        model = Proyecto
+        fields = ['nombre', 'descripcion', 'investigador_principal', 'codigo_siu', 'fecha_inicio', 'fecha_financiacion']
+        widgets = {
+            'fecha_inicio': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_financiacion': forms.DateInput(attrs={'type': 'date'}),
+        }

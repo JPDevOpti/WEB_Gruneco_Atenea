@@ -21,7 +21,6 @@
 </div>
 <div class="container-fluid mt--6">
   <div class="row">
-
     <div class="col-xl-4 order-xl-1">
       <div class="row justify-content-center">
         <div class="card card-profile">
@@ -30,15 +29,15 @@
               <div class="col-md-12 text-center">
                 <h5 class="h3 mt-4">{{ paciente.nombres_apellidos }}</h5>
                 <p class="h6 text-muted">
-                  <i class="ni business_briefcase-24 mr-2"></i>Estudiante
+                  <i class="ni business_briefcase-24 mr-2"></i>{{ paciente.escolaridad }}
                 </p>
                 <div class="mt-3">
                   <form method="POST">
                     {% csrf_token %}
-
                     <div class="form-group">
                       <label for="proyecto">Seleccionar Proyecto</label>
                       <select name="proyecto" id="proyecto" class="form-control" required>
+                        <option value="-"></option>
                         {% for proyecto in proyectos %}
                           <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
                         {% endfor %}
@@ -160,107 +159,12 @@
                     </ul>
                   </div>
                 </li>
-
               </ul>
-              <!-- Botón para Agregar Nueva Visita -->
-              <div class="mt-4">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#modalNuevaVisita">Agregar Nueva Visita</button>
-              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div class="modal fade" id="modalNuevaVisita" tabindex="-1" role="dialog" aria-labelledby="modalNuevaVisitaLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalNuevaVisitaLabel">Agregar Nueva Visita</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="#" method="POST">
-                {% csrf_token %}
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="numero_visita">Número de Visita</label>
-                        <input type="number" class="form-control" id="numero_visita" name="numero_visita" required>
-                    </div>
-
-                    <!-- Fecha y Hora -->
-                    <div class="form-group">
-                        <label for="fecha_visita">Fecha de la Visita</label>
-                        <input type="date" class="form-control" id="fecha_visita" name="fecha_visita" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="hora_visita">Hora de la Visita</label>
-                        <input type="time" class="form-control" id="hora_visita" name="hora_visita" required>
-                    </div>
-
-                    <!-- Evaluador -->
-                    <div class="form-group">
-                        <label for="evaluador">Evaluador</label>
-                        <input type="text" class="form-control" id="evaluador" name="evaluador" required>
-                    </div>
-
-                    <!-- Lista de Exámenes -->
-                    <div class="form-group">
-                        <label for="examenes">Exámenes a Realizar</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="AnamnesisCognitivo" id="examen1" name="examenes">
-                            <label class="form-check-label" for="examen1">
-                                Anamnesis Cognitivo
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="EM_Antecedentes" id="examen2" name="examenes">
-                            <label class="form-check-label" for="examen2">
-                                EM Antecedentes
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="ExamenFísico" id="examen3" name="examenes">
-                            <label class="form-check-label" for="examen3">
-                                Examen Físico
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="ExamenNeurológico" id="examen4" name="examenes">
-                            <label class="form-check-label" for="examen4">
-                                Examen Neurológico
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="EM_Anamnesis" id="examen5" name="examenes">
-                            <label class="form-check-label" for="examen5">
-                                EM Anamnesis
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="AnamnesisSueño" id="examen6" name="examenes">
-                            <label class="form-check-label" for="examen6">
-                                Anamnesis Sueño
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="Evaluación de sueño" id="examen7" name="examenes">
-                            <label class="form-check-label" for="examen7">
-                                Evaluación de Sueño
-                            </label>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'patinet_consult' %}'">Crear Visita</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
 </div>
 {% endblock %}

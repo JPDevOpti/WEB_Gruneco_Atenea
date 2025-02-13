@@ -13,19 +13,24 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from django.contrib import messages
-from .models import DatosDemograficos
+from apps.home import models,forms
+from .models import DatosDemograficos, Proyecto, Visita
+from .forms import RegistroDemograficoForm, ProyectoForm
 
+#vista principal
 def home(request):
     context = {'segment': 'home'}
     html_template = loader.get_template('home/home-page.html')
     return HttpResponse(html_template.render(context, request))
 
+#dasboard
 @login_required(login_url="/login/")
 def index(request):
     context = {'segment': 'index'}
     html_template = loader.get_template('home/index.html')
     return HttpResponse(html_template.render(context, request))
 
+#pacientes
 @login_required
 def lista_pacientes(request):
     pacientes = DatosDemograficos.objects.all()
@@ -63,11 +68,6 @@ def registro_demografico(request):
         return render(request, 'sleepexams/pacientForm.html')
 
 @login_required
-def detalle_paciente(request, paciente_id):
-    paciente = get_object_or_404(DatosDemograficos, numero_documento=paciente_id)
-    return render(request, 'sleepexams/pacient.html', {'paciente': paciente})
-
-@login_required
 def eliminar_paciente(request, numero_documento):
     if request.method == 'POST':
         paciente = get_object_or_404(DatosDemograficos, numero_documento=numero_documento)
@@ -77,10 +77,55 @@ def eliminar_paciente(request, numero_documento):
     else:
         messages.error(request, "Método no permitido.")
         return redirect('tables.html')
+@login_required
+def editar_paciente(request, numero_documento):
+    paciente = get_object_or_404(DatosDemograficos, numero_documento=numero_documento)  # Obtener el paciente por su ID
+    
+    if request.method == 'POST':
+        form = RegistroDemograficoForm(request.POST, instance=paciente)  # Cargar los datos del paciente
+        if form.is_valid():
+            form.save()  # Guardar los cambios
+            pacientes = DatosDemograficos.objects.all()
+            messages.success(request, 'Datos demográficos editados exitosamente.')
+    
+            return render(request, 'home/tables.html', {'pacientes': pacientes})
+        
+  # Redirigir a una página de detalle del paciente
+    if request.method == 'GET':
+        form = RegistroDemograficoForm(instance=paciente)  # Cargar el formulario con los datos del paciente
+        print("Fecha de Nacimiento:", paciente.fecha_nacimiento)
+        return render(request, 'sleepexams/editPacientForm.html', {'form': form})
 
 @login_required
+def detalle_paciente(request, paciente_id):
+    proyectos = Proyecto.objects.all()
+    paciente = get_object_or_404(DatosDemograficos, numero_documento=paciente_id)
+    return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos})
+
+#proyectos
+@login_required
 def proyectos(request):
-    return render(request, 'home/proyectos.html')
+    proyectos = Proyecto.objects.all()
+    if request.method == 'POST':
+        proyecto_form = ProyectoForm(request.POST)
+        if proyecto_form.is_valid():
+            proyecto_form.save()
+            messages.success(request, 'Proyecto creado correctamente.')
+ 
+    return render(request, 'home/proyectos.html',{'proyectos': proyectos})
+
+def agregar_visita(request):
+    proyectos = Proyecto.objects.all()
+    if request.method == "POST":
+        nombre = request.POST.get("proyectoNombre")
+        fecha_visita = request.POST.get("fecha_visita")
+        descripcion = request.POST.get("descripcion")
+        
+        proyecto = get_object_or_404(Proyecto, nombre=nombre)
+        Visita.objects.create(proyecto=proyecto, fecha_visita=fecha_visita, descripcion=descripcion)
+
+        messages.success(request, "Visita agregada correctamente")
+    return render(request, 'home/proyectos.html',{'proyectos': proyectos})
 
 @login_required(login_url="/login/")
 def pages(request):
@@ -111,6 +156,7 @@ def pages(request):
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
 
+#Ingreso y Salida
 @login_required
 def logout_view(request):
     logout(request)
@@ -127,7 +173,6 @@ def login_view(request):
         else:
             return render(request, 'home/login.html', {'error': 'Credenciales inválidas'})
     return render(request, 'home/login.html')
-
 
 def consulta_view(request):
     return render(request, 'home/consulta.html')

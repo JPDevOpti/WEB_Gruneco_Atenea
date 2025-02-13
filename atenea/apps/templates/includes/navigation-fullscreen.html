@@ -1,9 +1,10 @@
-<nav id="navbar-main" class="navbar navbar-horizontal navbar-transparent navbar-main navbar-expand-lg navbar-light">
-  <div class="container">
-    <!-- Logo -->
-    <a class="navbar-brand ml-3" href="/">
-      <img src="/static/assets/img/brand/Logo_GRUNECO_Sin_Fondo.png" alt="Logo GRUNECO" class="logo-img">
-    </a>
+<nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom">
+  <div class="container-fluid">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+         <!-- Logo -->
+      <a class="navbar-brand ml-3" href="/">
+        <img src="/static/assets/img/brand/Logo_GRUNECO_Sin_Fondo.png" alt="Logo GRUNECO" class="logo-img">
+      </a>
 
     <!-- Botón de menú para móviles -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,42 +56,55 @@
       </ul>
     </div>
   </div>
+  </div>
 </nav>
-
 <!-- Estilos personalizados -->
 <style>
+  /* Ajustar contenedor */
+  .container-fluid {
+    width: 100%;
+    padding: 0.5rem 2rem;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1)
+  }
+
+  /* Navbar */
+  .navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 1.5rem;
+  }
+
+  /* Logo */
   .logo-img {
     height: 50px;
     transition: transform 0.3s ease;
-    margin-left: 15px;
   }
   .logo-img:hover {
     transform: scale(1.1);
   }
-  .atenea-text {
-    color: black !important;
-  }
-  .github-logo, .instagram-logo {
-    font-size: 1.25rem;
-    color: black !important;
-  }
+
+  /* Navbar links */
   .nav-link {
     color: #333;
     font-weight: 500;
     padding: 0.5rem 1rem;
-    transition: color 0.3s ease, background-color 0.3s ease;
+    white-space: nowrap; /* Evita que los elementos se rompan en otra fila */
   }
   .nav-link:hover {
     color: #007bff;
     background-color: rgba(0, 123, 255, 0.1);
     border-radius: 5px;
   }
-  .nav-link.active {
-    color: #007bff;
-    font-weight: bold;
+
+  /* Iconos */
+  .github-logo, .instagram-logo {
+    font-size: 1.5rem;
+    color: black !important;
   }
-  .navbar {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 0.5rem 1rem;
+
+  /* Estilos específicos de Atenea */
+  .atenea-text {
+    color: black !important;
   }
 </style>

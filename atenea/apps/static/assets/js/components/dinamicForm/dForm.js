@@ -2,13 +2,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Estado para controlar los formularios abiertos
     const formulariosAbiertos = new Set();
 
-    // Referencias al contenedor y botón
+    // Referencias al contenedor y botones
     const contenedorFormularios = document.getElementById('formulario-dinamicos');
     const botonAgregarFormulario = document.getElementById('agregar-formulario');
+    const botonEditarPaciente = document.querySelector('a[href*="editar_paciente"]');
 
-    // Manejar el clic en el botón para agregar un formulario dinámico
-    botonAgregarFormulario.addEventListener('click', async function () {
-        const formType = 'form-dinamico'; // Ajustar según el identificador necesario
+    // Función para cargar un formulario dinámico
+    async function cargarFormulario(url, formType) {
         if (formulariosAbiertos.has(formType)) {
             Swal.fire({
                 title: 'Formulario ya abierto',
@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             // Cargar el HTML del formulario desde la vista de Django
-            const response = await fetch(`/registro_demografico/`);
+            const response = await fetch(url);
             if (response.ok) {
                 const formHtml = await response.text();
 
@@ -48,12 +48,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 icon: 'error',
             });
         }
+    }
+
+    // Manejar el clic en el botón "Nuevo"
+    botonAgregarFormulario.addEventListener('click', function () {
+        const url = '/registro_demografico/'; // URL para el formulario de nuevo paciente
+        const formType = 'form-nuevo-paciente'; // Identificador del formulario
+        cargarFormulario(url, formType);
     });
+
+    // Manejar el clic en el botón "Editar"
+    if (botonEditarPaciente) {
+        botonEditarPaciente.addEventListener('click', function (event) {
+            event.preventDefault(); // Evitar que el enlace redirija
+            const url = this.href; // URL para el formulario de edición
+            const formType = 'form-editar-paciente'; // Identificador del formulario
+            cargarFormulario(url, formType);
+        });
+    }
 
     // Función para inicializar eventos en un formulario específico
     function initializeForm(formType) {
         const form = document.querySelector(`#form-${formType}`);
         if (!form) return;
+
+        // Aquí puedes agregar lógica adicional para inicializar el formulario
     }
 
     // Función para cerrar un formulario dinámico desde el botón Cancelar

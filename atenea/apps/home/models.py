@@ -99,48 +99,38 @@ class DatosDemograficos(models.Model):
         verbose_name = "Datos Demográficos"
         verbose_name_plural = "Datos Demográficos"
 
-class Doctor(models.Model):
-    idDoctor = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=45)
-    correo = models.EmailField(max_length=45, unique=True)
-    contraseña = models.CharField(max_length=45)
-
-    def __str__(self):
-        return self.nombre
-    
-
 class Proyecto(models.Model):
-    nombre = models.CharField(max_length=200)
-    
+    nombre = models.CharField(max_length=255, unique=True, verbose_name="Nombre del Proyecto")
+    descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción del Proyecto")
+    investigador_principal = models.CharField(max_length=255, blank=True, null=True, verbose_name="Investigador Principal")
+    codigo_siu = models.CharField(max_length=50, blank=True, null=True, verbose_name="Código SIU")
+    fecha_inicio = models.DateField(blank=True, null=True, verbose_name="Fecha de Inicio")
+    fecha_financiacion = models.DateField(blank=True, null=True, verbose_name="Fecha de Financiación")
+
     def __str__(self):
         return self.nombre
     
-    class Meta:
-        verbose_name = "Proyecto"
-        verbose_name_plural = "Proyectos"
-          
-class AsignacionPaciente(models.Model):
-    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="proyectos_asignados")
-    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name="pacientes_asignados")
-    
+class Examen(models.Model):
+    nombre = models.CharField(max_length=255, verbose_name="Nombre del Examen")
+    descripcion = models.TextField(verbose_name="Descripción del Examen", blank=True, null=True)
+    campos = models.JSONField(verbose_name="Campos del Examen", default=list)  # Estructura del formulario
+
     def __str__(self):
-        return f"{self.paciente.nombres_apellidos} - {self.proyecto.nombre}"
-    
+        return self.nombre
+
     class Meta:
-        verbose_name = "Asignación de Paciente"
-        verbose_name_plural = "Asignaciones de Pacientes"
+        verbose_name = "Examen"
+        verbose_name_plural = "Exámenes"
         
 class Visita(models.Model):
-    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="visitas")
-    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name="visitas")
-    fecha_visita = models.DateField()
-    hora_visita = models.TimeField()
-    evaluador = models.CharField(max_length=200)
-    observaciones = models.TextField(blank=True, null=True)
-    
+    nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
+    proyecto_id = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='visitas', verbose_name="Proyecto")
+    fecha = models.DateField(verbose_name="Fecha de la Visita")
+    observaciones = models.TextField(verbose_name="Observaciones", blank=True, null=True)
+
     def __str__(self):
-        return f"Visita a {self.paciente.nombres_apellidos} - Proyecto {self.proyecto.nombre} - {self.fecha_visita}"
-    
+        return self.nombre
+
     class Meta:
         verbose_name = "Visita"
         verbose_name_plural = "Visitas"

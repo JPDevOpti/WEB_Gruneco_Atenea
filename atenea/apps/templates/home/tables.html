@@ -72,7 +72,7 @@
                     <td>{{ paciente.proyecto }}</td>
                     <td>
                       <a href="{% url 'detalle_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Ver</a>
-                      <a href="#" class="btn btn-sm btn-neutral">Editar</a>
+                      <a href="{% url 'editar_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Editar</a>
                       <a>
                         <form action="{% url 'eliminar_paciente' paciente.numero_documento %}" method="post" style="display: inline;">
                           {% csrf_token %}
@@ -90,29 +90,29 @@
           <!-- Aquí se cargarán dinámicamente los formularios -->
         </div>
         {% if messages %}
-<div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-  <div style="position: absolute; top: 20px; right: 20px;">
-    {% for message in messages %}
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-      <div class="toast-header">
-        {% if message.tags == 'success' %}
-        <span class="badge bg-success me-2">✔️</span>
-        {% elif message.tags == 'error' %}
-        <span class="badge bg-danger me-2">❌</span>
-        {% else %}
-        <span class="badge bg-info me-2">ℹ️</span>
+        <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
+          <div style="position: absolute; top: 20px; right: 20px;">
+            {% for message in messages %}
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+              <div class="toast-header">
+                {% if message.tags == 'success' %}
+                <span class="badge bg-success me-2">✔️</span>
+                {% elif message.tags == 'error' %}
+                <span class="badge bg-danger me-2">❌</span>
+                {% else %}
+                <span class="badge bg-info me-2">ℹ️</span>
+                {% endif %}
+                <strong class="me-auto">Notificación</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+              <div class="toast-body">
+                {{ message }}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
         {% endif %}
-        <strong class="me-auto">Notificación</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-        {{ message }}
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-</div>
-{% endif %}
       </div>
     </div>
   </div>
