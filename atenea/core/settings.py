@@ -75,6 +75,9 @@ DATABASES = {
         'PASSWORD': '@tene@2025',
         'HOST': 'localhost',  # O la dirección de tu servidor MySQL
         'PORT': '3306',  # Puerto por defecto de MySQL
+        'OPTIONS': {
+            'unix_socket': '/opt/bitnami/mariadb/tmp/mysql.sock',
+        },
     }
 }
 
