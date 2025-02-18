@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'AteneaGrunecoDB',
+        'NAME': 'ateneagrunecodb',
         'USER': 'root',
         'PASSWORD': '@tene@2025',
         'HOST': 'localhost',  # O la dirección de tu servidor MySQL
