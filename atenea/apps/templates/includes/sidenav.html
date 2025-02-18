@@ -1,3 +1,38 @@
+<style>
+  /* Animación de apertura y cierre de la barra lateral */
+  .sidenav {
+    transition: width 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+
+  /* Efecto al pasar el cursor sobre los íconos y enlaces */
+  .navbar-nav .nav-link {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .navbar-nav .nav-link:hover {
+    background-color: rgba(0, 128, 255, 0.1);
+    color: #0056b3;
+    transform: scale(1.05);
+  }
+
+  /* Efecto de escala en los íconos */
+  .navbar-nav .nav-link i {
+    transition: transform 0.3s ease;
+  }
+
+  .navbar-nav .nav-link:hover i {
+    transform: rotate(10deg) scale(1.2);
+  }
+
+  /* Fondo dinámico en el enlace activo */
+  .navbar-nav .nav-link.active {
+    background-color: rgba(0, 128, 255, 0.2);
+    font-weight: bold;
+    transition: background-color 0.3s ease-in-out;
+  }
+</style>
+
 <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
   <div class="scrollbar-inner">
     <!-- Brand -->
