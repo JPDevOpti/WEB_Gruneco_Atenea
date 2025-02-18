@@ -106,39 +106,6 @@
   </div>
 </div>
 
-<!-- Modal para Agregar Visita -->
-<div class="modal fade" id="modalAgregarVisita" tabindex="-1" role="dialog" aria-labelledby="modalAgregarVisita" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalAgregarVisita">Agregar Visita al Proyecto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form method="POST" action="#">
-        {% csrf_token %}
-        <div class="modal-body">
-          <input type="hidden" name="proyecto_id" id="proyecto_id">
-          <p><strong>Nombre del Proyecto:</strong> <span id="proyectoNombre"></span></p>
-          <div class="form-group">
-            <label for="fechaVisita">Fecha de la Visita</label>
-            <input type="date" class="form-control" id="fechaVisita" name="fecha_visita" required>
-          </div>
-
-          <div class="form-group">
-            <label for="descripcionVisita">Descripción</label>
-            <textarea class="form-control" id="descripcionVisita" name="descripcion" placeholder="Descripción de la visita" required></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Guardar Visita</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- Modal para Ver Descripción del Proyecto -->
 <div class="modal fade" id="modalDescripcionProyecto" tabindex="-1" role="dialog" aria-labelledby="modalDescripcionProyecto" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -177,8 +144,64 @@
   </div>
 </div>
 
+<!-- Modal para Agregar Visita -->
+<div class="modal fade" id="modalAgregarVisita" tabindex="-1" role="dialog" aria-labelledby="modalAgregarVisitas" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Agregar Visitas al Proyecto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{% url 'agregar_visita' %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="hidden" name="proyecto_id" id="proyecto_id">
+          <p><strong>Nombre del Proyecto:</strong> <span id="proyectoNombre"></span></p>
+
+          <div id="visitas-container">
+            <div class="visita">
+              <div class="form-group">
+                <label>Nombre de la Visita</label>
+                <input type="text" class="form-control" name="nombre_visita[]" required>
+              </div>
+              <div class="form-group">
+                <label>Fecha de la Visita</label>
+                <input type="date" class="form-control" name="fecha_visita[]" required>
+              </div>
+              <div class="form-group">
+                <label>Observaciones</label>
+                <textarea class="form-control" name="observaciones[]"></textarea>
+              </div>
+              <div class="form-group">
+                <div class="form-group">
+                  <label>Exámenes Asociados</label>
+                  <div class="examenes-container">
+                      {% for examen in examenes %}
+                          <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="examenes[]" value="{{ examen.id }}">
+                              <label class="form-check-label">{{ examen.nombre }}</label>
+                          </div>
+                      {% endfor %}
+                  </div>
+              </div>
+              
+              <hr>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Guardar Visitas</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
 <script>
-  let visitaCount = 1;
+
   document.addEventListener('DOMContentLoaded', function () {
       // Escuchar el evento de apertura del modal
       $('#modalDescripcionProyecto').on('show.bs.modal', function (event) {
@@ -201,17 +224,20 @@
           modal.find('#proyectoCodigoSIU').text(codigoSIU);
           modal.find('#proyectoDescripcion').text(descripcion);
       });
-  });
+  
+      $('#modalAgregarVisita').on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget); // Botón que activó el modal
+      var proyectoId = button.data('proyecto-id'); // Extraer el ID del proyecto
+      var nombre = button.data('nombre'); // Extraer el nombre
 
-  $('#modalAgregarVisita').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget); // Botón que activó el modal
-    var proyectoId = button.data('proyecto-id'); // Extraer el ID del proyecto
-    var nombre = button.data('nombre'); // Extraer el nombre
+      var modal = $(this);
+      modal.find('#proyecto_id').val(proyectoId); // Asignar el ID en el formulario
+      modal.find('#proyectoNombre').text(nombre); // Asignar el nombre del proyecto
+    });
+  
+  
+    });
 
-    var modal = $(this);
-    modal.find('#proyecto_id').val(proyectoId); // Asignar el ID en el formulario
-    modal.find('#proyectoNombre').text(nombre); // Asignar el nombre del proyecto
-  });
 </script>
 
 {% endblock %}

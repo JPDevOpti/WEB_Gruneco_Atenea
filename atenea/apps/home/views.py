@@ -14,7 +14,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from django.contrib import messages
 from apps.home import models,forms
-from .models import DatosDemograficos, Proyecto, Visita
+from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen
 from .forms import RegistroDemograficoForm, ProyectoForm
 
 #vista principal
@@ -77,6 +77,7 @@ def eliminar_paciente(request, numero_documento):
     else:
         messages.error(request, "Método no permitido.")
         return redirect('tables.html')
+
 @login_required
 def editar_paciente(request, numero_documento):
     paciente = get_object_or_404(DatosDemograficos, numero_documento=numero_documento)  # Obtener el paciente por su ID
@@ -106,55 +107,94 @@ def detalle_paciente(request, paciente_id):
 @login_required
 def proyectos(request):
     proyectos = Proyecto.objects.all()
+    examenes = Examen.objects.all()
     if request.method == 'POST':
         proyecto_form = ProyectoForm(request.POST)
         if proyecto_form.is_valid():
             proyecto_form.save()
             messages.success(request, 'Proyecto creado correctamente.')
  
-    return render(request, 'home/proyectos.html',{'proyectos': proyectos})
+    return render(request, 'home/proyectos.html',{'proyectos': proyectos,'examenes':examenes})
 
+@login_required
+def eliminar_proyecto(request, id):
+    proyectos = Proyecto.objects.all()
+    if request.method == 'POST':
+        proyecto = get_object_or_404(Proyecto, id=id)  # Asegúrate de que Proyecto es el nombre del modelo de tus proyectos
+        proyecto.delete()
+        messages.success(request, f"El proyecto con ID {id} ha sido eliminado.")
+        return render(request, 'home/proyectos.html',{'proyectos': proyectos})  # Redirige a la lista de proyectos, por ejemplo
+    else:
+        messages.error(request, "Método no permitido.")
+        return render(request, 'home/proyectos.html',{'proyectos': proyectos})  # Redirige a la lista de proyectos si no es un POST
+
+
+#visitas
 def agregar_visita(request):
     proyectos = Proyecto.objects.all()
-    if request.method == "POST":
-        nombre = request.POST.get("proyectoNombre")
-        fecha_visita = request.POST.get("fecha_visita")
-        descripcion = request.POST.get("descripcion")
-        
-        proyecto = get_object_or_404(Proyecto, nombre=nombre)
-        Visita.objects.create(proyecto=proyecto, fecha_visita=fecha_visita, descripcion=descripcion)
+    examenes = Examen.objects.all()
+   
+    if request.method == 'POST':
+        proyecto_id = request.POST.get('proyecto_id')
+        nombres = request.POST.getlist('nombre_visita[]')  # Varias visitas
+        fechas = request.POST.getlist('fecha_visita[]')
+        observaciones_list = request.POST.getlist('observaciones[]')
 
-        messages.success(request, "Visita agregada correctamente")
-    return render(request, 'home/proyectos.html',{'proyectos': proyectos})
+        for i in range(len(nombres)):
+            visita = Visita.objects.create(
+                proyecto_id=proyecto_id,
+                nombre=nombres[i],
+                fecha=fechas[i],
+                observaciones=observaciones_list[i]
+            )
 
-@login_required(login_url="/login/")
-def pages(request):
-    print("prueba paginas")
-    context = {}
+            examenes_ids = request.POST.getlist('examenes[]') 
 
-    try:
-        load_template = request.path.split('/')[-1]
+            # Guardar cada examen seleccionado en la BD
+            for examen_id in examenes_ids:
+                VisitaExamen.objects.create(
+                    visita=visita,
+                    examen_id=examen_id,  # Más eficiente usar .create() con el ID directo
+                    resultado={}
+                )
 
-        if load_template == 'admin':
-            return HttpResponseRedirect(reverse('admin:index'))
-        context['segment'] = load_template
 
-        template_paths = [
-            os.path.join(dirpath, load_template)
-            for dirpath, _, filenames in os.walk(settings.TEMPLATES[0]['DIRS'][0])
-            if load_template in filenames
-        ]
 
-        if template_paths:
-            html_template = loader.get_template(template_paths[0])
-        else:
-            html_template = loader.get_template('home/page-404.html')
+        return render(request, 'home/proyectos.html', {'proyectos': proyectos, 'examenes': examenes})
 
-        return HttpResponse(html_template.render(context, request))
 
-    except Exception:
-        html_template = loader.get_template('home/page-500.html')
-        return HttpResponse(html_template.render(context, request))
+
+    return render(request, 'home/proyectos.html',{'proyectos': proyectos,'examenes':examenes})
+
+
+#@login_required(login_url="/login/")
+#def pages(request):
+#    print("prueba paginas")
+#    context = {}
+#
+#    try:
+#        load_template = request.path.split('/')[-1]
+#
+#        if load_template == 'admin':
+#            return HttpResponseRedirect(reverse('admin:index'))
+#        context['segment'] = load_template
+#
+#        template_paths = [
+#            os.path.join(dirpath, load_template)
+#            for dirpath, _, filenames in os.walk(settings.TEMPLATES[0]['DIRS'][0])
+#            if load_template in filenames
+#        ]
+#
+#        if template_paths:
+#            html_template = loader.get_template(template_paths[0])
+#        else:
+#            html_template = loader.get_template('home/page-404.html')
+#
+#        return HttpResponse(html_template.render(context, request))
+#
+#    except Exception:
+#        html_template = loader.get_template('home/page-500.html')
+#        return HttpResponse(html_template.render(context, request))
 
 #Ingreso y Salida
 @login_required
@@ -176,16 +216,4 @@ def login_view(request):
 
 def consulta_view(request):
     return render(request, 'home/consulta.html')
-
-@login_required
-def eliminar_proyecto(request, id):
-    if request.method == 'POST':
-        proyecto = get_object_or_404(Proyecto, id=id)  # Asegúrate de que Proyecto es el nombre del modelo de tus proyectos
-        proyecto.delete()
-        messages.success(request, f"El proyecto con ID {id} ha sido eliminado.")
-        return redirect('listado_proyectos')  # Redirige a la lista de proyectos, por ejemplo
-    else:
-        messages.error(request, "Método no permitido.")
-        return redirect('listado_proyectos')  # Redirige a la lista de proyectos si no es un POST
-
 

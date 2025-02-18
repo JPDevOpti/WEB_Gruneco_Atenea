@@ -30,6 +30,6 @@ urlpatterns = [
     path('proyecto/eliminar/<int:id>/', views.eliminar_proyecto, name='eliminar_proyecto'),
 
     # Matches any html file
-    re_path(r'^(?!login).*\.*', views.pages, name='pages'),
+    #re_path(r'^(?!login).*\.*', views.pages, name='pages'),
     
 ]

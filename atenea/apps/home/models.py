@@ -124,13 +124,17 @@ class Examen(models.Model):
         
 class Visita(models.Model):
     nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
-    proyecto_id = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='visitas', verbose_name="Proyecto")
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='visitas', verbose_name="Proyecto")
     fecha = models.DateField(verbose_name="Fecha de la Visita")
     observaciones = models.TextField(verbose_name="Observaciones", blank=True, null=True)
 
     def __str__(self):
-        return self.nombre
+        return f"{self.nombre} - {self.proyecto.nombre}"
 
-    class Meta:
-        verbose_name = "Visita"
-        verbose_name_plural = "Visitas"
+class VisitaExamen(models.Model):
+    visita = models.ForeignKey(Visita, on_delete=models.CASCADE, related_name="visita_examenes")
+    examen = models.ForeignKey(Examen, on_delete=models.CASCADE, related_name="examenes_realizados")
+    resultado = models.JSONField(verbose_name="Respuestas del Examen")  # Respuestas específicas
+
+    def __str__(self):
+        return f"{self.visita.nombre} - {self.examen.nombre}"
