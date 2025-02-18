@@ -92,10 +92,14 @@
                       data-nombre="{{ proyecto.nombre }}">
                       Agregar visita
                   </button>
+                  <form method="POST" action="{% url 'eliminar_proyecto' id=proyecto.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                </form>
                 </div>
             </li>
             {% endfor %}
-        </ul>
+          </ul>
         </div>
       </div>
     </div>
@@ -202,17 +206,12 @@
   $('#modalAgregarVisita').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget); // Botón que activó el modal
     var proyectoId = button.data('proyecto-id'); // Extraer el ID del proyecto
-    var proyectoId = button.data('nombre'); 
-    console.log(proyectoId)
+    var nombre = button.data('nombre'); // Extraer el nombre
 
     var modal = $(this);
     modal.find('#proyecto_id').val(proyectoId); // Asignar el ID en el formulario
-    modal.find('#proyectoNombre').text(nombre)
+    modal.find('#proyectoNombre').text(nombre); // Asignar el nombre del proyecto
   });
-
-
- 
-
 </script>
 
 {% endblock %}

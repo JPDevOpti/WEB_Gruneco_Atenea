@@ -3,7 +3,15 @@
 {% block title %} Dashboard {% endblock title %}
 
 {% block content %}
-
+<style>
+  /* Efecto de elevación y cambio de color */
+  .card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  }
+</style>
 <div class="header pb-6 d-flex align-items-center"
      style="min-height: 500px; background-image: url(/static/assets/img/theme/tem_university.jpg); background-size: cover; background-position: center top;">
   <!-- Mask -->
@@ -13,11 +21,9 @@
     <div class="row">
       <div class="col-lg-7 col-md-10">
         <h1 class="display-2 text-white">
-          Grupo Neuropsicología y Conducta
+          ATENEA
         </h1>
-        <p class="text-white mt-0 mb-5" style="text-align: justify;">Somos un grupo interdisciplinar de investigación, perteneciente a la Facultad de Medicina de la Universidad de Antioquia,
-          que a través de la estructuración y ejecución de proyectos de investigación formamos talento humano en investigación en los niveles de pre y posgrado,
-          al igual que contribuimos a la generación de conocimiento enfocado en soluciones clínicas y tecnológicas en el área de las neurociencias cognitivas.
+        <p class="text-white mt-0 mb-5" style="text-align: justify;">El Sistema de Historias Clínicas Electrónicas (HCE) de GRUNECO es una plataforma avanzada diseñada para la gestión eficiente y segura de la información médica de los pacientes dentro del marco de investigaciones clínicas y biomédicas. Este sistema permite almacenar, organizar y analizar datos de salud en un entorno digital, garantizando la trazabilidad, accesibilidad y confidencialidad de la información.
         </p>
       </div>
     </div>
@@ -80,68 +86,69 @@
         <div class="card-header">
           <div class="row align-items-center">
             <div class="col-8">
-              <h3 class="mb-0">Información del Grupo</h3>
+              <h3 class="mb-0">Proyectos Actuales</h3>
             </div>
           </div>
         </div>
         <div class="card-body">
+          <!-- Tarjeta Proyecto Sueño -->
           <div class="row mt-4">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="col-2 d-flex align-items-center justify-content-center">
-                      <i class="ni ni-trophy text-primary ni-3x"></i>
+                      <i class="ni ni-planet text-primary ni-3x"></i> <!-- Ícono de sueño/luna -->
                     </div>
                     <div class="col-10">
-                      <h5 class="card-title text-uppercase text-muted mb-0">Visión</h5>
-                      <p>En el 2030 GRUNECO será reconocido a nivel internacional por la calidad científica de las investigaciones desarrolladas con una estructura administrativa sostenible que le permitirá brindar espacios continuos de formación investigativa interdisciplinar de alto nivel en pregrado y posgrado.</p>
+                      <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Sueño</h5>
+                      <p>Investigamos el impacto del sueño en la función cognitiva, explorando su relación con la memoria, la atención y el procesamiento emocional. Buscamos identificar alteraciones en los patrones de sueño y su posible vínculo con enfermedades neurodegenerativas.</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        
+          <!-- Tarjeta Proyecto Envejecimiento -->
           <div class="row mt-4">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="col-2 d-flex align-items-center justify-content-center">
-                      <i class="ni ni-hat-3 text-primary ni-3x"></i>
+                      <i class="ni ni-single-02 text-primary ni-3x"></i> <!-- Ícono de persona mayor -->
                     </div>
                     <div class="col-10">
-                      <h5 class="card-title text-uppercase text-muted mb-0">Misión</h5>
-                      <p>Somos un grupo interdisciplinar de investigación que a través de la estructuración y ejecución de proyectos de investigación formamos talento humano en investigación en los niveles de pre y posgrado, al igual que contribuimos a la generación de conocimiento enfocado en soluciones clínicas y tecnológicas en el área de las neurociencias cognitivas.</p>
+                      <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Envejecimiento</h5>
+                      <p>Estudiamos los efectos del envejecimiento en la plasticidad cerebral y la función cognitiva, desarrollando estrategias de intervención para mejorar la calidad de vida en adultos mayores y prevenir el deterioro cognitivo.</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        
+          <!-- Tarjeta Proyecto Anosognosia -->
           <div class="row mt-4">
             <div class="col-md-12">
               <div class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="col-2 d-flex align-items-center justify-content-center">
-                      <i class="ni ni-atom text-primary ni-3x"></i>
+                      <i class="ni ni-world-2 text-primary ni-3x"></i> <!-- Ícono de cerebro/conciencia -->
                     </div>
                     <div class="col-10">
-                      <h5 class="card-title text-uppercase text-muted mb-0">Principios</h5>
-                      <ul class="list-unstyled">
-                        <li>Trabajo en equipo</li>
-                        <li>Responsabilidad</li>
-                        <li>Respeto</li>
-                        <li>Disciplina</li>
-                        <li>Pasión</li>
-                      </ul>
+                      <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Anosognosia</h5>
+                      <p>Investigamos los mecanismos neurocognitivos de la anosognosia en diversas patologías neurológicas, con el objetivo de desarrollar herramientas de detección temprana y estrategias terapéuticas para mejorar la autoconciencia en pacientes afectados.</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>        
+        </div>        
         </div>
       </div>
     </div>

@@ -176,3 +176,16 @@ def login_view(request):
 
 def consulta_view(request):
     return render(request, 'home/consulta.html')
+
+@login_required
+def eliminar_proyecto(request, id):
+    if request.method == 'POST':
+        proyecto = get_object_or_404(Proyecto, id=id)  # Asegúrate de que Proyecto es el nombre del modelo de tus proyectos
+        proyecto.delete()
+        messages.success(request, f"El proyecto con ID {id} ha sido eliminado.")
+        return redirect('listado_proyectos')  # Redirige a la lista de proyectos, por ejemplo
+    else:
+        messages.error(request, "Método no permitido.")
+        return redirect('listado_proyectos')  # Redirige a la lista de proyectos si no es un POST
+
+

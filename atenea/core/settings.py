@@ -14,8 +14,14 @@ SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 # load production server from .env
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', config('SERVER', default='127.0.0.1')]
-
+ALLOWED_HOSTS = [
+    '3.85.96.200',  # Dirección IP de tu servidor de producción
+    'www.gruneco.com.co',  # Nombre de dominio de tu servidor de producción
+    'gruneco.com.co',  # Otro nombre de dominio de producción
+    'localhost',  # Permitir el acceso desde localhost (útil para desarrollo)
+    '127.0.0.1',  # Permitir el acceso desde la dirección local (útil para desarrollo)
+]
+CSRF_TRUSTED_ORIGINS = ['https://www.gruneco.com.co', 'https://gruneco.com.co']
 # Application definition
 
 INSTALLED_APPS = [
@@ -75,6 +81,9 @@ DATABASES = {
         'PASSWORD': '@tene@2025',
         'HOST': 'localhost',  # O la dirección de tu servidor MySQL
         'PORT': '3306',  # Puerto por defecto de MySQL
+        'OPTIONS': {
+            'unix_socket': '/opt/bitnami/mariadb/tmp/mysql.sock',
+        },
     }
 }
 
