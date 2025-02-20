@@ -16,6 +16,7 @@ from django.contrib import messages
 from apps.home import models,forms
 from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen
 from .forms import RegistroDemograficoForm, ProyectoForm
+import json
 
 #vista principal
 def home(request):
@@ -108,13 +109,39 @@ def detalle_paciente(request, paciente_id):
 def proyectos(request):
     proyectos = Proyecto.objects.all()
     examenes = Examen.objects.all()
+    visitas = Visita.objects.all()
+    visitaexamen = VisitaExamen.objects.all()
+    
+    # Crear un diccionario para almacenar las visitas y exámenes por proyecto
+    proyecto_data = {}
+    for proyecto in proyectos:
+        visitas_proyecto = visitas.filter(proyecto=proyecto)
+        visitas_info = []
+        for visita in visitas_proyecto:
+            examenes_visita = visitaexamen.filter(visita=visita)
+            visitas_info.append({
+                'nombre': visita.nombre,
+                'fecha': visita.fecha,
+                'observaciones': visita.observaciones,
+                'examenes': [ve.examen for ve in examenes_visita]
+            })
+        proyecto_data[proyecto.id] = visitas_info
+    
+    context = {
+        'proyectos': proyectos,
+        'examenes': examenes,
+        'visitas': visitas,
+        'visitaexamen': visitaexamen,
+        'proyecto_data': proyecto_data
+    }
+    
     if request.method == 'POST':
         proyecto_form = ProyectoForm(request.POST)
         if proyecto_form.is_valid():
             proyecto_form.save()
             messages.success(request, 'Proyecto creado correctamente.')
- 
-    return render(request, 'home/proyectos.html',{'proyectos': proyectos,'examenes':examenes})
+    
+    return render(request, 'home/proyectos.html', context)
 
 @login_required
 def eliminar_proyecto(request, id):
@@ -128,11 +155,35 @@ def eliminar_proyecto(request, id):
         messages.error(request, "Método no permitido.")
         return render(request, 'home/proyectos.html',{'proyectos': proyectos})  # Redirige a la lista de proyectos si no es un POST
 
-
 #visitas
 def agregar_visita(request):
     proyectos = Proyecto.objects.all()
     examenes = Examen.objects.all()
+    visitas = Visita.objects.all()
+    visitaexamen = VisitaExamen.objects.all()
+    
+    # Crear un diccionario para almacenar las visitas y exámenes por proyecto
+    proyecto_data = {}
+    for proyecto in proyectos:
+        visitas_proyecto = visitas.filter(proyecto=proyecto)
+        visitas_info = []
+        for visita in visitas_proyecto:
+            examenes_visita = visitaexamen.filter(visita=visita)
+            visitas_info.append({
+                'nombre': visita.nombre,
+                'fecha': visita.fecha,
+                'observaciones': visita.observaciones,
+                'examenes': [ve.examen for ve in examenes_visita]
+            })
+        proyecto_data[proyecto.id] = visitas_info
+    
+    context = {
+        'proyectos': proyectos,
+        'examenes': examenes,
+        'visitas': visitas,
+        'visitaexamen': visitaexamen,
+        'proyecto_data': proyecto_data
+    }
    
     if request.method == 'POST':
         proyecto_id = request.POST.get('proyecto_id')
@@ -158,43 +209,8 @@ def agregar_visita(request):
                     resultado={}
                 )
 
+    return render(request, 'home/proyectos.html',context)
 
-
-        return render(request, 'home/proyectos.html', {'proyectos': proyectos, 'examenes': examenes})
-
-
-
-    return render(request, 'home/proyectos.html',{'proyectos': proyectos,'examenes':examenes})
-
-
-#@login_required(login_url="/login/")
-#def pages(request):
-#    print("prueba paginas")
-#    context = {}
-#
-#    try:
-#        load_template = request.path.split('/')[-1]
-#
-#        if load_template == 'admin':
-#            return HttpResponseRedirect(reverse('admin:index'))
-#        context['segment'] = load_template
-#
-#        template_paths = [
-#            os.path.join(dirpath, load_template)
-#            for dirpath, _, filenames in os.walk(settings.TEMPLATES[0]['DIRS'][0])
-#            if load_template in filenames
-#        ]
-#
-#        if template_paths:
-#            html_template = loader.get_template(template_paths[0])
-#        else:
-#            html_template = loader.get_template('home/page-404.html')
-#
-#        return HttpResponse(html_template.render(context, request))
-#
-#    except Exception:
-#        html_template = loader.get_template('home/page-500.html')
-#        return HttpResponse(html_template.render(context, request))
 
 #Ingreso y Salida
 @login_required

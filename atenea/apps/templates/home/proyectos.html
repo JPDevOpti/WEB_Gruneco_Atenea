@@ -75,28 +75,78 @@
         <div class="card-body">
           <ul class="list-group">
             {% for proyecto in proyectos %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="font-weight-bold">{{ proyecto.nombre }}</span>
+            <li class="list-group-item">
+              <!-- Encabezado del proyecto -->
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title text-uppercase text-muted mb-0">{{ proyecto.nombre }}</h5>
                 <div>
+                  <!-- Botón para ver la descripción del proyecto -->
                   <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#modalDescripcionProyecto"
-                      data-nombre="{{ proyecto.nombre }}"
-                      data-fecha-inicio="{{ proyecto.fecha_inicio|date:'Y-m-d' }}"
-                      data-fecha-financiacion="{{ proyecto.fecha_financiacion|date:'Y-m-d' }}"
-                      data-investigador="{{ proyecto.investigador_principal }}"
-                      data-codigo-siu="{{ proyecto.codigo_siu }}"
-                      data-descripcion="{{ proyecto.descripcion }}">
-                      Ver Descripción
+                          data-id="{{ proyecto.id }}"
+                          data-nombre="{{ proyecto.nombre }}"
+                          data-fecha-inicio="{{ proyecto.fecha_inicio|date:'Y-m-d' }}"
+                          data-fecha-financiacion="{{ proyecto.fecha_financiacion|date:'Y-m-d' }}"
+                          data-investigador="{{ proyecto.investigador_principal }}"
+                          data-codigo-siu="{{ proyecto.codigo_siu }}"
+                          data-descripcion="{{ proyecto.descripcion }}"
+                          data-proyectoData="{{ proyecto_data }}"
+                          data-toggle="tooltip" data-placement="top" title="Ver Descripción">
+                    <i class="fas fa-info-circle"></i> <!-- Ícono de Font Awesome -->
                   </button>
+    
+                  <!-- Botón para agregar visita -->
                   <button class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#modalAgregarVisita"
-                      data-proyecto-id="{{ proyecto.id }}"
-                      data-nombre="{{ proyecto.nombre }}">
-                      Agregar visita
+                          data-proyecto-id="{{ proyecto.id }}"
+                          data-nombre="{{ proyecto.nombre }}"
+                          data-toggle="tooltip" data-placement="top" title="Agregar Visita">
+                    <i class="fas fa-plus"></i> <!-- Ícono de Font Awesome -->
                   </button>
+    
+                  <!-- Formulario para eliminar proyecto -->
                   <form method="POST" action="{% url 'eliminar_proyecto' id=proyecto.id %}" style="display:inline;">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
-                </form>
+                    <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar Proyecto">
+                      <i class="fas fa-trash"></i> <!-- Ícono de Font Awesome -->
+                    </button>
+                  </form>
                 </div>
+              </div>
+    
+              <!-- Lista de visitas del proyecto -->
+              <div class="mt-3">
+                {% for key, visitas in proyecto_data.items %}
+                  {% if key == proyecto.id and visitas %}
+                    <ul class="list-group">
+                      {% for visita in visitas %}
+                      <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="font-weight-bold">Visita: {{ visita.nombre }}</span>
+                        <!-- Botón para mostrar/ocultar exámenes -->
+                        <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-{{ proyecto.id }}-{{ forloop.counter }}"
+                                data-toggle="tooltip" data-placement="top" title="Ver Exámenes">
+                          <i class="fas fa-list"></i> <!-- Ícono de Font Awesome -->
+                        </button>
+                        <!-- Contenedor de exámenes (colapsable) -->
+                        <div id="examenes-visita-{{ proyecto.id }}-{{ forloop.counter }}" class="collapse mt-3">
+                          <ul class="list-group">
+                            <!-- Iterar sobre los exámenes de la visita -->
+                            {% for examen in visita.examenes %}
+                            <li class="list-group-item">
+                              <strong>Examen:</strong> {{ examen }}
+                            </li>
+                            {% endfor %}
+                          </ul>
+                        </div>
+                      </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endfor %}
+    
+                <!-- Mensaje si no hay visitas -->
+                {% if proyecto.id not in proyecto_data %}
+                  <p class="text-muted">No hay visitas registradas para este proyecto.</p>
+                {% endif %}
+              </div>
             </li>
             {% endfor %}
           </ul>
@@ -106,12 +156,13 @@
   </div>
 </div>
 
+
 <!-- Modal para Ver Descripción del Proyecto -->
-<div class="modal fade" id="modalDescripcionProyecto" tabindex="-1" role="dialog" aria-labelledby="modalDescripcionProyecto" aria-hidden="true">
+<div class="modal fade" id="modalDescripcionProyecto" tabindex="-1" role="dialog" aria-labelledby="modalDescripcionTitulo" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
           <div class="modal-header">
-              <h5 class="modal-title" id="modalDescripcionProyecto">Descripción del Proyecto</h5>
+              <h5 class="modal-title" id="modalDescripcionTitulo">Descripción del Proyecto</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
@@ -133,6 +184,15 @@
                       <div class="col-md-12">
                           <p><strong>Descripción:</strong></p>
                           <p id="proyectoDescripcion"></p>
+                      </div>
+                  </div>
+                  <!-- Sección de Visitas -->
+                  <div class="row mt-4">
+                      <div class="col-md-12">
+                          <h6 class="border-bottom pb-2">Visitas Asociadas</h6>
+                          <ul id="visitasContainer" class="list-group">
+                              <!-- Las visitas se cargarán aquí dinámicamente -->
+                          </ul>
                       </div>
                   </div>
               </div>
@@ -188,7 +248,7 @@
               </div>
               
               <hr>
-            </div>
+             </div>
           </div>
         </div>
         <div class="modal-footer">
@@ -201,43 +261,68 @@
 
 
 <script>
-
   document.addEventListener('DOMContentLoaded', function () {
-      // Escuchar el evento de apertura del modal
+    
+      // Escuchar el evento de apertura del modal de descripción
       $('#modalDescripcionProyecto').on('show.bs.modal', function (event) {
+         
+        
           const button = $(event.relatedTarget);  // Botón que activó el modal
+          const modal = $(this); // Modal actual
 
-          // Obtener los datos del proyecto
+          // Obtener los datos del proyecto desde los atributos data-*
+          const proyectoId = button.data('id');
           const nombre = button.data('nombre');
           const fechaInicio = button.data('fecha-inicio');
           const fechaFinanciacion = button.data('fecha-financiacion');
           const investigador = button.data('investigador');
           const codigoSIU = button.data('codigo-siu');
           const descripcion = button.data('descripcion');
+          const proyectoData = {};
 
-          // Actualizar el contenido del modal
-          const modal = $(this);
+          // Actualizar los elementos del modal con la información del proyecto
           modal.find('#proyectoNombre').text(nombre);
           modal.find('#proyectoFechaInicio').text(fechaInicio);
           modal.find('#proyectoFechaFinanciacion').text(fechaFinanciacion);
           modal.find('#proyectoInvestigador').text(investigador);
           modal.find('#proyectoCodigoSIU').text(codigoSIU);
           modal.find('#proyectoDescripcion').text(descripcion);
+
+          // Cargar las visitas en la lista
+          var visitasContainer = modal.find('#visitasContainer');
+          visitasContainer.empty();  // Limpiar contenido previo
+
+          // Obtener las visitas del proyecto desde el JSON
+          var visitas = proyectoData[proyectoId] || [];
+
+          if (visitas.length > 0) {
+              visitas.forEach(function(visita) {
+                  visitasContainer.append(`
+                      <li class="list-group-item">
+                          <strong>Nombre:</strong> ${visita.nombre} <br>
+                          <strong>Fecha:</strong> ${visita.fecha} <br>
+                          <strong>Observaciones:</strong> ${visita.observaciones} <br>
+                          <strong>Exámenes:</strong>
+                          <ul>${visita.examenes.map(ex => `<li>${ex}</li>`).join('')}</ul>
+                      </li>
+                  `);
+              });
+          } else {
+              visitasContainer.append("<li class='list-group-item text-muted'>No hay visitas registradas.</li>");
+          }
       });
-  
+
+      // Escuchar el evento de apertura del modal de agregar visita
       $('#modalAgregarVisita').on('show.bs.modal', function (event) {
-      var button = $(event.relatedTarget); // Botón que activó el modal
-      var proyectoId = button.data('proyecto-id'); // Extraer el ID del proyecto
-      var nombre = button.data('nombre'); // Extraer el nombre
+          var button = $(event.relatedTarget); // Botón que activó el modal
+          var proyectoId = button.data('proyecto-id'); // Extraer el ID del proyecto
+          var nombre = button.data('nombre'); // Extraer el nombre
 
-      var modal = $(this);
-      modal.find('#proyecto_id').val(proyectoId); // Asignar el ID en el formulario
-      modal.find('#proyectoNombre').text(nombre); // Asignar el nombre del proyecto
-    });
-  
-  
-    });
-
+          var modal = $(this);
+          modal.find('#proyecto_id').val(proyectoId); // Asignar el ID en el formulario
+          modal.find('#proyectoNombre').text(nombre); // Asignar el nombre del proyecto
+      });
+  });
 </script>
 
 {% endblock %}

@@ -28,8 +28,5 @@ urlpatterns = [
     path('consulta/', views.consulta_view, name='patinet_consult'),
     # En apps/home/urls.py
     path('proyecto/eliminar/<int:id>/', views.eliminar_proyecto, name='eliminar_proyecto'),
-
-    # Matches any html file
-    #re_path(r'^(?!login).*\.*', views.pages, name='pages'),
     
 ]
