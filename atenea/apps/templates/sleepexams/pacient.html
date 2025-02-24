@@ -36,12 +36,13 @@
                     {% csrf_token %}
                     <div class="form-group">
                       <label for="proyecto">Seleccionar Proyecto</label>
-                      <select name="proyecto" id="proyecto" class="form-control" required>
+                      <select name="proyecto_id" id="proyecto" class="form-control" required>
                         <option value="-"></option>
-                        {% for proyecto in proyectos %}
+                        {% for proyecto in proyectos_disponibles %}
                           <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
                         {% endfor %}
                       </select>
+                      <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
                     </div>
 
                       <button type="submit" class="btn btn-sm btn-neutral" onclick="return confirm('¿Estás seguro de que deseas agregar el paciente al proyecto?');">Agregar al proyecto</button>
@@ -108,63 +109,49 @@
 
     <div class="col-xl-8 order-xl-2">
       <div class="card">
-        <div class="card-header">
-          <div class="row align-items-center">
-            <div class="col-8">
-              <h3 class="mb-0">Proyectos a los que se encuentra asociado</h3>
-            </div>
+          <div class="card-header">
+              <div class="row align-items-center">
+                  <div class="col-8">
+                      <h3 class="mb-0">Proyectos a los que se encuentra asociado</h3>
+                  </div>
+              </div>
           </div>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-12">
-              <h5 class="card-title text-uppercase text-muted mb-3">Visitas del Proyecto sueño</h5>
-              <!-- Lista de Visitas -->
-              <ul class="list-group">
-                <!-- Ejemplo de Visita 1 -->
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span class="font-weight-bold">Visita 1</span>
-                  <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-1">Ver Exámenes</button>
-                  <!-- Exámenes de la Visita 1 -->
-                  <div id="examenes-visita-1" class="collapse mt-3">
-                    <ul class="list-group">
-                      <li class="list-group-item">Examen de Sueño - 2024-01-15</li>
-                      <li class="list-group-item">Electroencefalograma - 2024-01-15</li>
-                    </ul>
+          <div class="card-body">
+              <div class="row">
+                  <div class="col-12">
+                      {% for proyecto in proyectos_asociados %}
+                          <h5 class="card-title text-uppercase text-muted mb-3">{{ proyecto.nombre }}</h5>
+                          <!-- Lista de Visitas del Proyecto -->
+                          <ul class="list-group">
+                              {% for visita in proyecto.visitas.all %}
+                                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                                      <span class="font-weight-bold">{{ visita.nombre }} - {{ visita.fecha }}</span>
+                                      <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-{{ visita.id }}">Ver Exámenes</button>
+                                      
+                                      <!-- Exámenes de la Visita -->
+                                      <div id="examenes-visita-{{ visita.id }}" class="collapse mt-3">
+                                          <ul class="list-group">
+                                              {% for visita_examen in visita.visita_examenes.all %}
+                                                  <li class="list-group-item">{{ visita_examen.examen.nombre }} - {{ visita_examen.visita.fecha }}</li>
+                                              {% empty %}
+                                                  <li class="list-group-item">No hay exámenes registrados</li>
+                                              {% endfor %}
+                                          </ul>
+                                      </div>
+                                  </li>
+                              {% empty %}
+                                  <p>No hay visitas registradas en este proyecto.</p>
+                              {% endfor %}
+                          </ul>
+                      {% empty %}
+                          <p>El paciente no está asociado a ningún proyecto.</p>
+                      {% endfor %}
                   </div>
-                </li>
-
-                <!-- Ejemplo de Visita 2 -->
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span class="font-weight-bold">Visita 2</span>
-                  <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-2">Ver Exámenes</button>
-                  <!-- Exámenes de la Visita 2 -->
-                  <div id="examenes-visita-2" class="collapse mt-3">
-                    <ul class="list-group">
-                      <li class="list-group-item">Polisomnografía - 2024-02-01</li>
-                      <li class="list-group-item">Test de Latencia del Sueño - 2024-02-01</li>
-                    </ul>
-                  </div>
-                </li>
-
-                <!-- Ejemplo de Visita 3 -->
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span class="font-weight-bold">Visita 3</span>
-                  <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-3">Ver Exámenes</button>
-                  <!-- Exámenes de la Visita 3 -->
-                  <div id="examenes-visita-3" class="collapse mt-3">
-                    <ul class="list-group">
-                      <li class="list-group-item">Actigrafía - 2024-02-15</li>
-                      <li class="list-group-item">Cuestionario de Somnolencia de Epworth - 2024-02-15</li>
-                    </ul>
-                  </div>
-                </li>
-              </ul>
-            </div>
+              </div>
           </div>
-        </div>
       </div>
-    </div>
+  </div>
+  
   </div>
 </div>
 {% endblock %}

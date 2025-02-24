@@ -106,7 +106,8 @@ class Proyecto(models.Model):
     codigo_siu = models.CharField(max_length=50, blank=True, null=True, verbose_name="Código SIU")
     fecha_inicio = models.DateField(blank=True, null=True, verbose_name="Fecha de Inicio")
     fecha_financiacion = models.DateField(blank=True, null=True, verbose_name="Fecha de Financiación")
-
+    pacientes = models.ManyToManyField('DatosDemograficos', related_name='proyectos', verbose_name="Pacientes")
+    
     def __str__(self):
         return self.nombre
     

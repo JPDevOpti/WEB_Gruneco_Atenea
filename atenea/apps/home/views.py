@@ -102,7 +102,22 @@ def editar_paciente(request, numero_documento):
 def detalle_paciente(request, paciente_id):
     proyectos = Proyecto.objects.all()
     paciente = get_object_or_404(DatosDemograficos, numero_documento=paciente_id)
-    return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos})
+    # Obtener los proyectos en los que el paciente ya está asignado
+    proyectos_asociados = paciente.proyectos.all()
+
+    # Obtener proyectos disponibles para asignación (excluye los que ya tiene)
+    proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
+    
+    if request.method == "POST":
+        proyecto_id = request.POST.get("proyecto_id")
+        pacientes_ids = request.POST.getlist("paciente_id")  # Lista de IDs seleccionados
+
+        proyecto = Proyecto.objects.get(id=proyecto_id)
+        proyecto.pacientes.set(pacientes_ids)  # Asigna los pacientes al proyecto
+        proyecto.save()
+        
+    return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
+        'proyectos_disponibles': proyectos_disponibles})
 
 #proyectos
 @login_required
@@ -155,6 +170,7 @@ def eliminar_proyecto(request, id):
         messages.error(request, "Método no permitido.")
         return render(request, 'home/proyectos.html',{'proyectos': proyectos})  # Redirige a la lista de proyectos si no es un POST
 
+@login_required
 #visitas
 def agregar_visita(request):
     proyectos = Proyecto.objects.all()
@@ -210,7 +226,6 @@ def agregar_visita(request):
                 )
 
     return render(request, 'home/proyectos.html',context)
-
 
 #Ingreso y Salida
 @login_required
