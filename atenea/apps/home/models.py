@@ -70,30 +70,50 @@ class DatosDemograficos(models.Model):
         ('AB+', 'AB+'),
         ('AB-', 'AB-'),
     ]
-
-    # Información Personal
-    nombres_apellidos = models.CharField(max_length=200)
-    tipo_documento = models.CharField(max_length=2, choices=TIPO_DOCUMENTO_CHOICES)
-    numero_documento = models.CharField(max_length=20, unique=True)
-    fecha_nacimiento = models.DateField()
-    edad = models.IntegerField()
-    estado_civil = models.CharField(max_length=20, choices=ESTADO_CIVIL_CHOICES)
-    escolaridad = models.CharField(max_length=20, choices=ESCOLARIDAD_CHOICES)
     
-    # Información de Contacto y Adicional
-    ocupacion = models.CharField(max_length=100)
-    eps = models.CharField(max_length=100)
-    lateralidad = models.CharField(max_length=20, choices=LATERALIDAD_CHOICES)
-    direccion = models.CharField(max_length=200)
-    telefono = models.CharField(max_length=20)
-    
+    GENERO_CHOICES = [
+        ('M', 'Masculino'),
+        ('F', 'Femenino'),
+        ('O', 'Otro'),
+    ]
 
-    # Información Adicional y Evaluación
-    grupo_sanguineo = models.CharField(max_length=3, choices=GRUPO_SANGUINEO_CHOICES)
-    religion = models.CharField(max_length=100, blank=True, null=True)
+    # Campos Obligatorios
+    primer_nombre = models.CharField(max_length=100, verbose_name="Primer Nombre",default=" ")
+    segundo_nombre = models.CharField(max_length=100, blank=True, null=True, verbose_name="Segundo Nombre",default=" ")
+    primer_apellido = models.CharField(max_length=100, verbose_name="Primer Apellido",default=" ")
+    segundo_apellido = models.CharField(max_length=100, blank=True, null=True, verbose_name="Segundo Apellido",default=" ")
+    numero_documento = models.CharField(max_length=20, unique=True, verbose_name="Número de Documento",default=" ")
+    fecha_nacimiento = models.DateField(verbose_name="Fecha de Nacimiento")
+    edad = models.IntegerField(verbose_name="Edad")
+    rh = models.CharField(max_length=5, verbose_name="RH",default=" ")
+    correo = models.EmailField(unique=True, verbose_name="Correo Electrónico",default="sincorreo@example.com")
+    celular = models.CharField(max_length=20, verbose_name="Celular",default="0000000000")
+
+    # Datos Personales Opcionales
+    lugar_nacimiento = models.CharField(max_length=100, blank=True, null=True, verbose_name="Lugar de Nacimiento")
+    genero = models.CharField(max_length=10, choices=GENERO_CHOICES, verbose_name="Género",default="O")
+    escolaridad = models.CharField(max_length=100, blank=True, null=True, verbose_name="Escolaridad")
+    lateralidad = models.CharField(max_length=100, blank=True, null=True, verbose_name="Lateralidad")
+    estado_civil = models.CharField(max_length=100, blank=True, null=True, verbose_name="Estado Civil")
+    ocupacion = models.CharField(max_length=100, blank=True, null=True, verbose_name="Ocupación")
+    eps = models.CharField(max_length=100, blank=True, null=True, verbose_name="EPS")
+    direccion_residencia = models.CharField(max_length=200, blank=True, null=True, verbose_name="Dirección de Residencia")
+    municipio_residencia = models.CharField(max_length=100, blank=True, null=True, verbose_name="Municipio de Residencia")
+    departamento_residencia = models.CharField(max_length=100, blank=True, null=True, verbose_name="Departamento de Residencia")
+    pais_residencia = models.CharField(max_length=100, blank=True, null=True, verbose_name="País de Residencia")
+    grupo_sanguineo = models.CharField(max_length=5, blank=True, null=True, verbose_name="Grupo Sanguíneo")
+    religion = models.CharField(max_length=100, blank=True, null=True, verbose_name="Religión")
+    numero_hijos = models.IntegerField(blank=True, null=True, verbose_name="Número de Hijos")
+
+    # Datos del Acompañante
+    nombre_acompanante = models.CharField(max_length=200, blank=True, null=True, verbose_name="Nombre del Acompañante")
+    relacion_acompanante = models.CharField(max_length=100, blank=True, null=True, verbose_name="Relación con el Participante")
+    correo_acompanante = models.EmailField(blank=True, null=True, verbose_name="Correo Electrónico del Acompañante")
+    telefono_acompanante = models.CharField(max_length=20, blank=True, null=True, verbose_name="Teléfono del Acompañante")
 
     def __str__(self):
-        return f"{self.nombres_apellidos} - {self.numero_documento}"
+        return f"{self.primer_nombre} {self.primer_apellido} - {self.numero_documento}"
+
 
     class Meta:
         verbose_name = "Datos Demográficos"

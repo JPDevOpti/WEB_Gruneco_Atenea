@@ -15,7 +15,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from apps.home import models,forms
 from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen
-from .forms import RegistroDemograficoForm, ProyectoForm
+from .forms import  ProyectoForm,RegistroDemograficoForm,AnamnesisForm
 import json
 
 #vista principal
@@ -42,20 +42,39 @@ def registro_demografico(request):
     if request.method == 'POST':
         try:
             datos = DatosDemograficos(
-                nombres_apellidos=request.POST['nombres_apellidos'],
-                tipo_documento=request.POST['tipo_documento'],
+                # Datos obligatorios
+                primer_nombre=request.POST['primer_nombre'],
+                primer_apellido=request.POST['primer_apellido'],
                 numero_documento=request.POST['numero_documento'],
                 fecha_nacimiento=request.POST['fecha_nacimiento'],
-                edad=request.POST['edad'],
-                estado_civil=request.POST['estado_civil'],
-                escolaridad=request.POST['escolaridad'],
-                ocupacion=request.POST['ocupacion'],
-                eps=request.POST['eps'],
-                lateralidad=request.POST['lateralidad'],
-                direccion=request.POST['direccion'],
-                telefono=request.POST['telefono'],
-                grupo_sanguineo=request.POST['grupo_sanguineo'],
-                religion=request.POST['religion'],
+                edad=24,
+                rh=request.POST['grupo_sanguineo'],
+                correo=request.POST['correo'],
+                celular=request.POST['celular'],
+
+                # Datos opcionales (se usa `.get()` para evitar errores si faltan)
+                segundo_nombre=request.POST.get('segundo_nombre', ''),
+                segundo_apellido=request.POST.get('segundo_apellido', ''),
+                lugar_nacimiento=request.POST.get('lugar_nacimiento', ''),
+                genero=request.POST.get('genero', ''),
+                escolaridad=request.POST.get('escolaridad', ''),
+                lateralidad=request.POST.get('lateralidad', ''),
+                estado_civil=request.POST.get('estado_civil', ''),
+                ocupacion=request.POST.get('ocupacion', ''),
+                eps=request.POST.get('eps', ''),
+                direccion_residencia=request.POST.get('direccion_residencia', ''),
+                municipio_residencia=request.POST.get('municipio_residencia', ''),
+                departamento_residencia=request.POST.get('departamento_residencia', ''),
+                pais_residencia=request.POST.get('pais_residencia', ''),
+                grupo_sanguineo=request.POST.get('grupo_sanguineo', ''),
+                religion=request.POST.get('religion', ''),
+                numero_hijos=request.POST.get('numero_hijos', 0),
+
+                # Datos del Acompañante
+                nombre_acompanante=request.POST.get('nombre_acompanante', ''),
+                relacion_acompanante=request.POST.get('relacion_acompanante', ''),
+                correo_acompanante=request.POST.get('correo_acompanante', ''),
+                telefono_acompanante=request.POST.get('telefono_acompanante', '')
             )
             datos.save()
             messages.success(request, 'Datos demográficos guardados exitosamente.')
@@ -84,6 +103,7 @@ def editar_paciente(request, numero_documento):
     paciente = get_object_or_404(DatosDemograficos, numero_documento=numero_documento)  # Obtener el paciente por su ID
     
     if request.method == 'POST':
+        print("aqui")
         form = RegistroDemograficoForm(request.POST, instance=paciente)  # Cargar los datos del paciente
         if form.is_valid():
             form.save()  # Guardar los cambios
@@ -91,11 +111,14 @@ def editar_paciente(request, numero_documento):
             messages.success(request, 'Datos demográficos editados exitosamente.')
     
             return render(request, 'home/tables.html', {'pacientes': pacientes})
+    
+        else:
+            messages.error(request, '❌ Error en el formulario. Verifica los campos.')
+            print(form.errors)  # Para depuración en la consola
         
   # Redirigir a una página de detalle del paciente
     if request.method == 'GET':
         form = RegistroDemograficoForm(instance=paciente)  # Cargar el formulario con los datos del paciente
-        print("Fecha de Nacimiento:", paciente.fecha_nacimiento)
         return render(request, 'sleepexams/editPacientForm.html', {'form': form})
 
 @login_required
@@ -248,3 +271,24 @@ def login_view(request):
 def consulta_view(request):
     return render(request, 'home/consulta.html')
 
+def examen_anamnesis(request):
+    form=AnamnesisForm()
+    preguntas_sintomas = [
+        "dificultad_conciliacion",
+        "dificultad_mantenimiento",
+        "apnea",
+        "ronquido",
+        "somnolencia_diurna",
+        "hipersomnolencia"
+    ]
+    if request.method == 'POST':
+        form = AnamnesisForm(request.POST)
+        if form.is_valid():
+            messages.success(request, '✅ Examen de Anamnesis guardado correctamente.')
+            return redirect('listado_examenes')  # Cambia a la vista correcta
+        else:
+            messages.error(request, '❌ Error en el formulario.')
+    else:
+        form = AnamnesisForm()
+
+    return render(request, 'sleepexams/anamnesisTest.html', {'form': form,'preguntas_sintomas': preguntas_sintomas})

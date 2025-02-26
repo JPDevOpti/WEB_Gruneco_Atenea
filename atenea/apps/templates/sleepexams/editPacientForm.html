@@ -9,12 +9,12 @@
     <div class="header-body">
       <div class="row align-items-center py-4">
         <div class="col-lg-6 col-5">
-          <h6 class="h2 text-white d-inline-block mb-0">Editar de paciente</h6>
+          <h6 class="h2 text-white d-inline-block mb-0">Editar Paciente</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
               <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-              <li class="breadcrumb-item"><a  href="/pacientes/">Pacientes</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Listado de Pacientes</li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Editar Paciente</li>
             </ol>
           </nav>
         </div>
@@ -28,134 +28,114 @@
     <div class="col-xl-12">
       <div class="card">
         <div class="card-header">
-          <div class="row align-items-center">
-            <div class="col-8">
-              <h3 class="mb-0">Formulario de Edición</h3>
-            </div>
-          </div>
+          <h3 class="mb-0">Formulario de Edición</h3>
         </div>
         <div class="card-body">
           <form method="POST">
             {% csrf_token %}
+
             <!-- Información Personal -->
             <h6 class="heading-small text-muted mb-4">Información Personal</h6>
             <div class="pl-lg-4">
               <div class="row">
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.nombres_apellidos.id_for_label }}">Nombres y Apellidos</label>
-                    <p>{{ form.nombres_apellidos }}</p>
-                  </div>
+                <div class="col-lg-3">
+                  <label>Primer Nombre</label>
+                  {{ form.primer_nombre }}
                 </div>
                 <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.tipo_documento.id_for_label }}">Tipo Documento</label>
-                    <P>{{ form.tipo_documento }}</P>
-                  </div>
+                  <label>Segundo Nombre</label>
+                  {{ form.segundo_nombre }}
                 </div>
                 <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.numero_documento.id_for_label }}">Número de Documento</label>
-                    <P>{{ form.numero_documento }}</P>
-                  </div>
+                  <label>Primer Apellido</label>
+                  {{ form.primer_apellido }}
+                </div>
+                <div class="col-lg-3">
+                  <label>Segundo Apellido</label>
+                  {{ form.segundo_apellido }}
                 </div>
               </div>
 
-              <div class="row">
+              <div class="row mt-3">
                 <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.fecha_nacimiento.id_for_label }}">Fecha de Nacimiento</label>
-                     {{ form.fecha_nacimiento }}
-                  </div>
+                  <label>Tipo Documento</label>
+                  {{ form.tipo_documento }}
                 </div>
                 <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.edad.id_for_label }}">Edad</label>
-                    <P>{{ form.edad }}</P>
-                  </div>
+                  <label>Número de Documento</label>
+                  {{ form.numero_documento }}
                 </div>
                 <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.estado_civil.id_for_label }}">Estado Civil</label>
-                    <P>{{ form.estado_civil }}</P>
-                  </div>
+                  <label>Fecha de Nacimiento</label>
+                  {{ form.fecha_nacimiento }}
                 </div>
                 <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.escolaridad.id_for_label }}">Escolaridad</label>
-                    <P>{{ form.escolaridad }}</P>
-                  </div>
+                  <label>Edad</label>
+                  {{ form.edad }}
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-lg-3">
+                  <label>Género</label>
+                  {{ form.genero }}
+                </div>
+                <div class="col-lg-3">
+                  <label>RH</label>
+                  {{ form.rh }}
+                </div>
+                <div class="col-lg-3">
+                  <label>Correo Electrónico</label>
+                  {{ form.correo }}
+                </div>
+                <div class="col-lg-3">
+                  <label>Celular</label>
+                  {{ form.celular }}
                 </div>
               </div>
             </div>
 
             <hr class="my-4" />
 
-            <!-- Información de Contacto y Adicional -->
-            <h6 class="heading-small text-muted mb-4">Información de Contacto y Adicional</h6>
+            <!-- Información del Acompañante -->
+            <h6 class="heading-small text-muted mb-4">Datos del Acompañante</h6>
             <div class="pl-lg-4">
               <div class="row">
                 <div class="col-lg-4">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.ocupacion.id_for_label }}">Ocupación</label>
-                    <P>{{ form.ocupacion }}</P>
-                  </div>
+                  <label>Nombre del Acompañante</label>
+                  {{ form.nombre_acompanante }}
                 </div>
                 <div class="col-lg-4">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.eps.id_for_label }}">EPS</label>
-                    <P>{{ form.eps }}</P>
-                  </div>
+                  <label>Relación</label>
+                  {{ form.relacion_acompanante }}
                 </div>
                 <div class="col-lg-4">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.lateralidad.id_for_label }}">Lateralidad</label>
-                    <P>{{ form.lateralidad }}</P>
-                  </div>
+                  <label>Correo</label>
+                  {{ form.correo_acompanante }}
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.direccion.id_for_label }}">Dirección</label>
-                    <P>{{ form.direccion }}</P>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.telefono.id_for_label }}">Teléfono</label>
-                    <P>{{ form.telefono }}</P>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.grupo_sanguineo.id_for_label }}">Grupo Sanguíneo</label>
-                    <P>{{ form.grupo_sanguineo }}</P>
-                  </div>
-                </div>
-                <div class="col-lg-3">
-                  <div class="form-group">
-                    <label class="form-control-label" for="{{ form.religion.id_for_label }}">Religión</label>
-                    <P>{{ form.religion }}</P>
-                  </div>
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <label>Teléfono</label>
+                  {{ form.telefono_acompanante }}
                 </div>
               </div>
             </div>
 
             <hr class="my-4" />
 
-            <div class="col-2 text-right">
-              <button type="submit" class="btn btn-sm btn-primary">Guardar Cambios</button>
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <a href="{% url 'tables.html' %}" class="btn btn-secondary">Cancelar</a>
             </div>
+
           </form>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 
 {% endblock content %}

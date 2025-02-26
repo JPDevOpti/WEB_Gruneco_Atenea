@@ -1,242 +1,189 @@
-
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-
-    <!-- Header -->
-    <div class="header bg-primary pb-6">
-      <div class="container-fluid">
-        <div class="header-body">
-          <div class="row align-items-center py-4">
-            <div class="col-lg-6 col-7">
-              <h6 class="h2 text-white d-inline-block mb-0">Registro de pacientes</h6>
-            </div>
-          </div>
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <h6 class="h2 text-white d-inline-block mb-0">Registro de pacientes</h6>
         </div>
       </div>
     </div>
-    <div class="container-fluid mt--6">
-      <div class="row">
-        <div class="col-xl-12">
-          <div class="card">
-            <div class="card-header">
-              <div class="row align-items-center">
-                <div class="col-8">
-                  <h3 class="mb-0">Formulario de Evaluación</h3>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Formulario de Evaluación</h3>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{% url 'registro_demografico' %}">
+            {% csrf_token %}
+
+            <!-- Información Personal -->
+            <h6 class="heading-small text-muted mb-4">Información Personal</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-3">
+                  <label for="primer_nombre">Primer Nombre</label>
+                  <input type="text" id="primer_nombre" name="primer_nombre" class="form-control" required>
+                </div>
+                <div class="col-lg-3">
+                  <label for="segundo_nombre">Segundo Nombre</label>
+                  <input type="text" id="segundo_nombre" name="segundo_nombre" class="form-control">
+                </div>
+                <div class="col-lg-3">
+                  <label for="primer_apellido">Primer Apellido</label>
+                  <input type="text" id="primer_apellido" name="primer_apellido" class="form-control" required>
+                </div>
+                <div class="col-lg-3">
+                  <label for="segundo_apellido">Segundo Apellido</label>
+                  <input type="text" id="segundo_apellido" name="segundo_apellido" class="form-control">
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-lg-3">
+                  <label for="tipo_documento">Tipo Documento</label>
+                  <select class="form-control" id="tipo_documento" name="tipo_documento">
+                    <option value="CC">Cédula de Ciudadanía</option>
+                    <option value="TI">Tarjeta de Identidad</option>
+                    <option value="CE">Cédula de Extranjería</option>
+                    <option value="PS">Pasaporte</option>
+                  </select>
+                </div>
+                <div class="col-lg-3">
+                  <label for="numero_documento">Número de Documento</label>
+                  <input type="text" id="numero_documento" name="numero_documento" class="form-control" required>
+                </div>
+                <div class="col-lg-3">
+                  <label for="fecha_nacimiento">Fecha de Nacimiento</label>
+                  <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" oninput="calcularEdad()" required>
+                </div>
+                <div class="col-lg-3">
+                  <label for="edad">Edad</label>
+                  <input type="number" id="edad" name="edad" class="form-control" readonly required>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-lg-3">
+                  <label for="genero">Género</label>
+                  <select class="form-control" id="genero" name="genero">
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                    <option value="O">Otro</option>
+                  </select>
+                </div>
+                <div class="col-lg-3">
+                  <div class="form-group">
+                    <label class="form-control-label" for="grupo_sanguineo">Grupo Sanguíneo</label>
+                    <select class="form-control" id="grupo_sanguineo" name="grupo_sanguineo">
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-lg-3">
+                  <label for="correo">Correo Electrónico</label>
+                  <input type="email" id="correo" name="correo" class="form-control" required>
+                </div>
+                <div class="col-lg-3">
+                  <label for="celular">Celular</label>
+                  <input type="text" id="celular" name="celular" class="form-control" required>
                 </div>
               </div>
             </div>
-            <div class="card-body">
-              <form method="POST" action="{% url 'registro_demografico' %}"">
-                {% csrf_token %}
-                <!-- Información Personal -->
-                <h6 class="heading-small text-muted mb-4">Información Personal</h6>
-                <div class="pl-lg-4">
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="nombres_apellidos">Nombres y Apellidos</label>
-                        <input type="text" id="nombres_apellidos" name="nombres_apellidos" class="form-control" required>
-                      </div>
-                    </div>
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="tipo_documento">Tipo Documento</label>
-                        <select class="form-control" id="tipo_documento" name="tipo_documento">
-                          <option value="CC">Cédula de Ciudadanía</option>
-                          <option value="TI">Tarjeta de Identidad</option>
-                          <option value="CE">Cédula de Extranjería</option>
-                          <option value="PS">Pasaporte</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="numero_documento">Número de Documento</label>
-                        <input type="text" id="numero_documento" name="numero_documento" class="form-control" required>
-                      </div>
-                    </div>
-                  </div>
-    
-                  <div class="row">
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="fecha_nacimiento">Fecha de Nacimiento</label>
-                        <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control" >
-          
 
-                      </div>
-                    </div>
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="edad">Edad</label>
-                        <input type="number" id="edad" name="edad" class="form-control" required>
-                      </div>
-                    </div>
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="estado_civil">Estado Civil</label>
-                        <select class="form-control" id="estado_civil" name="estado_civil">
-                          <option value="soltero">Soltero(a)</option>
-                          <option value="casado">Casado(a)</option>
-                          <option value="divorciado">Divorciado(a)</option>
-                          <option value="viudo">Viudo(a)</option>
-                          <option value="union_libre">Unión Libre</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="escolaridad">Escolaridad</label>
-                        <select class="form-control" id="escolaridad" name="escolaridad">
-                          <option value="primaria">Primaria</option>
-                          <option value="secundaria">Secundaria</option>
-                          <option value="tecnico">Técnico</option>
-                          <option value="universitario">Universitario</option>
-                          <option value="especializacion">Especialización</option>
-                          <option value="maestria">Maestría</option>
-                          <option value="doctorado">Doctorado</option>
-                          <option value="postdoctorado">Postdoctorado</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-    
-                <hr class="my-4" />
-    
-                <!-- Información de Contacto -->
-                <h6 class="heading-small text-muted mb-4">Información de Contacto y Adicional</h6>
-                <div class="pl-lg-4">
-                  <div class="row">
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="ocupacion">Ocupación</label>
-                        <input type="text" id="ocupacion" name="ocupacion" class="form-control" required>
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="eps">EPS</label>
-                        <input type="text" id="eps" name="eps" class="form-control" required>
-                      </div>
-                    </div>
-                    <div class="col-lg-4">
-                      <div class="form-group">
-                        <label class="form-control-label" for="lateralidad">Lateralidad</label>
-                        <select class="form-control" id="lateralidad" name="lateralidad">
-                          <option value="diestro">Diestro</option>
-                          <option value="zurdo">Zurdo</option>
-                          <option value="ambidiestro">Ambidiestro</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-    
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="direccion">Dirección</label>
-                        <input type="text" id="direccion" name="direccion" class="form-control" required>
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="form-group">
-                        <label class="form-control-label" for="telefono">Teléfono</label>
-                        <input type="number" id="telefono" name="telefono" class="form-control" required>
-                      </div>
-                    </div>
-                  </div>
+            <hr class="my-4" />
 
-                  <div class="row">
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="grupo_sanguineo">Grupo Sanguíneo</label>
-                        <select class="form-control" id="grupo_sanguineo" name="grupo_sanguineo">
-                          <option value="O+">O+</option>
-                          <option value="O-">O-</option>
-                          <option value="A+">A+</option>
-                          <option value="A-">A-</option>
-                          <option value="B+">B+</option>
-                          <option value="B-">B-</option>
-                          <option value="AB+">AB+</option>
-                          <option value="AB-">AB-</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="col-lg-3">
-                      <div class="form-group">
-                        <label class="form-control-label" for="religion">Religión</label>
-                        <input type="text" id="religion" name="religion" class="form-control">
-                      </div>
-                    </div>
-                  </div>
+            <!-- Información del Acompañante -->
+            <h6 class="heading-small text-muted mb-4">Datos del Acompañante</h6>
+            <div class="pl-lg-4">
+              <div class="row">
+                <div class="col-lg-4">
+                  <label for="nombre_acompanante">Nombre Completo</label>
+                  <input type="text" id="nombre_acompanante" name="nombre_acompanante" class="form-control">
                 </div>
-    
-                <hr class="my-4" />
-              
-                <div class="col-2 text-right">
-                  <button type="submit" class="btn btn-sm btn-primary">Guardar</button>
+                <div class="col-lg-4">
+                  <label for="relacion_acompanante">Relación con el Participante</label>
+                  <input type="text" id="relacion_acompanante" name="relacion_acompanante" class="form-control">
                 </div>
-                {% if messages %}
-                  <div aria-live="polite" aria-atomic="true" style="position: relative; min-height: 200px;">
-                    <div style="position: absolute; top: 20px; right: 20px;">
-                      {% for message in messages %}
-                      <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
-                        <div class="toast-header">
-                          {% if message.tags == 'success' %}
-                          <span class="badge bg-success me-2">✔️</span>
-                          {% elif message.tags == 'error' %}
-                          <span class="badge bg-danger me-2">❌</span>
-                          {% else %}
-                          <span class="badge bg-info me-2">ℹ️</span>
-                          {% endif %}
-                          <strong class="me-auto">Notificación</strong>
-                          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body">
-                          {{ message }}
-                        </div>
-                      </div>
-                      {% endfor %}
-                    </div>
-                  </div>
-                  {% endif %}
-              </form>
+                <div class="col-lg-4">
+                  <label for="correo_acompanante">Correo Electrónico</label>
+                  <input type="email" id="correo_acompanante" name="correo_acompanante" class="form-control">
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-lg-4">
+                  <label for="telefono_acompanante">Teléfono</label>
+                  <input type="text" id="telefono_acompanante" name="telefono_acompanante" class="form-control">
+                </div>
+              </div>
             </div>
-            <button type="button" class="btn btn-secondary" onclick="cerrarFormulario(this)">Cancelar</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
+            <hr class="my-4" />
+
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+
+          </form>
+        </div>
+        <button type="button" class="btn btn-secondary" onclick="cerrarFormulario(this)">Cancelar</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
 {% endblock content %}
 
-<!-- Specific JS goes HERE --> 
+<!-- Scripts -->
 {% block javascripts %}
 <script>
-  function calcularEdad() {
-    const fechaNacimiento = document.getElementById("fecha_nacimiento").value;
-    if (fechaNacimiento) {
-      const hoy = new Date();
-      const nacimiento = new Date(fechaNacimiento);
-      let edad = hoy.getFullYear() - nacimiento.getFullYear();
-      const diferenciaMeses = hoy.getMonth() - nacimiento.getMonth();
 
-      if (
-        diferenciaMeses < 0 || 
-        (diferenciaMeses === 0 && hoy.getDate() < nacimiento.getDate())
-      ) {
-        edad--;
-      }
+  function searchTable() {
+   // Obtener el valor del campo de búsqueda
+   const searchTerm = document.getElementById("searchPatient").value.toLowerCase();
 
-      document.getElementById("edad").value = edad;
-    }
-  }
+   // Obtener todas las filas de la tabla (se debe apuntar a la tabla directamente)
+   const table = document.querySelector("table");  // Selecciona la tabla de la página
+   const rows = table.getElementsByTagName("tr");
+
+   // Iterar sobre todas las filas (comenzando desde la fila 1 para omitir la cabecera)
+   for (let i = 1; i < rows.length; i++) {  // Asegúrate de que empieces en la fila 1 para evitar la cabecera
+     let row = rows[i];
+     let cells = row.getElementsByTagName("td");
+
+     let match = false;
+     // Iterar sobre las celdas de la fila y comprobar si alguna contiene el término de búsqueda
+     for (let j = 0; j < cells.length; j++) {
+       let cell = cells[j];
+       if (cell.innerText.toLowerCase().includes(searchTerm)) {
+         match = true;  // Si hay coincidencia, mostrar la fila
+         break;
+       }
+     }
+
+     // Mostrar u ocultar la fila según si hay coincidencia
+     row.style.display = match ? "" : "none";
+   }
+ }
 </script>
-
-
-<script src="/static/assets/vendor/clipboard/dist/clipboard.min.js"></script>
-
 {% endblock javascripts %}

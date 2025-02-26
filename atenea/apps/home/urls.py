@@ -21,6 +21,8 @@ urlpatterns = [
     path('paciente/<int:numero_documento>/eliminar/', views.eliminar_paciente, name='eliminar_paciente'),
     path('editar_paciente/<int:numero_documento>/editar', views.editar_paciente, name='editar_paciente'),
 
+    path('examen_anamnesis/', views.examen_anamnesis, name='examen_anamnesis'),
+    
     # Nueva ruta para proyectos
     path('proyectos/', views.proyectos, name='proyectos'),
     path("agregar-visita/", views.agregar_visita, name="agregar_visita"),

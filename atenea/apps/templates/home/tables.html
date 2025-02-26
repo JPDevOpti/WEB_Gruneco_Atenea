@@ -65,7 +65,7 @@
                 {% for paciente in pacientes %}
                 <tr>
                     <td>{{ paciente.numero_documento }}</td>
-                    <td>{{ paciente.nombres_apellidos }}</td>
+                    <td>{{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</td>
                     <td>{{ paciente.edad }}</td>
                     <td>{{ paciente.fecha_nacimiento}}</td> <!-- Si 'género' es un campo de elección -->
                     <td>{{ paciente.ultima_visita }}</td>
@@ -79,6 +79,7 @@
                           <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar este paciente?');">Eliminar</button>
                         </form>
                       </a>
+                      <a href="{% url 'examen_anamnesis' %}" class="btn btn-sm btn-neutral">examen</a>
                     </td>
                 </tr>
                 {% endfor %}
