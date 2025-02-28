@@ -47,34 +47,34 @@ def registro_demografico(request):
                 primer_apellido=request.POST['primer_apellido'],
                 numero_documento=request.POST['numero_documento'],
                 fecha_nacimiento=request.POST['fecha_nacimiento'],
-                edad=24,
-                rh=request.POST['grupo_sanguineo'],
+                edad=request.POST['edad'],
                 correo=request.POST['correo'],
                 celular=request.POST['celular'],
+                regimen=request.POST['regimen'],
+                tipo_documento=request.POST['tipo_documento'],
 
                 # Datos opcionales (se usa `.get()` para evitar errores si faltan)
                 segundo_nombre=request.POST.get('segundo_nombre', ''),
                 segundo_apellido=request.POST.get('segundo_apellido', ''),
-                lugar_nacimiento=request.POST.get('lugar_nacimiento', ''),
                 genero=request.POST.get('genero', ''),
                 escolaridad=request.POST.get('escolaridad', ''),
                 lateralidad=request.POST.get('lateralidad', ''),
                 estado_civil=request.POST.get('estado_civil', ''),
                 ocupacion=request.POST.get('ocupacion', ''),
                 eps=request.POST.get('eps', ''),
-                direccion_residencia=request.POST.get('direccion_residencia', ''),
+                
+                direccion=request.POST.get('direccion', ''),
                 municipio_residencia=request.POST.get('municipio_residencia', ''),
                 departamento_residencia=request.POST.get('departamento_residencia', ''),
                 pais_residencia=request.POST.get('pais_residencia', ''),
+                
+                municipio_nacimiento = request.POST.get('municipio_nacimiento', ''),
+                departamento_nacimiento = request.POST.get('departamento_nacimiento', ''),
+                pais_nacimiento =request.POST.get('pais_nacimiento', ''),
+                
                 grupo_sanguineo=request.POST.get('grupo_sanguineo', ''),
                 religion=request.POST.get('religion', ''),
-                numero_hijos=request.POST.get('numero_hijos', 0),
-
-                # Datos del Acompañante
-                nombre_acompanante=request.POST.get('nombre_acompanante', ''),
-                relacion_acompanante=request.POST.get('relacion_acompanante', ''),
-                correo_acompanante=request.POST.get('correo_acompanante', ''),
-                telefono_acompanante=request.POST.get('telefono_acompanante', '')
+            
             )
             datos.save()
             messages.success(request, 'Datos demográficos guardados exitosamente.')
@@ -113,7 +113,8 @@ def editar_paciente(request, numero_documento):
             return render(request, 'home/tables.html', {'pacientes': pacientes})
     
         else:
-            messages.error(request, '❌ Error en el formulario. Verifica los campos.')
+            messages.error(request, f'❌ Error en el formulario. Verifica los campos. {str(form.errors)}')
+            return render(request, 'sleepexams/editPacientForm.html', {'form': form})
             print(form.errors)  # Para depuración en la consola
         
   # Redirigir a una página de detalle del paciente

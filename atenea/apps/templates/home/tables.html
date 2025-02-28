@@ -56,8 +56,7 @@
                   <th scope="col" class="sort" data-sort="name">Nombre</th>
                   <th scope="col" class="sort" data-sort="age">Edad</th>
                   <th scope="col" class="sort" data-sort="gender">Fecha nacimiento</th>
-                  <th scope="col" class="sort" data-sort="status">Última visita</th>
-                  <th scope="col" class="sort" data-sort="admission_date">Proyecto</th>
+                  <th scope="col" class="sort" data-sort="status">ocupacion</th>
                   <th scope="col">Acciones</th>
                 </tr>
               </thead>
@@ -68,8 +67,7 @@
                     <td>{{ paciente.primer_nombre }} {{ paciente.primer_apellido }}</td>
                     <td>{{ paciente.edad }}</td>
                     <td>{{ paciente.fecha_nacimiento}}</td> <!-- Si 'género' es un campo de elección -->
-                    <td>{{ paciente.ultima_visita }}</td>
-                    <td>{{ paciente.proyecto }}</td>
+                    <td>{{ paciente.ocupacion }}</td>
                     <td>
                       <a href="{% url 'detalle_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Ver</a>
                       <a href="{% url 'editar_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Editar</a>
@@ -149,6 +147,32 @@
      row.style.display = match ? "" : "none";
    }
  }
+ function calcularEdad() {
+    // Obtener la fecha de nacimiento del campo de entrada
+    const fechaNacimiento = document.getElementById('fecha_nacimiento').value;
+    console.log(fechaNacimiento);
+    // Verificar si se ha seleccionado una fecha
+    if (fechaNacimiento) {
+      // Convertir la fecha de nacimiento a un objeto Date
+      const fechaNac = new Date(fechaNacimiento);
+      const hoy = new Date(); // Fecha actual
+
+      // Calcular la diferencia en milisegundos
+      const diferencia = hoy - fechaNac;
+
+      // Convertir la diferencia a años
+      const edad = Math.floor(diferencia / (1000 * 60 * 60 * 24 * 365.25));
+
+      // Mostrar la edad en el campo correspondiente
+      document.getElementById('edad').value = edad;
+    } else {
+      // Si no hay fecha, limpiar el campo de edad
+      document.getElementById('edad').value = '';
+    }
+  }
+
+  // Asignar el evento oninput al campo de fecha de nacimiento
+  document.getElementById('fecha_nacimiento').addEventListener('input', calcularEdad);
 
 </script>
 {% endblock javascripts %}

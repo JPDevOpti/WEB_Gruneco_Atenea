@@ -23,21 +23,23 @@ class RegistroDemograficoForm(forms.ModelForm):
             'primer_apellido': forms.TextInput(attrs={'class': 'form-control'}),
             'segundo_apellido': forms.TextInput(attrs={'class': 'form-control'}),
             'tipo_documento': forms.Select(attrs={'class': 'form-control'}),
-            'lugar_nacimiento': forms.TextInput(attrs={'class': 'form-control'}),
+            'municipio_nacimiento': forms.TextInput(attrs={'class': 'form-control'}),
+            'departamento_nacimiento': forms.TextInput(attrs={'class': 'form-control'}),
+            'pais_nacimiento': forms.TextInput(attrs={'class': 'form-control'}),
             'genero': forms.Select(attrs={'class': 'form-control'}),
-            'escolaridad': forms.TextInput(attrs={'class': 'form-control'}),
-            'lateralidad': forms.TextInput(attrs={'class': 'form-control'}),
-            'estado_civil': forms.TextInput(attrs={'class': 'form-control'}),
+            'estado_civil': forms.Select(attrs={'class': 'form-control'}),
+            'escolaridad': forms.Select(attrs={'class': 'form-control'}),
+            'lateralidad': forms.Select(attrs={'class': 'form-control'}),
             'ocupacion': forms.TextInput(attrs={'class': 'form-control'}),
+            'grupo_sanguineo': forms.Select(attrs={'class': 'form-control'}),
+            'rh': forms.Select(attrs={'class': 'form-control'}),
+            'religion': forms.TextInput(attrs={'class': 'form-control'}),
             'eps': forms.TextInput(attrs={'class': 'form-control'}),
-            'direccion_residencia': forms.TextInput(attrs={'class': 'form-control'}),
+            'regimen': forms.Select(attrs={'class': 'form-control'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
             'municipio_residencia': forms.TextInput(attrs={'class': 'form-control'}),
             'departamento_residencia': forms.TextInput(attrs={'class': 'form-control'}),
             'pais_residencia': forms.TextInput(attrs={'class': 'form-control'}),
-            'grupo_sanguineo': forms.TextInput(attrs={'class': 'form-control'}),
-            'rh': forms.TextInput(attrs={'class': 'form-control'}),
-            'religion': forms.TextInput(attrs={'class': 'form-control'}),
-            'numero_hijos': forms.NumberInput(attrs={'class': 'form-control'}),
 
             # Datos del acompañante
             'nombre_acompanante': forms.TextInput(attrs={'class': 'form-control'}),
@@ -45,6 +47,7 @@ class RegistroDemograficoForm(forms.ModelForm):
             'correo_acompanante': forms.EmailInput(attrs={'class': 'form-control'}),
             'telefono_acompanante': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
 
 class AnamnesisForm(forms.Form):
     # Campos de texto abiertos
