@@ -142,24 +142,28 @@
                                                  <!-- Botón para descargar el PDF -->
                                                   <a href="{% url 'descargar_examen' visita_examen.id %}" class="btn btn-success btn-sm">Descargar PDF</a>
 
-                                                  <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1" aria-labelledby="modalExamenLabel{{ visita_examen.id }}" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="modalExamenLabel{{ visita_examen.id }}">{{ visita_examen.examen.nombre }}</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha }}</p>
-                                                                <p><strong>Resultado:</strong> {{ visita_examen.resultadoexamen.resultado }}</p>
-                                                                <!-- Aquí puedes agregar más detalles del examen -->
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                            </div>
+                                                <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1" aria-labelledby="modalExamenLabel{{ visita_examen.id }}" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="modalExamenLabel{{ visita_examen.id }}">{{ visita_examen.examen.nombre }}</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha }}</p>
+                                                            {% for key, value in resultados_examenes.items %}
+                                                                {% if key == visita_examen.id %}
+                                                                    <p><strong>Resultado:</strong> {{ value }}</p>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                            <!-- Aquí puedes agregar más detalles del examen si es necesario -->
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
                                               {% else %}
                                                   <span class="badge bg-warning">Pendiente</span>

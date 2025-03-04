@@ -148,6 +148,8 @@ def detalle_paciente(request, paciente_id):
 
     # Crear una lista de IDs de exámenes realizados
     examenes_realizados = []
+    resultados_examenes = {}
+    
     for visita_examen in visita_examenes:
         resultado_examen = ResultadoExamen.objects.filter(
             visita_examen=visita_examen,
@@ -155,8 +157,9 @@ def detalle_paciente(request, paciente_id):
         ).first()
         if resultado_examen and resultado_examen.resultado:
             examenes_realizados.append(visita_examen.id)
+            resultados_examenes[visita_examen.id] = resultado_examen.resultado 
     
-        
+    print(resultados_examenes)
 
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
@@ -167,7 +170,8 @@ def detalle_paciente(request, paciente_id):
         proyecto.save()
         
     return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
-        'proyectos_disponibles': proyectos_disponibles,'examenes_realizados': examenes_realizados,})
+        'proyectos_disponibles': proyectos_disponibles,'examenes_realizados': examenes_realizados,
+        'resultados_examenes': resultados_examenes,})
 
 #proyectos
 @login_required
