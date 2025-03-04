@@ -1,0 +1,192 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-5">
+          <h6 class="h2 text-white d-inline-block mb-0">Información del Paciente</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Examen Neurológico</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Card body -->
+        <div class="card-body">
+          <form method="post" action="{% url 'guardar_examen_neurologico' %}">
+            {% csrf_token %}
+            <input type="hidden" name="visita_examen" value="{{ visita_examen }}">
+            <input type="hidden" name="paciente_id" value="{{ paciente_id }}">
+
+            <!-- Sección: Pares Craneales -->
+            <div class="col-12">
+              <h4>Pares Craneales</h4>
+            </div>
+
+            <!-- Subsección: I Par (Olfatorio) -->
+            <div class="row">
+              <div class="col-md-12">
+                <h5>I Par (Olfatorio)</h5>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Clavos</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="clavos_izquierdo" value="Izquierdo"> Izquierdo
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="clavos_derecho" value="Derecho"> Derecho
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Pimienta</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="pimienta_izquierdo" value="Izquierdo"> Izquierdo
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="pimienta_derecho" value="Derecho"> Derecho
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Café</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="cafe_izquierdo" value="Izquierdo"> Izquierdo
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="cafe_derecho" value="Derecho"> Derecho
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-4">
+                <label class="form-control-label">Canela</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="canela_izquierdo" value="Izquierdo"> Izquierdo
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="canela_derecho" value="Derecho"> Derecho
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Alcohol</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="alcohol_izquierdo" value="Izquierdo"> Izquierdo
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="alcohol_derecho" value="Derecho"> Derecho
+                </div>
+              </div>
+            </div>
+
+            <!-- Subsección: II Par (Óptico) -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>II Par (Óptico)</h5>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Amaurosis</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="amaurosis" value="Amaurosis"> Amaurosis
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Oscurecimientos</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="oscurecimientos" value="Oscurecimientos"> Oscurecimientos
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Fotopsias</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="fotopsias" value="Fotopsias"> Fotopsias
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-4">
+                <label class="form-control-label">Escotomas</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="escotomas" value="Escotomas"> Escotomas
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Agudeza Visual</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="agudeza_visual" value="Agudeza Visual"> Agudeza Visual
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Hemorragias</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="hemorragias" value="Hemorragias"> Hemorragias
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-4">
+                <label class="form-control-label">Exudados</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="exudados" value="Exudados"> Exudados
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Campimetría</label>
+                <select class="form-control" name="campimetria">
+                  <option value="CV1">CV1</option>
+                  <option value="CV2">CV2</option>
+                  <option value="CV3">CV3</option>
+                  <option value="CV4">CV4</option>
+                  <option value="CV5">CV5</option>
+                  <option value="CV6">CV6</option>
+                  <option value="CV7">CV7</option>
+                  <option value="CV8">CV8</option>
+                  <option value="CV9">CV9</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label">Fundoscopia</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="fundoscopia_normal" value="Normal"> Normal
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="fundoscopia_anormal" value="Anormal"> Anormal
+                </div>
+              </div>
+            </div>
+
+            <!-- Continuar con las demás secciones... -->
+
+            <!-- Botones de acción -->
+            <div class="row mt-4">
+              <div class="col-12 text-right">
+                <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                <button type="button" class="btn btn-secondary">Cancelar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,220 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-5">
+          <h6 class="h2 text-white d-inline-block mb-0">Información del Paciente</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid mt--6">
+
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Análisis y Diagnóstico</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Card body -->
+        <div class="card-body">
+
+
+<!-- Análisis -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="form-control-label">Análisis de Historia Clínica</label>
+      <textarea class="form-control" name="analisis_historia" rows="4" placeholder="Ingrese un análisis detallado de la historia clínica"></textarea>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="form-control-label">Plan de Tratamiento</label>
+      <textarea class="form-control" name="plan_tratamiento" rows="4" placeholder="Describa el plan de tratamiento propuesto"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- Diagnósticos CIE-10 -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="form-control-label">Diagnósticos CIE-10</label>
+      <div id="diagnosticos-cie10">
+        <div class="diagnostico-cie10 mb-3">
+          <div class="row">
+            <div class="col-md-4">
+              <input type="text" class="form-control" name="cie10_codigo[]" placeholder="Código CIE-10">
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control" name="cie10_diagnostico[]" placeholder="Diagnóstico">
+            </div>
+            <div class="col-md-4">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="cie10_estado[]" value="confirmado_nuevo" id="cie10-confirmado-nuevo-1">
+                <label class="custom-control-label" for="cie10-confirmado-nuevo-1">Confirmado Nuevo</label>
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="cie10_estado[]" value="confirmado_antiguo" id="cie10-confirmado-antiguo-1">
+                <label class="custom-control-label" for="cie10-confirmado-antiguo-1">Confirmado Antiguo</label>
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="cie10_estado[]" value="en_estudio" id="cie10-en-estudio-1">
+                <label class="custom-control-label" for="cie10-en-estudio-1">En Estudio</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" id="agregar-diagnostico-cie10" class="btn btn-primary">
+        Agregar Diagnóstico CIE-10
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Diagnósticos DSM-V -->
+<div class="row">
+  <div class="col-md-12">
+    <div class="form-group">
+      <label class="form-control-label">Diagnósticos DSM-V</label>
+      <div id="diagnosticos-dsmv">
+        <div class="diagnostico-dsmv mb-3">
+          <div class="row">
+            <div class="col-md-4">
+              <input type="text" class="form-control" name="dsmv_codigo[]" placeholder="Código DSM-V">
+            </div>
+            <div class="col-md-4">
+              <input type="text" class="form-control" name="dsmv_diagnostico[]" placeholder="Diagnóstico">
+            </div>
+            <div class="col-md-4">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="dsmv_estado[]" value="confirmado_nuevo" id="dsmv-confirmado-nuevo-1">
+                <label class="custom-control-label" for="dsmv-confirmado-nuevo-1">Confirmado Nuevo</label>
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="dsmv_estado[]" value="confirmado_antiguo" id="dsmv-confirmado-antiguo-1">
+                <label class="custom-control-label" for="dsmv-confirmado-antiguo-1">Confirmado Antiguo</label>
+              </div>
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" name="dsmv_estado[]" value="en_estudio" id="dsmv-en-estudio-1">
+                <label class="custom-control-label" for="dsmv-en-estudio-1">En Estudio</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" id="agregar-diagnostico-dsmv" class="btn btn-primary">
+        Agregar Diagnóstico DSM-V
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Botón de guardado -->
+<div class="row">
+  <div class="col-md-12 text-right">
+    <button type="submit" class="btn btn-primary">Guardar Examen Físico</button>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Script para agregar dinámicamente más diagnósticos -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const agregarCIE10 = document.getElementById('agregar-diagnostico-cie10');
+    const agregarDSMV = document.getElementById('agregar-diagnostico-dsmv');
+    const containerCIE10 = document.getElementById('diagnosticos-cie10');
+    const containerDSMV = document.getElementById('diagnosticos-dsmv');
+
+    let contadorCIE10 = 1;
+    let contadorDSMV = 1;
+
+    agregarCIE10.addEventListener('click', function() {
+      contadorCIE10++;
+      const nuevodiagnostico = document.createElement('div');
+      nuevodiagnostico.classList.add('diagnostico-cie10', 'mb-3');
+      nuevodiagnostico.innerHTML = `
+        <div class="row">
+          <div class="col-md-4">
+            <input type="text" class="form-control" name="cie10_codigo[]" placeholder="Código CIE-10">
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" name="cie10_diagnostico[]" placeholder="Diagnóstico">
+          </div>
+          <div class="col-md-4">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="cie10_estado[]" value="confirmado_nuevo" id="cie10-confirmado-nuevo-${contadorCIE10}">
+              <label class="custom-control-label" for="cie10-confirmado-nuevo-${contadorCIE10}">Confirmado Nuevo</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="cie10_estado[]" value="confirmado_antiguo" id="cie10-confirmado-antiguo-${contadorCIE10}">
+              <label class="custom-control-label" for="cie10-confirmado-antiguo-${contadorCIE10}">Confirmado Antiguo</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="cie10_estado[]" value="en_estudio" id="cie10-en-estudio-${contadorCIE10}">
+              <label class="custom-control-label" for="cie10-en-estudio-${contadorCIE10}">En Estudio</label>
+            </div>
+          </div>
+        </div>
+      `;
+      containerCIE10.appendChild(nuevodiagnostico);
+    });
+
+    agregarDSMV.addEventListener('click', function() {
+      contadorDSMV++;
+      const nuevodiagnostico = document.createElement('div');
+      nuevodiagnostico.classList.add('diagnostico-dsmv', 'mb-3');
+      nuevodiagnostico.innerHTML = `
+        <div class="row">
+          <div class="col-md-4">
+            <input type="text" class="form-control" name="dsmv_codigo[]" placeholder="Código DSM-V">
+          </div>
+          <div class="col-md-4">
+            <input type="text" class="form-control" name="dsmv_diagnostico[]" placeholder="Diagnóstico">
+          </div>
+          <div class="col-md-4">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="dsmv_estado[]" value="confirmado_nuevo" id="dsmv-confirmado-nuevo-${contadorDSMV}">
+              <label class="custom-control-label" for="dsmv-confirmado-nuevo-${contadorDSMV}">Confirmado Nuevo</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="dsmv_estado[]" value="confirmado_antiguo" id="dsmv-confirmado-antiguo-${contadorDSMV}">
+              <label class="custom-control-label" for="dsmv-confirmado-antiguo-${contadorDSMV}">Confirmado Antiguo</label>
+            </div>
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" name="dsmv_estado[]" value="en_estudio" id="dsmv-en-estudio-${contadorDSMV}">
+              <label class="custom-control-label" for="dsmv-en-estudio-${contadorDSMV}">En Estudio</label>
+            </div>
+          </div>
+        </div>
+      `;
+      containerDSMV.appendChild(nuevodiagnostico);
+    });
+  });
+</script>
+
+{% endblock content %}
