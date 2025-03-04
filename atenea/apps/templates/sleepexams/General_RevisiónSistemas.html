@@ -1,0 +1,284 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-5">
+          <h6 class="h2 text-white d-inline-block mb-0">Informacion del paciente</h6>
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Page content -->
+<div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="mb-0">Revisión por Sistemas</h3>
+              </div>
+            </div>
+          </div>
+          <!-- Card body -->
+          <div class="card-body">
+            <form method="post" action="{% url 'guardar_examen' %}">
+              {% csrf_token %}
+              <input type="hidden" name="visita_examen" value="{{ visita_examen }}">
+              <input type="hidden" name="paciente_id" value="{{ paciente_id}}">
+            
+              
+              <hr class="my-4">
+              <!-- Revisión por Sistemas -->
+              <div class="row">
+                <div class="col-12">
+                  <h4>General</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma general?</label>
+                  <select class="form-control" name="sintoma_general">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_general">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_general">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_general">
+                </div>
+              </div>
+              
+              <!-- Repetir para cada sistema -->
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Cabeza y Cuello</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_cabeza_cuello">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_cabeza_cuello">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_cabeza_cuello">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_cabeza_cuello">
+                </div>
+              </div>
+              
+              <!-- Agregar más sistemas -->
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Cardiopulmonar</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_cardiopulmonar">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_cardiopulmonar">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_cardiopulmonar">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_cardiopulmonar">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Gastrointestinal</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_gastrointestinal">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_gastrointestinal">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_gastrointestinal">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_gastrointestinal">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Genitourinario</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_genitourinario">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_genitourinario">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_genitourinario">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_genitourinario">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Vascular periférico</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_vascular_periferico">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_vascular_periferico">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_vascular_periferico">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_vascular_periferico">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Osteomuscular</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_osteomuscular">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_osteomuscular">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_osteomuscular">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_osteomuscular">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Piel y Faneras</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_piel_faneras">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_piel_faneras">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_piel_faneras">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_piel_faneras">
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-12">
+                  <h4>Otros</h4>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">¿Presenta algún síntoma?</label>
+                  <select class="form-control" name="sintoma_otros">
+                    <option value="no">No</option>
+                    <option value="si">Sí</option>
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Síntoma</label>
+                  <input type="text" class="form-control" placeholder="Describa el síntoma" name="detalle_sintoma_otros">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Hace cuánto</label>
+                  <input type="text" class="form-control" placeholder="Tiempo de evolución" name="tiempo_sintoma_otros">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-control-label">Características</label>
+                  <input type="text" class="form-control" placeholder="Detalles del síntoma" name="caracteristicas_sintoma_otros">
+                </div>
+              </div>
+              
+              <div class="row mt-4">
+                <div class="col-12 text-right">
+                  <button type="submit" class="btn btn-primary">Guardar</button>
+                  <button type="button" class="btn btn-secondary" onclick="cerrarFormulario()">Cancelar</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  
+{% endblock content %}
