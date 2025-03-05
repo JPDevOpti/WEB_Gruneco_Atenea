@@ -856,24 +856,43 @@ def guardar_examen_neurologico(request):
  
 def guardar_examen_medicamentos(request):
     if request.method == 'POST':
-        # Obtener los datos del formulario para antecedentes
-        datos_formulario_antecedentes = {
-            "Antecedentes Epidemiológicos": {
-                "antecedente_epidemiologico": request.POST.get('antecedente_epidemiologico'),
-                "descripcion_epidemiologico": request.POST.get('descripcion_epidemiologico'),
-                "fecha_inicio_epidemiologico": request.POST.get('fecha_inicio_epidemiologico'),
-                "tratamiento_epidemiologico": request.POST.get('tratamiento_epidemiologico'),
-                "detalle_tratamiento_epidemiologico": request.POST.get('detalle_tratamiento_epidemiologico'),
-                "complicaciones_epidemiologico": request.POST.get('complicaciones_epidemiologico'),
-                "detalle_complicaciones_epidemiologico": request.POST.get('detalle_complicaciones_epidemiologico'),
-                "activo_epidemiologico": request.POST.get('activo_epidemiologico'),
-                "fecha_finalizacion_epidemiologico": request.POST.get('fecha_finalizacion_epidemiologico'),
-                "observaciones_epidemiologico": request.POST.get('observaciones_epidemiologico'),
+        print("aqui")
+        # Obtener los datos del formulario para antecedentes epidemiológicos
+        datos_formulario_medicamentos = {
+        "Medicamentos": []
             }
-        }
+
+        # Obtener las listas de medicamentos del formulario (coincidiendo con los nombres en el HTML)
+        nombres_comerciales = request.POST.getlist('nombre_comercial[]')
+        nombres_genericos = request.POST.getlist('nombre_generico[]')
+        presentaciones = request.POST.getlist('presentacion[]')
+        concentraciones = request.POST.getlist('concentracion[]')
+        unidades = request.POST.getlist('unidad[]')
+        vias_administracion = request.POST.getlist('via_administracion[]')
+        cantidades = request.POST.getlist('cantidad[]')
+        frecuencias = request.POST.getlist('frecuencia[]')
+        fechas_inicio = request.POST.getlist('fecha_inicio[]')
+        fechas_finalizacion = request.POST.getlist('fecha_finalizacion[]')
+        indicaciones = request.POST.getlist('indicacion[]')
+
+        # Iterar sobre las listas y construir la lista de medicamentos
+        for i in range(len(nombres_comerciales)):
+            datos_formulario_medicamentos["Medicamentos"].append({
+                "nombre_comercial": nombres_comerciales[i],
+                "nombre_generico": nombres_genericos[i],
+                "presentacion": presentaciones[i],
+                "concentracion": concentraciones[i],
+                "unidad": unidades[i],
+                "via_administracion": vias_administracion[i],
+                "cantidad": cantidades[i],
+                "frecuencia": frecuencias[i],
+                "fecha_inicio": fechas_inicio[i],
+                "fecha_finalizacion": fechas_finalizacion[i],
+                "indicacion": indicaciones[i]
+            })
 
         # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+        visita_examen_id = request.POST.get('visita_examen')
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.numero_documento
@@ -887,15 +906,15 @@ def guardar_examen_medicamentos(request):
         resultado_examen, created = ResultadoExamen.objects.get_or_create(
             visita_examen=visita_examen,
             paciente=paciente,
-            defaults={'resultado': datos_formulario_antecedentes}
+            defaults={'resultado': datos_formulario_medicamentos}
         )
 
         if not created:
-            resultado_examen.resultado = datos_formulario_antecedentes
+            resultado_examen.resultado = datos_formulario_medicamentos
             resultado_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
-      
+  
 @login_required
 def descargar_examen(request, visita_examen_id):
     visita_examen = VisitaExamen.objects.get(id=visita_examen_id)

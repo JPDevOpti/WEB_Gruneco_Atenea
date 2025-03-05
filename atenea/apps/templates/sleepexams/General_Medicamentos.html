@@ -21,164 +21,155 @@
 </div>
 
 <div class="container-fluid mt--6">
-<!-- Medicación -->
-<div class="row">
-  <div class="col">
-    <div class="card">
-      <!-- Card header -->
-      <div class="card-header border-0">
-        <div class="row align-items-center">
-          <div class="col">
-            <h3 class="mb-0">Medicamentos</h3>
+  <form method="post" action="{% url 'guardar_examen_medicamentos' %}">
+    {% csrf_token %}
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Medicamentos</h3>
+              <input type="hidden" name="visita_examen" value="{{ visita_examen }}">
+              <input type="hidden" name="paciente_id" value="{{ paciente_id }}">
+            </div>
           </div>
         </div>
-      </div>
-      <!-- Card body -->
-      <div class="card-body">
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Nombre Comercial</label>
-      <input type="text" class="form-control" name="nombre_comercial" placeholder="Ingrese el nombre comercial">
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Nombre Genérico</label>
-      <input type="text" class="form-control" name="nombre_generico" placeholder="Ingrese el nombre genérico">
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Presentación</label>
-      <select class="form-control" name="presentacion">
-        <option>Tableta</option>
-        <option>Cápsula</option>
-        <option>Solución</option>
-        <option>Ampolla</option>
-        <option>Spray</option>
-      </select>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Concentración</label>
-      <input type="text" class="form-control" name="concentracion" placeholder="Ingrese la concentración">
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Unidad</label>
-      <select class="form-control" name="unidad">
-        <option>Microgramos</option>
-        <option>Miligramos</option>
-        <option>Gramos</option>
-        <option>Mililitros</option>
-        <option>Porcentaje</option>
-        <option>Volumen</option>
-      </select>
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Vía de Administración</label>
-      <select class="form-control" name="via_administracion">
-        <option>Oral</option>
-        <option>Tópico</option>
-        <option>Intramuscular</option>
-        <option>Subcutáneo</option>
-        <option>Intravenoso</option>
-        <option>Intrarectal</option>
-        <option>Vaginal</option>
-        <option>Subdérmico</option>
-        <option>Ótico</option>
-        <option>Óptico</option>
-        <option>Intranasal</option>
-      </select>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Cantidad</label>
-      <input type="text" class="form-control" name="cantidad" placeholder="Ingrese la cantidad">
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Frecuencia</label>
-      <input type="text" class="form-control" name="frecuencia" placeholder="Ingrese la frecuencia">
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Fecha de Inicio</label>
-      <input type="date" class="form-control" name="fecha_inicio">
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="form-group">
-      <label class="form-control-label">Fecha de Finalización</label>
-      <input type="date" class="form-control" name="fecha_finalizacion">
-    </div>
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    <div class="form-group">
-      <label class="form-control-label">Indicación</label>
-      <textarea class="form-control" name="indicacion" rows="3" placeholder="Ingrese las indicaciones"></textarea>
-    </div>
-  </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-      <div class="form-group">
-        <label class="form-control-label">Medicamentos</label>
-        <div id="medicamentos"></div>
-        <button type="button" id="agregar-medicamento" class="btn btn-primary">Agregar Medicamento</button>
+        <div class="card-body">
+          <div id="medicamentos"></div>
+          <button type="button" id="agregar-medicamento" class="btn btn-primary">Agregar Medicamento</button>
+        </div>
       </div>
     </div>
   </div>
+  <div class="row mt-4">
+    <div class="col-12 text-right">
+      <button type="submit" class="btn btn-primary">Guardar Examen</button>
+      <button type="button" class="btn btn-secondary">Cancelar</button>
+    </div>
+  </div>
+ </form>
 </div>
-</div>
-</div>
-</div>
-</div>
+
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    let contadorMedicamentos = 1;
-
-    const containerMedicamentos = document.getElementById('medicamentos');
-
     document.getElementById('agregar-medicamento').addEventListener('click', function() {
       const div = document.createElement('div');
       div.classList.add('medicamento', 'mb-3');
       div.innerHTML = `
+      <div class="card p-3">
         <div class="row">
-          <div class="col-md-4">
-            <input type="text" class="form-control" name="medicamento_nombre[]" placeholder="Nombre del Medicamento">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Nombre Comercial</label>
+              <input type="text" class="form-control" name="nombre_comercial[]" placeholder="Ingrese el nombre comercial">
+            </div>
           </div>
-          <div class="col-md-4">
-            <input type="text" class="form-control" name="medicamento_dosis[]" placeholder="Dosis">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Nombre Genérico</label>
+              <input type="text" class="form-control" name="nombre_generico[]" placeholder="Ingrese el nombre genérico">
+            </div>
           </div>
-        </div>`;
-      containerMedicamentos.appendChild(div);
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Presentación</label>
+              <select class="form-control" name="presentacion[]">
+                <option>Tableta</option>
+                <option>Cápsula</option>
+                <option>Solución</option>
+                <option>Ampolla</option>
+                <option>Spray</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Concentración</label>
+              <input type="text" class="form-control" name="concentracion[]" placeholder="Ingrese la concentración">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Unidad</label>
+              <select class="form-control" name="unidad[]">
+                <option>Microgramos</option>
+                <option>Miligramos</option>
+                <option>Gramos</option>
+                <option>Mililitros</option>
+                <option>Porcentaje</option>
+                <option>Volumen</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Vía de Administración</label>
+              <select class="form-control" name="via_administracion[]">
+                <option>Oral</option>
+                <option>Tópico</option>
+                <option>Intramuscular</option>
+                <option>Subcutáneo</option>
+                <option>Intravenoso</option>
+                <option>Intrarectal</option>
+                <option>Vaginal</option>
+                <option>Subdérmico</option>
+                <option>Ótico</option>
+                <option>Óptico</option>
+                <option>Intranasal</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Cantidad</label>
+              <input type="text" class="form-control" name="cantidad[]" placeholder="Ingrese la cantidad">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Frecuencia</label>
+              <input type="text" class="form-control" name="frecuencia[]" placeholder="Ingrese la frecuencia">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Fecha de Inicio</label>
+              <input type="date" class="form-control" name="fecha_inicio[]">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-control-label">Fecha de Finalización</label>
+              <input type="date" class="form-control" name="fecha_finalizacion[]">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="form-control-label">Indicación</label>
+              <textarea class="form-control" name="indicacion[]" rows="3" placeholder="Ingrese las indicaciones"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+        <button type="button" class="btn btn-danger btn-sm eliminar-medicamento mt-2">Eliminar</button>
+  <hr>
+      `;
+      document.getElementById('medicamentos').appendChild(div);
+      div.querySelector('.eliminar-medicamento').addEventListener('click', function() {
+                    div.remove();
+                });
     });
   });
 </script>
-{% endblock content %}
+{% endblock %}
