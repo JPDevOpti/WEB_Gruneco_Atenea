@@ -21,6 +21,8 @@
 </div>
 <!-- Page content -->
 <div class="container-fluid mt--6">
+  <form method="post" action="{% url 'guardar_examen_neurologico' %}">
+    {% csrf_token %}
   <div class="row">
     <div class="col">
       <div class="card">
@@ -34,8 +36,7 @@
         </div>
         <!-- Card body -->
         <div class="card-body">
-          <form method="post" action="{% url 'guardar_examen_neurologico' %}">
-            {% csrf_token %}
+       
             <input type="hidden" name="visita_examen" value="{{ visita_examen }}">
             <input type="hidden" name="paciente_id" value="{{ paciente_id }}">
 
@@ -173,20 +174,804 @@
                 </div>
               </div>
             </div>
-
-            <!-- Continuar con las demás secciones... -->
-
-            <!-- Botones de acción -->
-            <div class="row mt-4">
-              <div class="col-12 text-right">
-                <button type="submit" class="btn btn-primary">Guardar Examen</button>
-                <button type="button" class="btn btn-secondary">Cancelar</button>
+            <div class="row mt-4">            
+            <!-- Color Disco -->
+            <div class="col-md-4">
+              <label class="form-control-label">Color Disco</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="color_disco_normal" value="Normal"> Normal
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="color_disco_anormal" value="Anormal"> Anormal
               </div>
             </div>
-          </form>
+            
+            <!-- Bordes -->
+            <div class="col-md-4">
+              <label class="form-control-label">Bordes</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="bordes_normal" value="Normal"> Normal
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="bordes_anormal" value="Anormal"> Anormal
+              </div>
+            </div>
+            
+            <!-- Pupilas -->
+            <div class="col-md-4">
+              <label class="form-control-label">Pupilas</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pupilas_normal" value="Normal"> Normal
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="pupilas_anormal" value="Anormal"> Anormal
+              </div>
+            </div>
+  
+          <div class="row mt-3">
+            <!-- Reflejo Fotomotor -->
+            <div class="col-md-4">
+              <label class="form-control-label">Reflejo Fotomotor</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="reflejo_fotomotor_normal" value="Normal"> Normal
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="reflejo_fotomotor_anormal" value="Anormal"> Anormal
+              </div>
+            </div>
+            
+            <!-- Visión de los colores -->
+            <div class="col-md-4">
+              <label class="form-control-label">Visión de los colores</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="vision_colores_normal" value="Normal"> Normal
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="vision_colores_anormal" value="Anormal"> Anormal
+              </div>
+            </div>
+            
+            <!-- Observaciones -->
+            <div class="col-md-4">
+              <label class="form-control-label">Observaciones</label>
+              <textarea class="form-control" name="observaciones" rows="2"></textarea>
+            </div>
+          </div>
+  
+
+            <!-- Continuar con las demás secciones... -->
+             <!-- Subsección: III, IV y VI Par Craneal -->
+<div class="row mt-4">
+  <div class="col-md-12">
+    <h5>III Par (Motor Ocular Común) / IV Par (Troclear) / VI Par (Motor Ocular Externo)</h5>
+  </div>
+  
+  <!-- Diplopía -->
+  <div class="col-md-4">
+    <label class="form-control-label" for="diplopia">Diplopía</label>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="diplopia" name="diplopia" value="Diplopía">
+      <label class="form-check-label" for="diplopia">Diplopía</label>
+    </div>
+  </div>
+
+  <!-- Ptosis palpebral -->
+  <div class="col-md-4">
+    <label class="form-control-label" for="ptosis_palpebral">Ptosis palpebral</label>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="ptosis_palpebral" name="ptosis_palpebral" value="Ptosis palpebral">
+      <label class="form-check-label" for="ptosis_palpebral">Ptosis palpebral</label>
+    </div>
+  </div>
+
+  <!-- Desviaciones oculares -->
+  <div class="col-md-4">
+    <label class="form-control-label" for="desviaciones_oculares">Desviaciones oculares</label>
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="desviaciones_oculares" name="desviaciones_oculares" value="Desviaciones oculares">
+      <label class="form-check-label" for="desviaciones_oculares">Desviaciones oculares</label>
+    </div>
+  </div>
+</div>
+
+<!-- Segunda fila -->
+<div class="row mt-3">
+  <!-- Elevación del párpado superior -->
+  <div class="col-md-4">
+    <label class="form-control-label d-block">Elevación del párpado superior</label>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="elevacion_normal" name="elevacion_parpado" value="Normal">
+      <label class="form-check-label" for="elevacion_normal">Normal</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="elevacion_anormal" name="elevacion_parpado" value="Anormal">
+      <label class="form-check-label" for="elevacion_anormal">Anormal</label>
+    </div>
+  </div>
+
+  <!-- Movimientos oculares -->
+  <div class="col-md-4">
+    <label class="form-control-label d-block">Movimientos oculares</label>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="movimientos_oculares_normal" name="movimientos_oculares" value="Normal">
+      <label class="form-check-label" for="movimientos_oculares_normal">Normal</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="movimientos_oculares_anormal" name="movimientos_oculares" value="Anormal">
+      <label class="form-check-label" for="movimientos_oculares_anormal">Anormal</label>
+    </div>
+  </div>
+
+  <!-- Mirada conjugada -->
+  <div class="col-md-4">
+    <label class="form-control-label d-block">Mirada conjugada</label>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="mirada_conjugada_normal" name="mirada_conjugada" value="Normal">
+      <label class="form-check-label" for="mirada_conjugada_normal">Normal</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="radio" id="mirada_conjugada_anormal" name="mirada_conjugada" value="Anormal">
+      <label class="form-check-label" for="mirada_conjugada_anormal">Anormal</label>
+    </div>
+  </div>
+</div>
+
+          <!-- Tercera fila -->
+          <div class="row mt-3">
+            <!-- Movimientos de seguimiento -->
+            <div class="col-md-4">
+              <label class="form-control-label d-block">Movimientos de seguimiento</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="seguimiento_normal" name="movimientos_seguimiento" value="Normal">
+                <label class="form-check-label" for="seguimiento_normal">Normal</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" id="seguimiento_anormal" name="movimientos_seguimiento" value="Anormal">
+                <label class="form-check-label" for="seguimiento_anormal">Anormal</label>
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="col-md-8">
+              <label class="form-control-label" for="observaciones_par_craneales">Observaciones</label>
+              <textarea class="form-control" id="observaciones_par_craneales" name="observaciones_par_craneales" rows="2"></textarea>
+            </div>
+          </div>
+
+          <!-- Subsección: V Par Craneal (Trigémino) -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>V Par (Trigémino)</h5>
+              </div>
+              
+              <!-- Tacto superficial -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Tacto superficial</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tacto_frente" name="tacto_superficial[]" value="Frente y globo ocular">
+                  <label class="form-check-label" for="tacto_frente">Frente y globo ocular</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tacto_parpado" name="tacto_superficial[]" value="Párpado inferior / Labio superior">
+                  <label class="form-check-label" for="tacto_parpado">Párpado inferior / Labio superior</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tacto_labio" name="tacto_superficial[]" value="Labio Inferior / Mentón">
+                  <label class="form-check-label" for="tacto_labio">Labio Inferior / Mentón</label>
+                </div>
+              </div>
+
+              <!-- Dolor -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Dolor</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_frente" name="dolor[]" value="Frente y globo ocular">
+                  <label class="form-check-label" for="dolor_frente">Frente y globo ocular</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_parpado" name="dolor[]" value="Párpado inferior / Labio superior">
+                  <label class="form-check-label" for="dolor_parpado">Párpado inferior / Labio superior</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_labio" name="dolor[]" value="Labio Inferior / Mentón">
+                  <label class="form-check-label" for="dolor_labio">Labio Inferior / Mentón</label>
+                </div>
+              </div>
+
+              <!-- Temperatura -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Temperatura</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="temp_frente" name="temperatura[]" value="Frente y globo ocular">
+                  <label class="form-check-label" for="temp_frente">Frente y globo ocular</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="temp_parpado" name="temperatura[]" value="Párpado inferior / Labio superior">
+                  <label class="form-check-label" for="temp_parpado">Párpado inferior / Labio superior</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="temp_labio" name="temperatura[]" value="Labio Inferior / Mentón">
+                  <label class="form-check-label" for="temp_labio">Labio Inferior / Mentón</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Segunda fila -->
+            <div class="row mt-3">
+              <!-- Fuerza -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Fuerza</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fuerza_maseteros" name="fuerza[]" value="Maseteros">
+                  <label class="form-check-label" for="fuerza_maseteros">Maseteros</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fuerza_temporales" name="fuerza[]" value="Temporales">
+                  <label class="form-check-label" for="fuerza_temporales">Temporales</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fuerza_pterigoideos" name="fuerza[]" value="Pterigoideos">
+                  <label class="form-check-label" for="fuerza_pterigoideos">Pterigoideos</label>
+                </div>
+              </div>
+
+              <!-- Trofismo -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Trofismo</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="trofismo_maseteros" name="trofismo[]" value="Maseteros">
+                  <label class="form-check-label" for="trofismo_maseteros">Maseteros</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="trofismo_temporales" name="trofismo[]" value="Temporales">
+                  <label class="form-check-label" for="trofismo_temporales">Temporales</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="trofismo_pterigoideos" name="trofismo[]" value="Pterigoideos">
+                  <label class="form-check-label" for="trofismo_pterigoideos">Pterigoideos</label>
+                </div>
+              </div>
+
+              <!-- Observaciones -->
+              <div class="col-md-4">
+                <label class="form-control-label" for="observaciones_trigemino">Observaciones</label>
+                <textarea class="form-control" id="observaciones_trigemino" name="observaciones_trigemino" rows="2"></textarea>
+              </div>
+            </div>
+
+            <!-- VII Par Craneal (Facial) -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>VII Par (Facial)</h5>
+              </div>
+
+              <!-- Mímica facial -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Mímica facial</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="mimica_frente" name="mimica_facial[]" value="Frente">
+                  <label class="form-check-label" for="mimica_frente">Frente</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="mimica_parpados" name="mimica_facial[]" value="Párpados">
+                  <label class="form-check-label" for="mimica_parpados">Párpados</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="mimica_nasal" name="mimica_facial[]" value="Elevación nasal">
+                  <label class="form-check-label" for="mimica_nasal">Elevación nasal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="mimica_buccinadores" name="mimica_facial[]" value="Buccinadores">
+                  <label class="form-check-label" for="mimica_buccinadores">Buccinadores</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="mimica_orbicular" name="mimica_facial[]" value="Orbicular de los labios">
+                  <label class="form-check-label" for="mimica_orbicular">Orbicular de los labios</label>
+                </div>
+              </div>
+
+              <!-- Gusto en tercios anteriores de la lengua -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Gusto en tercios anteriores de la lengua</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="gusto_normal" name="gusto_lengua" value="Normal">
+                  <label class="form-check-label" for="gusto_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="gusto_anormal" name="gusto_lengua" value="Anormal">
+                  <label class="form-check-label" for="gusto_anormal">Anormal</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIII Par Craneal (Auditivo) -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>VIII Par (Auditivo)</h5>
+              </div>
+
+              <!-- Hipoacusia, Tínitus, Acúfenos -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Alteraciones auditivas</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="hipoacusia" name="auditivo[]" value="Hipoacusia">
+                  <label class="form-check-label" for="hipoacusia">Hipoacusia</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tinitus" name="auditivo[]" value="Tínitus">
+                  <label class="form-check-label" for="tinitus">Tínitus</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="acufenos" name="auditivo[]" value="Acúfenos">
+                  <label class="form-check-label" for="acufenos">Acúfenos</label>
+                </div>
+              </div>
+
+              <!-- Pruebas de Weber y Rinne -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Prueba de Weber</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="weber_normal" name="weber" value="Normal">
+                  <label class="form-check-label" for="weber_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="weber_anormal" name="weber" value="Anormal">
+                  <label class="form-check-label" for="weber_anormal">Anormal</label>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Prueba de Rinne</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="rinne_normal" name="rinne" value="Normal">
+                  <label class="form-check-label" for="rinne_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="rinne_anormal" name="rinne" value="Anormal">
+                  <label class="form-check-label" for="rinne_anormal">Anormal</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Vértigo, Mareo, Nistagmus -->
+            <div class="row mt-3">
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Equilibrio</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="vertigo" name="equilibrio[]" value="Vértigo">
+                  <label class="form-check-label" for="vertigo">Vértigo</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="mareo" name="equilibrio[]" value="Mareo">
+                  <label class="form-check-label" for="mareo">Mareo</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="nistagmus" name="equilibrio[]" value="Nistagmus">
+                  <label class="form-check-label" for="nistagmus">Nistagmus</label>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <label class="form-control-label" for="observaciones_auditivo">Observaciones</label>
+                <textarea class="form-control" id="observaciones_auditivo" name="observaciones_auditivo" rows="2"></textarea>
+              </div>
+            </div>
+
+                        <!-- IX y X Par Craneal (Glosofaríngeo y Vago) -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>IX y X Par (Glosofaríngeo y Vago)</h5>
+              </div>
+
+              <!-- Alteraciones de la voz -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Alteraciones de la voz</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="disfonia" name="voz[]" value="Disfonía">
+                  <label class="form-check-label" for="disfonia">Disfonía</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="afonia" name="voz[]" value="Afonía">
+                  <label class="form-check-label" for="afonia">Afonía</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="voz_nasal" name="voz[]" value="Voz Nasal">
+                  <label class="form-check-label" for="voz_nasal">Voz Nasal</label>
+                </div>
+              </div>
+
+              <!-- Deglución y saliva -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Deglución y saliva</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="disfagia" name="deglucion[]" value="Disfagia">
+                  <label class="form-check-label" for="disfagia">Disfagia</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="sialorrea" name="deglucion[]" value="Sialorrea">
+                  <label class="form-check-label" for="sialorrea">Sialorrea</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_faringe" name="deglucion[]" value="Dolor en faringe">
+                  <label class="form-check-label" for="dolor_faringe">Dolor en faringe</label>
+                </div>
+              </div>
+
+              <!-- Reflejo nauseoso y estructuras orales -->
+              <div class="col-md-4">
+                <label class="form-control-label d-block">Reflejos y estructuras orales</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="reflejo_nauseoso_normal" name="reflejo_nauseoso" value="Normal">
+                  <label class="form-check-label" for="reflejo_nauseoso_normal">Reflejo Nauseoso - Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="reflejo_nauseoso_anormal" name="reflejo_nauseoso" value="Anormal">
+                  <label class="form-check-label" for="reflejo_nauseoso_anormal">Reflejo Nauseoso - Anormal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="uvula_normal" name="uvula" value="Normal">
+                  <label class="form-check-label" for="uvula_normal">Posición de la úvula - Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="uvula_anormal" name="uvula" value="Anormal">
+                  <label class="form-check-label" for="uvula_anormal">Posición de la úvula - Anormal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="paladar_normal" name="paladar" value="Normal">
+                  <label class="form-check-label" for="paladar_normal">Paladar - Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="paladar_anormal" name="paladar" value="Anormal">
+                  <label class="form-check-label" for="paladar_anormal">Paladar - Anormal</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gusto en tercio posterior de la lengua -->
+            <div class="row mt-3">
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Gusto en tercio posterior de la lengua</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="gusto_posterior_normal" name="gusto_posterior" value="Normal">
+                  <label class="form-check-label" for="gusto_posterior_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="gusto_posterior_anormal" name="gusto_posterior" value="Anormal">
+                  <label class="form-check-label" for="gusto_posterior_anormal">Anormal</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- XI Par Craneal (Espinal Accesorio) -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>XI Par (Espinal Accesorio)</h5>
+              </div>
+
+              <!-- Movimientos del cuello -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Movimientos del cuello</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="cuello_normal" name="movimientos_cuello" value="Normal">
+                  <label class="form-check-label" for="cuello_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="cuello_anormal" name="movimientos_cuello" value="Anormal">
+                  <label class="form-check-label" for="cuello_anormal">Anormal</label>
+                </div>
+              </div>
+
+              <!-- Elevación de los hombros -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Elevación de los hombros</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="hombros_normal" name="elevacion_hombros" value="Normal">
+                  <label class="form-check-label" for="hombros_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="hombros_anormal" name="elevacion_hombros" value="Anormal">
+                  <label class="form-check-label" for="hombros_anormal">Anormal</label>
+                </div>
+              </div>
+
+              <!-- Atrofia lingual -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Atrofia lingual</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="atrofia_lingual" name="atrofia_lingual" value="N/A">
+                  <label class="form-check-label" for="atrofia_lingual">N/A</label>
+                </div>
+              </div>
+
+              <!-- Observaciones XI Par -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block" for="observaciones_xi">Observaciones</label>
+                <textarea class="form-control" id="observaciones_xi" name="observaciones_xi" rows="2" placeholder="Ingrese observaciones..."></textarea>
+              </div>
+            </div>
+
+            <!-- XII Par Craneal (Hipogloso) -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>XII Par (Hipogloso)</h5>
+              </div>
+
+              <!-- Fasciculaciones linguales -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Fasciculaciones linguales</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="fasciculaciones" name="fasciculaciones" value="N/A">
+                  <label class="form-check-label" for="fasciculaciones">N/A</label>
+                </div>
+              </div>
+
+              <!-- Movimientos de la lengua -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Movimientos de la lengua</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="lengua_normal" name="movimientos_lengua" value="Normal">
+                  <label class="form-check-label" for="lengua_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="lengua_anormal" name="movimientos_lengua" value="Anormal">
+                  <label class="form-check-label" for="lengua_anormal">Anormal</label>
+                </div>
+              </div>
+
+              <!-- Observaciones XII Par -->
+              <div class="col-md-12">
+                <label class="form-control-label d-block" for="observaciones_xii">Observaciones</label>
+                <textarea class="form-control" id="observaciones_xii" name="observaciones_xii" rows="2" placeholder="Ingrese observaciones..."></textarea>
+              </div>
+            </div>
+            </div>
+
         </div>
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Examen Neurológico</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Card body -->
+        <div class="card-body">
+                      <!-- Sensibilidad -->
+            <div class="row mt-4">
+              <div class="col-md-12">
+                <h5>Sensibilidad</h5>
+              </div>
+
+              <!-- Dolor al pinchazo -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Dolor al pinchazo</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_cuello" name="dolor_cuello">
+                  <label class="form-check-label" for="dolor_cuello">Cuello</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_torax" name="dolor_torax">
+                  <label class="form-check-label" for="dolor_torax">Tórax</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_miembros_sup" name="dolor_miembros_sup">
+                  <label class="form-check-label" for="dolor_miembros_sup">Miembros Superiores</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_abdomen" name="dolor_abdomen">
+                  <label class="form-check-label" for="dolor_abdomen">Abdomen</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="dolor_miembros_inf" name="dolor_miembros_inf">
+                  <label class="form-check-label" for="dolor_miembros_inf">Miembros Inferiores</label>
+                </div>
+              </div>
+
+              <!-- Táctil superficial -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Táctil superficial</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tactil_cuello" name="tactil_cuello">
+                  <label class="form-check-label" for="tactil_cuello">Cuello</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tactil_torax" name="tactil_torax">
+                  <label class="form-check-label" for="tactil_torax">Tórax</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tactil_miembros_sup" name="tactil_miembros_sup">
+                  <label class="form-check-label" for="tactil_miembros_sup">Miembros Superiores</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tactil_abdomen" name="tactil_abdomen">
+                  <label class="form-check-label" for="tactil_abdomen">Abdomen</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="tactil_miembros_inf" name="tactil_miembros_inf">
+                  <label class="form-check-label" for="tactil_miembros_inf">Miembros Inferiores</label>
+                </div>
+              </div>
+
+              <!-- Discriminación térmica -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Discriminación térmica</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="termica_cuello" name="termica_cuello">
+                  <label class="form-check-label" for="termica_cuello">Cuello</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="termica_torax" name="termica_torax">
+                  <label class="form-check-label" for="termica_torax">Tórax</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="termica_miembros_sup" name="termica_miembros_sup">
+                  <label class="form-check-label" for="termica_miembros_sup">Miembros Superiores</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="termica_abdomen" name="termica_abdomen">
+                  <label class="form-check-label" for="termica_abdomen">Abdomen</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="termica_miembros_inf" name="termica_miembros_inf">
+                  <label class="form-check-label" for="termica_miembros_inf">Miembros Inferiores</label>
+                </div>
+              </div>
+
+              <!-- Sensibilidad vibratoria y propiocepción -->
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Sensibilidad vibratoria</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="vibratoria_normal" name="vibratoria" value="Normal">
+                  <label class="form-check-label" for="vibratoria_normal">Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="vibratoria_anormal" name="vibratoria" value="Anormal">
+                  <label class="form-check-label" for="vibratoria_anormal">Anormal</label>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-control-label d-block">Propiocepción</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="propio_sup_normal" name="propio_sup" value="Normal">
+                  <label class="form-check-label" for="propio_sup_normal">Miembros Superiores - Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="propio_sup_anormal" name="propio_sup" value="Anormal">
+                  <label class="form-check-label" for="propio_sup_anormal">Miembros Superiores - Anormal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="propio_inf_normal" name="propio_inf" value="Normal">
+                  <label class="form-check-label" for="propio_inf_normal">Miembros Inferiores - Normal</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="propio_inf_anormal" name="propio_inf" value="Anormal">
+                  <label class="form-check-label" for="propio_inf_anormal">Miembros Inferiores - Anormal</label>
+                </div>
+              </div>
+
+              <!-- Observaciones -->
+              <div class="col-md-12 mt-3">
+                <label class="form-control-label d-block" for="observaciones_sensibilidad">Observaciones</label>
+                <textarea class="form-control" id="observaciones_sensibilidad" name="observaciones_sensibilidad" rows="2" placeholder="Ingrese observaciones..."></textarea>
+              </div>
+            </div>
+            <div class="container mt-4">
+              <h5>Evaluación de Reflejos</h5>
+
+              <!-- Reflejos normales -->
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="form-control-label">Maseteriano Izquierdo</label>
+                  <select class="form-control" name="maseteriano_izquierdo">
+                    <option value="0">0. Sin respuesta (arreflexia)</option>
+                    <option value="1">1. Respuesta disminuida (hiporreflexia)</option>
+                    <option value="2" selected>2. Respuesta Normal</option>
+                    <option value="3">3. Respuesta Aumentada (hiperreflexia)</option>
+                    <option value="4">4. Clonus agotable</option>
+                    <option value="5">5. Clonus permanente</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-control-label">Maseteriano Derecho</label>
+                  <select class="form-control" name="maseteriano_derecho">
+                    <option value="0">0. Sin respuesta (arreflexia)</option>
+                    <option value="1">1. Respuesta disminuida (hiporreflexia)</option>
+                    <option value="2" selected>2. Respuesta Normal</option>
+                    <option value="3">3. Respuesta Aumentada (hiperreflexia)</option>
+                    <option value="4">4. Clonus agotable</option>
+                    <option value="5">5. Clonus permanente</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <label class="form-control-label">Tricipital Izquierdo</label>
+                  <select class="form-control" name="tricipital_izquierdo">
+                    <option value="0">0. Sin respuesta (arreflexia)</option>
+                    <option value="1">1. Respuesta disminuida (hiporreflexia)</option>
+                    <option value="2" selected>2. Respuesta Normal</option>
+                    <option value="3">3. Respuesta Aumentada (hiperreflexia)</option>
+                    <option value="4">4. Clonus agotable</option>
+                    <option value="5">5. Clonus permanente</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-control-label">Tricipital Derecho</label>
+                  <select class="form-control" name="tricipital_derecho">
+                    <option value="0">0. Sin respuesta (arreflexia)</option>
+                    <option value="1">1. Respuesta disminuida (hiporreflexia)</option>
+                    <option value="2" selected>2. Respuesta Normal</option>
+                    <option value="3">3. Respuesta Aumentada (hiperreflexia)</option>
+                    <option value="4">4. Clonus agotable</option>
+                    <option value="5">5. Clonus permanente</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Reflejos patológicos -->
+              <h5 class="mt-4">Reflejos Patológicos</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="glabela" name="glabela" value="Anormal">
+                    <label class="form-check-label" for="glabela">Reflejo Glabela</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="succion" name="succion" value="Anormal">
+                    <label class="form-check-label" for="succion">Reflejo de Succión</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="palmomentoniano" name="palmomentoniano" value="Anormal">
+                    <label class="form-check-label" for="palmomentoniano">Reflejo Palmomentoniano</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="hoffman" name="hoffman" value="Anormal">
+                    <label class="form-check-label" for="hoffman">Reflejo de Hoffman</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="palmar" name="palmar" value="Anormal">
+                    <label class="form-check-label" for="palmar">Reflejo Palmar</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="marinesco" name="marinesco" value="Anormal">
+                    <label class="form-check-label" for="marinesco">Reflejo de Marinesco</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Observaciones -->
+              <div class="row mt-4">
+                <div class="col-md-12">
+                  <label class="form-control-label">Observaciones</label>
+                  <textarea class="form-control" name="observaciones" rows="3" placeholder="Ingrese observaciones aquí..."></textarea>
+                </div>
+              </div>
+            </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+              <!-- Botones de acción -->
+              <div class="row mt-4">
+                <div class="col-12 text-right">
+                  <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                  <button type="button" class="btn btn-secondary">Cancelar</button>
+                </div>
+              </div>
+            </form>
 </div>
+
+
 {% endblock content %}
