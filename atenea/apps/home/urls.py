@@ -15,8 +15,6 @@ urlpatterns = [
     path('index/', views.index, name='index'), #pagina de inicio de atenea
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('events/', views.logout_view, name='logout'), # pagina de eventos 
-
 
     #resgistro de pacientes 
     path('registro_demografico/', views.registro_demografico, name='registro_demografico'),
@@ -28,14 +26,23 @@ urlpatterns = [
     #examenes
     path('descargar-examen/<int:visita_examen_id>/', descargar_examen, name='descargar_examen'),
     path('examen/<int:visita_id>/<int:examen_id>/<int:paciente_id>/', views.realizar_examen, name='realizar_examen'),
+    
+    #Historia clinica examenes 
     path('guardar-examen-general/', views.guardar_examen_general_revisionsistemas, name='guardar_examen'),
     path('guardar-examen-fisico/', views.guardar_examen_fisico, name='guardar_examen_fisico'),
     path('guardar-examen-antecedentes', views.guardar_examen_antecedentes, name='guardar_examen_antecedentes'),
+    path('guardar-examen-medicamentos', views.guardar_examen_medicamentos, name='guardar_examen_medicamentos'),
     
-    # Nueva ruta para proyectos
+    path('guardar-examen-analisis', views.guardar_examen_analisis, name='guardar_examen_analisis'),
+    path('guardar-examen-neurologico', views.guardar_examen_neurologico, name='guardar_examen_neurologico'),
+    
+    #proyectos
     path('proyectos/', views.proyectos, name='proyectos'),
-    path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
     path('proyecto/eliminar/<int:id>/', views.eliminar_proyecto, name='eliminar_proyecto'),
+    
+    #visitas
+    path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
+    path('visita/eliminar/<int:id>/', views.eliminar_visita, name='eliminar_visita'),
 
     #estadisticas
     path('estadisticas/', views.estadisticas, name='estadisticas'),
