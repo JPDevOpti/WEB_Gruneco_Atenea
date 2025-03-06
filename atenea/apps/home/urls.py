@@ -6,14 +6,17 @@ Copyright (c) 2019 - present AppSeed.us
 from django.urls import path, re_path
 from apps.home import views
 from .views import login_view
+from .views import descargar_examen
 
 urlpatterns = [
 
     # The home page
-    path('', views.home, name='home'),
-    path('index/', views.index, name='index'),
+    path('', views.home, name='home'), # pagina de inicio gruneco.com.co
+    path('index/', views.index, name='index'), #pagina de inicio de atenea
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('events/', views.logout_view, name='logout'), # pagina de eventos 
+
 
     #resgistro de pacientes 
     path('registro_demografico/', views.registro_demografico, name='registro_demografico'),
@@ -23,7 +26,7 @@ urlpatterns = [
     path('editar_paciente/<int:numero_documento>/editar', views.editar_paciente, name='editar_paciente'),
 
     #examenes
-    path('descargar_examen/<int:visita_examen_id>/', views.descargar_examen, name='descargar_examen'),
+    path('descargar-examen/<int:visita_examen_id>/', descargar_examen, name='descargar_examen'),
     path('examen/<int:visita_id>/<int:examen_id>/<int:paciente_id>/', views.realizar_examen, name='realizar_examen'),
     path('guardar-examen-general/', views.guardar_examen_general_revisionsistemas, name='guardar_examen'),
     path('guardar-examen-fisico/', views.guardar_examen_fisico, name='guardar_examen_fisico'),

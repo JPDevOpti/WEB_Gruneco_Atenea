@@ -19,6 +19,11 @@ from .forms import  ProyectoForm,RegistroDemograficoForm,AnamnesisForm
 import json
 from reportlab.pdfgen import canvas
 from io import BytesIO
+from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from weasyprint import HTML
+from .models import VisitaExamen
 
 #vista principal
 def home(request):
@@ -655,22 +660,30 @@ def guardar_examen_antecedentes(request):
           
 @login_required
 def descargar_examen(request, visita_examen_id):
-    visita_examen = VisitaExamen.objects.get(id=visita_examen_id)
+    # Obtener el objeto VisitaExamen
+    visita_examen = get_object_or_404(VisitaExamen, id=visita_examen_id)
+    
+    # Obtener los resultados del examen desde ResultadoExamen
     resultado_examen = ResultadoExamen.objects.filter(visita_examen=visita_examen).first()
+    
+    if not resultado_examen or not resultado_examen.resultado:
+        return HttpResponse("No hay resultados para este examen.", status=404)
+    
+    resultados = resultado_examen.resultado  # Esto es el JSON con los datos del examen
 
-    # Crear un buffer para el PDF
-    buffer = BytesIO()
+    # Renderizar el HTML con los datos
+    html_string = render_to_string('sleepexams/examen_pdf.html', {
+        'visita_examen': visita_examen,
+        'resultados': resultados,  # Pasamos el JSON a la plantilla
+    })
 
-    # Crear el PDF
-    p = canvas.Canvas(buffer)
-    p.drawString(100, 750, f"Examen: {visita_examen.examen.nombre}")
-    p.drawString(100, 730, f"Fecha: {visita_examen.visita.fecha}")
-    p.drawString(100, 710, f"Resultado: {resultado_examen.resultado}")
-    p.showPage()
-    p.save()
+    # Crear un objeto HTML de WeasyPrint
+    html = HTML(string=html_string)
+    
+    # Generar el PDF
+    pdf = html.write_pdf()
 
-    # Obtener el valor del buffer y devolverlo como respuesta
-    buffer.seek(0)
-    response = HttpResponse(buffer, content_type='application/pdf')
+    # Devolver el PDF como una respuesta HTTP
+    response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="examen_{visita_examen.id}.pdf"'
-    return response    
+    return response

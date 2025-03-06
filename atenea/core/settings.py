@@ -78,12 +78,10 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ateneagrunecodb',
         'USER': 'root',
-        'PASSWORD': '@tene@2025',
+        'PASSWORD': '4123',
         'HOST': 'localhost',  # O la dirección de tu servidor MySQL
         'PORT': '3306',  # Puerto por defecto de MySQL
-        'OPTIONS': {
-            'unix_socket': '/opt/bitnami/mariadb/tmp/mysql.sock',
-        },
+        #'OPTIONS': {'unix_socket': '/opt/bitnami/mariadb/tmp/mysql.sock',},
     }
 }
 

@@ -142,28 +142,40 @@
                                                  <!-- Botón para descargar el PDF -->
                                                   <a href="{% url 'descargar_examen' visita_examen.id %}" class="btn btn-success btn-sm">Descargar PDF</a>
 
-                                                <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1" aria-labelledby="modalExamenLabel{{ visita_examen.id }}" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
+                                                  <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1" aria-labelledby="modalExamenLabel{{ visita_examen.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                      <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="modalExamenLabel{{ visita_examen.id }}">{{ visita_examen.examen.nombre }}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                          <h5 class="modal-title" id="modalExamenLabel{{ visita_examen.id }}">{{ visita_examen.examen.nombre }}</h5>
+                                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha }}</p>
+                                                          <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha }}</p>
+                                                          <h6>Resultados del Examen:</h6>
+                                                          <ul class="list-group">
                                                             {% for key, value in resultados_examenes.items %}
-                                                                {% if key == visita_examen.id %}
-                                                                    <p><strong>Resultado:</strong> {{ value }}</p>
-                                                                {% endif %}
+                                                              {% if key == visita_examen.id %}
+                                                                {% for area, datos in value.items %}
+                                                                  <li class="list-group-item">
+                                                                    <strong>{{ area }}</strong>
+                                                                    <ul>
+                                                                      <li>Síntoma: {{ datos.sintoma_general|default:"N/A" }}</li>
+                                                                      <li>Detalle: {{ datos.detalle_sintoma_general|default:"N/A" }}</li>
+                                                                      <li>Tiempo: {{ datos.tiempo_sintoma_general|default:"N/A" }}</li>
+                                                                      <li>Características: {{ datos.caracteristicas_sintoma_general|default:"N/A" }}</li>
+                                                                    </ul>
+                                                                  </li>
+                                                                {% endfor %}
+                                                              {% endif %}
                                                             {% endfor %}
-                                                            <!-- Aquí puedes agregar más detalles del examen si es necesario -->
+                                                          </ul>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                                         </div>
+                                                      </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                  </div>
 
                                               {% else %}
                                                   <span class="badge bg-warning">Pendiente</span>
