@@ -14,6 +14,7 @@ urlpatterns = [
     path('index/', views.index, name='index'),
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('perfil/', views.perfil, name='perfil'),
 
     #resgistro de pacientes 
     path('registro_demografico/', views.registro_demografico, name='registro_demografico'),

@@ -69,7 +69,7 @@
                     <td>{{ paciente.fecha_nacimiento}}</td> <!-- Si 'género' es un campo de elección -->
                     <td>{{ paciente.ocupacion }}</td>
                     <td>
-                      <a href="{% url 'detalle_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Ver</a>
+                      <a href="{% url 'detalle_paciente' paciente.id %}" class="btn btn-sm btn-neutral">Ver</a>
                       <a href="{% url 'editar_paciente' paciente.numero_documento %}" class="btn btn-sm btn-neutral">Editar</a>
                       <a>
                         <form action="{% url 'eliminar_paciente' paciente.numero_documento %}" method="post" style="display: inline;">

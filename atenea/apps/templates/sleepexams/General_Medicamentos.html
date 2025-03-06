@@ -45,7 +45,9 @@
   <div class="row mt-4">
     <div class="col-12 text-right">
       <button type="submit" class="btn btn-primary">Guardar Examen</button>
-      <button type="button" class="btn btn-secondary">Cancelar</button>
+      <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+        Ver Paciente
+    </a>
     </div>
   </div>
  </form>
