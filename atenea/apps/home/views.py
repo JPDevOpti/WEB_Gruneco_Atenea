@@ -656,162 +656,69 @@ def guardar_examen_antecedentes(request):
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
    
 def guardar_examen_analisis(request):
-    if request.method == 'POST':
-        # Obtener los datos del formulario para antecedentes
-        datos_formulario_antecedentes = {
-            "Antecedentes Patológicos": {
-                "antecedente_patologico": request.POST.get('antecedente_patologico'),
-                "tipo_patologia": request.POST.get('tipo_patologia'),
-                "fecha_inicio_patologia": request.POST.get('fecha_inicio_patologia'),
-                "tratamiento_patologico": request.POST.get('tratamiento_patologico'),
-                "detalle_tratamiento_patologico": request.POST.get('detalle_tratamiento_patologico'),
-                "complicaciones_patologico": request.POST.get('complicaciones_patologico'),
-                "detalle_complicaciones_patologico": request.POST.get('detalle_complicaciones_patologico'),
-                "activo_patologico": request.POST.get('activo_patologico'),
-                "fecha_finalizacion_patologico": request.POST.get('fecha_finalizacion_patologico'),
-                "observaciones_patologico": request.POST.get('observaciones_patologico'),
-            },
-            "Antecedentes Quirúrgicos": {
-                "antecedente_quirurgico": request.POST.get('antecedente_quirurgico'),
-                "descripcion_quirurgico": request.POST.get('descripcion_quirurgico'),
-                "fecha_inicio_quirurgico": request.POST.get('fecha_inicio_quirurgico'),
-                "tratamiento_quirurgico": request.POST.get('tratamiento_quirurgico'),
-                "detalle_tratamiento_quirurgico": request.POST.get('detalle_tratamiento_quirurgico'),
-                "complicaciones_quirurgico": request.POST.get('complicaciones_quirurgico'),
-                "detalle_complicaciones_quirurgico": request.POST.get('detalle_complicaciones_quirurgico'),
-                "activo_quirurgico": request.POST.get('activo_quirurgico'),
-                "fecha_finalizacion_quirurgico": request.POST.get('fecha_finalizacion_quirurgico'),
-                "observaciones_quirurgico": request.POST.get('observaciones_quirurgico'),
-            },
-            "Antecedentes Farmacológicos": {
-                "antecedente_farmacologico": request.POST.get('antecedente_farmacologico'),
-                "descripcion_farmacologico": request.POST.get('descripcion_farmacologico'),
-                "fecha_inicio_farmacologico": request.POST.get('fecha_inicio_farmacologico'),
-                "tratamiento_farmacologico": request.POST.get('tratamiento_farmacologico'),
-                "detalle_tratamiento_farmacologico": request.POST.get('detalle_tratamiento_farmacologico'),
-                "complicaciones_farmacologico": request.POST.get('complicaciones_farmacologico'),
-                "detalle_complicaciones_farmacologico": request.POST.get('detalle_complicaciones_farmacologico'),
-                "activo_farmacologico": request.POST.get('activo_farmacologico'),
-                "fecha_finalizacion_farmacologico": request.POST.get('fecha_finalizacion_farmacologico'),
-                "observaciones_farmacologico": request.POST.get('observaciones_farmacologico'),
-            },
-            "Antecedentes Traumáticos": {
-                "antecedente_traumatico": request.POST.get('antecedente_traumatico'),
-                "descripcion_traumatico": request.POST.get('descripcion_traumatico'),
-                "fecha_inicio_traumatico": request.POST.get('fecha_inicio_traumatico'),
-                "tratamiento_traumatico": request.POST.get('tratamiento_traumatico'),
-                "detalle_tratamiento_traumatico": request.POST.get('detalle_tratamiento_traumatico'),
-                "complicaciones_traumatico": request.POST.get('complicaciones_traumatico'),
-                "detalle_complicaciones_traumatico": request.POST.get('detalle_complicaciones_traumatico'),
-                "activo_traumatico": request.POST.get('activo_traumatico'),
-                "fecha_finalizacion_traumatico": request.POST.get('fecha_finalizacion_traumatico'),
-                "observaciones_traumatico": request.POST.get('observaciones_traumatico'),
-            },
-            "Antecedentes Alérgicos": {
-                "antecedente_alergico": request.POST.get('antecedente_alergico'),
-                "descripcion_alergico": request.POST.get('descripcion_alergico'),
-                "fecha_inicio_alergico": request.POST.get('fecha_inicio_alergico'),
-                "tratamiento_alergico": request.POST.get('tratamiento_alergico'),
-                "detalle_tratamiento_alergico": request.POST.get('detalle_tratamiento_alergico'),
-                "complicaciones_alergico": request.POST.get('complicaciones_alergico'),
-                "detalle_complicaciones_alergico": request.POST.get('detalle_complicaciones_alergico'),
-                "activo_alergico": request.POST.get('activo_alergico'),
-                "fecha_finalizacion_alergico": request.POST.get('fecha_finalizacion_alergico'),
-                "observaciones_alergico": request.POST.get('observaciones_alergico'),
-            },
-            "Antecedentes Tóxicos": {
-                "antecedente_toxico": request.POST.get('antecedente_toxico'),
-                "tipo_toxico": request.POST.get('tipo_toxico'),
-                "fecha_inicio_toxico": request.POST.get('fecha_inicio_toxico'),
-                "tratamiento_toxico": request.POST.get('tratamiento_toxico'),
-                "detalle_tratamiento_toxico": request.POST.get('detalle_tratamiento_toxico'),
-                "complicaciones_toxico": request.POST.get('complicaciones_toxico'),
-                "detalle_complicaciones_toxico": request.POST.get('detalle_complicaciones_toxico'),
-                "activo_toxico": request.POST.get('activo_toxico'),
-                "fecha_finalizacion_toxico": request.POST.get('fecha_finalizacion_toxico'),
-                "observaciones_toxico": request.POST.get('observaciones_toxico'),
-            },
-            "Antecedentes Epidemiológicos": {
-                "antecedente_epidemiologico": request.POST.get('antecedente_epidemiologico'),
-                "descripcion_epidemiologico": request.POST.get('descripcion_epidemiologico'),
-                "fecha_inicio_epidemiologico": request.POST.get('fecha_inicio_epidemiologico'),
-                "tratamiento_epidemiologico": request.POST.get('tratamiento_epidemiologico'),
-                "detalle_tratamiento_epidemiologico": request.POST.get('detalle_tratamiento_epidemiologico'),
-                "complicaciones_epidemiologico": request.POST.get('complicaciones_epidemiologico'),
-                "detalle_complicaciones_epidemiologico": request.POST.get('detalle_complicaciones_epidemiologico'),
-                "activo_epidemiologico": request.POST.get('activo_epidemiologico'),
-                "fecha_finalizacion_epidemiologico": request.POST.get('fecha_finalizacion_epidemiologico'),
-                "observaciones_epidemiologico": request.POST.get('observaciones_epidemiologico'),
-            },
-            "Antecedentes Gineco-Obstétricos": {
-                "antecedente_gineco_obstetrico": request.POST.get('antecedente_gineco_obstetrico'),
-                "menarquia": request.POST.get('menarquia'),
-                "edad_menarquia": request.POST.get('edad_menarquia'),
-                "menopausia": request.POST.get('menopausia'),
-                "edad_menopausia": request.POST.get('edad_menopausia'),
-                "gravidez": request.POST.get('gravidez'),
-                "abortos": request.POST.get('abortos'),
-                "hijos_vivos": request.POST.get('hijos_vivos'),
-                "metodo_planificacion": request.POST.get('metodo_planificacion'),
-                "metodo_planificacion_detalle": request.POST.get('metodo_planificacion_detalle'),
-                "dosis_planificacion": request.POST.get('dosis_planificacion'),
-                "adherencia_planificacion": request.POST.get('adherencia_planificacion'),
-                "tolerancia_planificacion": request.POST.get('tolerancia_planificacion'),
-                "observaciones_gineco_obstetrico": request.POST.get('observaciones_gineco_obstetrico'),
-            },
-            "Antecedentes Hospitalizaciones": {
-                "antecedente_hospitalizacion": request.POST.get('antecedente_hospitalizacion'),
-                "causa_hospitalizacion": request.POST.get('causa_hospitalizacion'),
-                "fecha_inicio_hospitalizacion": request.POST.get('fecha_inicio_hospitalizacion'),
-                "duracion_hospitalizacion": request.POST.get('duracion_hospitalizacion'),
-                "observaciones_hospitalizacion": request.POST.get('observaciones_hospitalizacion'),
-            },
-            "Antecedentes Inmunizaciones": {
-                "antecedente_inmunizacion": request.POST.get('antecedente_inmunizacion'),
-                "vacuna_inmunizacion": request.POST.get('vacuna_inmunizacion'),
-                "numero_dosis_inmunizacion": request.POST.get('numero_dosis_inmunizacion'),
-                "fecha_ultima_dosis_inmunizacion": request.POST.get('fecha_ultima_dosis_inmunizacion'),
-                "observaciones_inmunizacion": request.POST.get('observaciones_inmunizacion'),
-            },
-            "Antecedentes Transfusionales": {
-                "antecedente_transfusional": request.POST.get('antecedente_transfusional'),
-                "motivo_transfusion": request.POST.get('motivo_transfusion'),
-                "numero_dosis_transfusion": request.POST.get('numero_dosis_transfusion'),
-                "fecha_ultima_dosis_transfusion": request.POST.get('fecha_ultima_dosis_transfusion'),
-                "observaciones_transfusion": request.POST.get('observaciones_transfusion'),
-            },
-            "Antecedentes Familiares": {
-                "antecedente_familiar": request.POST.get('antecedente_familiar'),
-                "tipo_antecedente_familiar": request.POST.get('tipo_antecedente_familiar'),
-                "parentesco_antecedente_familiar": request.POST.get('parentesco_antecedente_familiar'),
-                "observaciones_antecedente_familiar": request.POST.get('observaciones_antecedente_familiar'),
-            },
+     if request.method == "POST":
+        print("Guardando examen de análisis...")
+
+        # Estructura del análisis del examen
+        datos_formulario_analisis = {
+            "Analisis": {
+                "analisis_historia": request.POST.get("analisis_historia", ""),
+                "plan_tratamiento": request.POST.get("plan_tratamiento", ""),
+                "Diagnosticos_CIE10": [],
+                "Diagnosticos_DSMV": []
+            }
         }
 
+        # Obtener listas de diagnósticos CIE-10
+        cie10_codigos = request.POST.getlist("cie10_codigo[]")
+        cie10_diagnosticos = request.POST.getlist("cie10_diagnostico[]")
+        cie10_estados = request.POST.getlist("cie10_estado[]")
+
+        # Agregar diagnósticos CIE-10 a la estructura
+        for i in range(len(cie10_codigos)):
+            datos_formulario_analisis["Analisis"]["Diagnosticos_CIE10"].append({
+                "codigo": cie10_codigos[i],
+                "diagnostico": cie10_diagnosticos[i],
+                "estado": cie10_estados[i] if i < len(cie10_estados) else None
+            })
+
+        # Obtener listas de diagnósticos DSM-V
+        dsmv_codigos = request.POST.getlist("dsmv_codigo[]")
+        dsmv_diagnosticos = request.POST.getlist("dsmv_diagnostico[]")
+        dsmv_estados = request.POST.getlist("dsmv_estado[]")
+
+        # Agregar diagnósticos DSM-V a la estructura
+        for i in range(len(dsmv_codigos)):
+            datos_formulario_analisis["Analisis"]["Diagnosticos_DSMV"].append({
+                "codigo": dsmv_codigos[i],
+                "diagnostico": dsmv_diagnosticos[i],
+                "estado": dsmv_estados[i] if i < len(dsmv_estados) else None
+            })
+
         # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
-        paciente_id = request.POST.get('paciente_id') 
+        visita_examen_id = request.POST.get("visita_examen")
+        paciente_id = request.POST.get("paciente_id")  
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.numero_documento
-        
-        # Obtener o crear el VisitaExamen correspondiente
+
+        # Obtener o crear la VisitaExamen correspondiente
         visita_examen, created = VisitaExamen.objects.get_or_create(
             id=visita_examen_id
         )
-        
+
         # Crear o actualizar el registro de ResultadoExamen
         resultado_examen, created = ResultadoExamen.objects.get_or_create(
             visita_examen=visita_examen,
             paciente=paciente,
-            defaults={'resultado': datos_formulario_antecedentes}
+            defaults={'resultado': datos_formulario_analisis}
         )
 
         if not created:
-            resultado_examen.resultado = datos_formulario_antecedentes
+            resultado_examen.resultado = datos_formulario_analisis
             resultado_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
-     
+    
 def guardar_examen_neurologico(request):
     if request.method == 'POST':
         # Obtener los datos del formulario para antecedentes
