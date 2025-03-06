@@ -1,95 +1,218 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %} Dashboard {% endblock title %}
-
-<!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block title %} Perfil de Usuario {% endblock title %}
 
 {% block content %}
-<div class="header bg-primary pb-6">
-  <div class="container-fluid">
-    <div class="header-body">
-      <div class="row align-items-center py-4">
-        <div class="col-lg-6 col-5">
-          <h6 class="h2 text-white d-inline-block mb-0">Perfil</h6>
-          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-              <li class="breadcrumb-item"><a class="nav-link {% if 'index' in segment %} active {% endif %}" href="/index/"><i class="fas fa-home"></i></a></li>
-            </ol>
-          </nav>
-        </div>
+<style>
+  /* Efecto de elevación y cambio de color */
+  .card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Estilos para la foto de perfil */
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border: 5px solid #fff;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Estilos para el rol del usuario */
+  .user-role {
+    background: linear-gradient(45deg, #5e72e4, #825ee4);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+  }
+
+  /* Estilos para las estadísticas */
+  .stats-card {
+    background: linear-gradient(45deg, #5e72e4, #825ee4);
+    color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stats-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+
+  .stats-card p {
+    font-size: 1.2rem;
+    margin-bottom: 0;
+  }
+</style>
+
+<!-- Header con imagen de fondo -->
+<div class="header pb-6 d-flex align-items-center"
+     style="min-height: 300px; background-image: url(/static/assets/img/theme/tem_university.jpg); background-size: cover; background-position: center top;">
+  <!-- Máscara para el fondo -->
+  <span class="mask bg-gradient-default opacity-8"></span>
+  <!-- Contenedor del header -->
+  <div class="container-fluid d-flex align-items-center">
+    <div class="row">
+      <div class="col-lg-7 col-md-10">
+        <h1 class="display-2 text-white">Perfil de Usuario</h1>
+        <p class="text-white mt-0 mb-5" style="text-align: justify;">
+          Bienvenido a tu perfil en ATENEA. Aquí puedes ver tus datos personales, estadísticas y actividades recientes.
+        </p>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Contenido principal -->
 <div class="container-fluid mt--6">
   <div class="row">
-    <div class="col-xl-4 order-xl-1">
-      <div class="row justify-content-center">
-        <div class="card card-profile">
-          <div class="card-body pt-0">
-            <div class="row">
-              <div class="col-md-12 text-center">
-                <h5 class="h3 mt-4">{{ usuario.first_name }} {{ usuario.last_name }}</h5>
-                <p class="h6 text-muted">
-                  <i class="ni business_briefcase-24 mr-2"></i>{{ usuario.get_role_display }}
-                </p>
-                <p class="h6 text-muted">
-                  <i class="ni ni-email-83 mr-2"></i> {{ request.user.username }}
-                </p>
-                
-                <div class="mt-3">
-                  <!-- Formulario para cambiar la contraseña -->
-                  <form method="POST">
-                    {% csrf_token %}
-                    <div class="form-group">
-                      <label for="new_password">Nueva Contraseña</label>
-                      <input type="password" class="form-control" id="new_password" name="new_password" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="confirm_password">Confirmar Contraseña</label>
-                      <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                    </div>
-                    <button type="submit" class="btn btn-sm btn-neutral" onclick="return confirm('¿Estás seguro de que deseas cambiar la contraseña?');">
-                      Cambiar Contraseña
-                    </button>
-                  </form>
-                </div>
-              </div>
+    <!-- Columna derecha: Foto de perfil y estadísticas -->
+    <div class="col-xl-4 order-xl-2">
+      <!-- Tarjeta de perfil -->
+      <div class="card card-profile">
+        <div class="row justify-content-center">
+          <div class="col-lg-3 order-lg-2">
+            <div class="card-profile-image">
+              <a href="#">
+                <img src="/static/assets/img/theme/UdeA.jpeg" class="rounded-circle profile-picture">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body pt-0">
+          <div class="text-center">
+            <h3 class="h4">Juan Pérez</h3>
+            <div class="h5 font-weight-300">
+              <i class="ni location_pin mr-2"></i>Medellín, Colombia
+            </div>
+            <!-- Indicador de Rol -->
+            <div class="user-role">
+              <i class="ni ni-badge mr-2"></i>Investigador
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Tarjeta de estadísticas -->
+      <div class="card mt-4">
+        <div class="card-body stats-card">
+          <h3>Estadísticas</h3>
+          <p>Proyectos Activos: <strong>3</strong></p>
+          <p>Tareas Completadas: <strong>15</strong></p>
+          <p>Horas de Investigación: <strong>120</strong></p>
+        </div>
+      </div>
+
+      <!-- Formulario para cambiar la contraseña -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h3 class="card-title">Cambiar Contraseña</h3>
+          <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="new_password">Nueva Contraseña</label>
+              <input type="password" class="form-control" id="new_password" name="new_password" required>
+            </div>
+            <div class="form-group">
+              <label for="confirm_password">Confirmar Contraseña</label>
+              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" class="btn btn-primary" onclick="return confirm('¿Estás seguro de que deseas cambiar la contraseña?');">
+              Cambiar Contraseña
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
 
-    <div class="col-xl-8 order-xl-2">
+    <!-- Columna izquierda: Información detallada -->
+    <div class="col-xl-8 order-xl-1">
+      <!-- Tarjeta de información personal -->
       <div class="card">
         <div class="card-header">
-          <div class="row align-items-center">
-            <div class="col-8">
-              <h3 class="mb-0">Proyectos a los que se encuentra asociado</h3>
-            </div>
-          </div>
+          <h3 class="mb-0">Información Personal</h3>
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-12">
-              <!-- Lista de Visitas -->
-              <ul class="list-group">
-                <!-- Ejemplo de Visita 1 -->
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span class="font-weight-bold">Proyecto 1</span>
-                  <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-1">Informacion</button>
-                  <!-- Exámenes de la Visita 1 -->
-                  <div id="examenes-visita-1" class="collapse mt-3">
-                    <ul class="list-group">
-                      <li class="list-group-item">Proyecto 1</li>
-                    </ul>
+            <div class="col-md-6">
+              <p><strong>Nombre:</strong> Juan Pérez</p>
+              <p><strong>Correo Electrónico:</strong> juan.perez@udea.edu.co</p>
+              <p><strong>Teléfono:</strong> +57 300 123 4567</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Área de Investigación:</strong> Neurociencias Cognitivas</p>
+              <p><strong>Fecha de Ingreso:</strong> Enero 2023</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tarjeta de proyectos activos -->
+      <div class="card mt-4">
+        <div class="card-header">
+          <h3 class="mb-0">Proyectos Activos</h3>
+        </div>
+        <div class="card-body">
+          <!-- Proyecto Sueño -->
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-2 d-flex align-items-center justify-content-center">
+                      <i class="ni ni-planet text-primary ni-3x"></i>
+                    </div>
+                    <div class="col-10">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Sueño</h5>
+                      <p>Investigamos el impacto del sueño en la función cognitiva, explorando su relación con la memoria, la atención y el procesamiento emocional.</p>
+                    </div>
                   </div>
-                </li>
+                </div>
+              </div>
+            </div>
+          </div>
 
-              </ul>
+          <!-- Proyecto Envejecimiento -->
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-2 d-flex align-items-center justify-content-center">
+                      <i class="ni ni-single-02 text-primary ni-3x"></i>
+                    </div>
+                    <div class="col-10">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Envejecimiento</h5>
+                      <p>Estudiamos los efectos del envejecimiento en la plasticidad cerebral y la función cognitiva.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
+          <!-- Proyecto Anosognosia -->
+          <div class="row mt-4">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-2 d-flex align-items-center justify-content-center">
+                      <i class="ni ni-world-2 text-primary ni-3x"></i>
+                    </div>
+                    <div class="col-10">
+                      <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Anosognosia</h5>
+                      <p>Investigamos los mecanismos neurocognitivos de la anosognosia en diversas patologías neurológicas.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -99,11 +222,3 @@
 </div>
 
 {% endblock content %}
-
-<!-- Specific JS goes HERE --> 
-{% block javascripts %}
-
-  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
-  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
-
-{% endblock javascripts %}

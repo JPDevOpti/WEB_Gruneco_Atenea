@@ -687,3 +687,6 @@ def descargar_examen(request, visita_examen_id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="examen_{visita_examen.id}.pdf"'
     return response
+
+def profile_view(request):
+    return render(request, 'home/profile.html')
