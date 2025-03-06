@@ -35,10 +35,13 @@ urlpatterns = [
     path('guardar-examen-analisis', views.guardar_examen_analisis, name='guardar_examen_analisis'),
     path('guardar-examen-neurologico', views.guardar_examen_neurologico, name='guardar_examen_neurologico'),
     
-    # Nueva ruta para proyectos
+    #proyectos
     path('proyectos/', views.proyectos, name='proyectos'),
-    path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
     path('proyecto/eliminar/<int:id>/', views.eliminar_proyecto, name='eliminar_proyecto'),
+    
+    #visitas
+    path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
+    path('visita/eliminar/<int:id>/', views.eliminar_visita, name='eliminar_visita'),
 
     #estadisticas
     path('estadisticas/', views.estadisticas, name='estadisticas'),

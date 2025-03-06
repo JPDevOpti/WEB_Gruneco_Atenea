@@ -189,6 +189,7 @@ def proyectos(request):
         for visita in visitas_proyecto:
             examenes_visita = visitaexamen.filter(visita=visita)
             visitas_info.append({
+                'id':visita.id,
                 'nombre': visita.nombre,
                 'fecha': visita.fecha,
                 'observaciones': visita.observaciones,
@@ -281,6 +282,24 @@ def agregar_visita(request):
         return redirect('proyectos')
 
     return render(request, 'home/proyectos.html',context)
+
+def eliminar_visita(request, id):
+    # Obtener la visita o devolver un error 404 si no existe
+    visita = get_object_or_404(Visita, id=id)
+
+    if request.method == "POST":
+        # Eliminar primero las relaciones en VisitaExamen
+        VisitaExamen.objects.filter(visita=visita).delete()
+        
+        # Luego, eliminar la visita
+        visita.delete()
+
+        # Mensaje de confirmación
+        messages.success(request, "La visita ha sido eliminada correctamente.")
+
+        return redirect('proyectos')  # Redirigir a la lista de proyectos o donde corresponda
+
+    return redirect('proyectos')
 
 #Ingreso y Salida
 @login_required

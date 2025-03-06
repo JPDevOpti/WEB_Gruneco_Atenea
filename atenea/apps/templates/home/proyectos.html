@@ -120,6 +120,13 @@
                       {% for visita in visitas %}
                       <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span class="font-weight-bold">Visita: {{ visita.nombre }}</span>
+                         <!-- Formulario para eliminar proyecto -->
+                          <form method="POST" action="{% url 'eliminar_visita' id=visita.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar Visita">
+                              <i class="fas fa-trash"></i> <!-- Ícono de Font Awesome -->
+                            </button>
+                          </form>
                         <!-- Botón para mostrar/ocultar exámenes -->
                         <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-{{ proyecto.id }}-{{ forloop.counter }}"
                                 data-toggle="tooltip" data-placement="top" title="Ver Exámenes">
