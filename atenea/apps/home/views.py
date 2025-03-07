@@ -44,6 +44,11 @@ def estadisticas(request):
     html_template = loader.get_template('home/stadistic.html')
     return HttpResponse(html_template.render(context, request))
 
+def perfil(request):
+    context = {'segment': 'perfil'}
+    html_template = loader.get_template('home/profile.html')
+    return HttpResponse(html_template.render(context, request))
+
 #pacientes
 @login_required
 def lista_pacientes(request):
@@ -138,7 +143,7 @@ def editar_paciente(request, numero_documento):
 @login_required
 def detalle_paciente(request, paciente_id):
     proyectos = Proyecto.objects.all()
-    paciente = get_object_or_404(DatosDemograficos, numero_documento=paciente_id)
+    paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
     # Obtener los proyectos en los que el paciente ya está asignado
     proyectos_asociados = paciente.proyectos.all()
 
@@ -194,6 +199,7 @@ def proyectos(request):
         for visita in visitas_proyecto:
             examenes_visita = visitaexamen.filter(visita=visita)
             visitas_info.append({
+                'id':visita.id,
                 'nombre': visita.nombre,
                 'fecha': visita.fecha,
                 'observaciones': visita.observaciones,
@@ -214,6 +220,8 @@ def proyectos(request):
         if proyecto_form.is_valid():
             proyecto_form.save()
             messages.success(request, 'Proyecto creado correctamente.')
+            
+        return redirect('proyectos')
     
     return render(request, 'home/proyectos.html', context)
 
@@ -287,6 +295,25 @@ def agregar_visita(request):
 
     return render(request, 'home/proyectos.html',context)
 
+@login_required
+def eliminar_visita(request, id):
+    # Obtener la visita o devolver un error 404 si no existe
+    visita = get_object_or_404(Visita, id=id)
+
+    if request.method == "POST":
+        # Eliminar primero las relaciones en VisitaExamen
+        VisitaExamen.objects.filter(visita=visita).delete()
+        
+        # Luego, eliminar la visita
+        visita.delete()
+
+        # Mensaje de confirmación
+        messages.success(request, "La visita ha sido eliminada correctamente.")
+
+        return redirect('proyectos')  # Redirigir a la lista de proyectos o donde corresponda
+
+    return redirect('proyectos')
+
 #Ingreso y Salida
 @login_required
 def logout_view(request):
@@ -309,6 +336,7 @@ def consulta_view(request):
     return render(request, 'home/consulta.html')
 
 #examenes
+@login_required
 def realizar_examen(request, visita_id, examen_id, paciente_id):
 
     # Diccionario de plantillas según el examen
@@ -316,12 +344,16 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         3: "sleepexams/General_ExamenFísico.html",
         4: "sleepexams/General_RevisiónSistemas.html",
         5: "sleepexams/General_Antecedentes.html",
+        7: "sleepexams/General_Análisis.html",
+        8: "sleepexams/General_Medicamentos.html",
+        9: "sleepexams/General_ExamenNeurológico.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
 
     return render(request, template, {'visita_examen': visita_id, 'paciente_id':paciente_id})
 
+@login_required
 def guardar_examen_general_revisionsistemas(request):
     
     if request.method == 'POST':
@@ -388,7 +420,7 @@ def guardar_examen_general_revisionsistemas(request):
         paciente_id = request.POST.get('paciente_id') 
         
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
-        documento_paciente = paciente.numero_documento
+        documento_paciente = paciente.id
         print('documento_paciente')
 
         # Obtener o crear el VisitaExamen correspondiente
@@ -409,6 +441,7 @@ def guardar_examen_general_revisionsistemas(request):
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)])) # Redirigir a una página de éxito
 
+@login_required
 def guardar_examen_fisico(request):
     if request.method == 'POST':
         print('fisico')
@@ -480,7 +513,7 @@ def guardar_examen_fisico(request):
         visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
-        documento_paciente = paciente.numero_documento
+        documento_paciente = paciente.id
         
         # Obtener o crear el VisitaExamen correspondiente
         visita_examen, created = VisitaExamen.objects.get_or_create(
@@ -499,10 +532,10 @@ def guardar_examen_fisico(request):
             resultado_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)])) # Redirigir a una página de éxito
- 
+
+@login_required
 def guardar_examen_antecedentes(request):
     if request.method == 'POST':
-        print('aqui antecendtes')
         # Obtener los datos del formulario para antecedentes
         datos_formulario_antecedentes = {
             "Antecedentes Patológicos": {
@@ -638,7 +671,7 @@ def guardar_examen_antecedentes(request):
         visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
-        documento_paciente = paciente.numero_documento
+        documento_paciente = paciente.id
         
         # Obtener o crear el VisitaExamen correspondiente
         visita_examen, created = VisitaExamen.objects.get_or_create(
@@ -657,7 +690,178 @@ def guardar_examen_antecedentes(request):
             resultado_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
-          
+
+@login_required
+def guardar_examen_analisis(request):
+     if request.method == "POST":
+        print("Guardando examen de análisis...")
+
+        # Estructura del análisis del examen
+        datos_formulario_analisis = {
+            "Analisis": {
+                "analisis_historia": request.POST.get("analisis_historia", ""),
+                "plan_tratamiento": request.POST.get("plan_tratamiento", ""),
+                "Diagnosticos_CIE10": [],
+                "Diagnosticos_DSMV": []
+            }
+        }
+
+        # Obtener listas de diagnósticos CIE-10
+        cie10_codigos = request.POST.getlist("cie10_codigo[]")
+        cie10_diagnosticos = request.POST.getlist("cie10_diagnostico[]")
+        cie10_estados = request.POST.getlist("cie10_estado[]")
+
+        # Agregar diagnósticos CIE-10 a la estructura
+        for i in range(len(cie10_codigos)):
+            datos_formulario_analisis["Analisis"]["Diagnosticos_CIE10"].append({
+                "codigo": cie10_codigos[i],
+                "diagnostico": cie10_diagnosticos[i],
+                "estado": cie10_estados[i] if i < len(cie10_estados) else None
+            })
+
+        # Obtener listas de diagnósticos DSM-V
+        dsmv_codigos = request.POST.getlist("dsmv_codigo[]")
+        dsmv_diagnosticos = request.POST.getlist("dsmv_diagnostico[]")
+        dsmv_estados = request.POST.getlist("dsmv_estado[]")
+
+        # Agregar diagnósticos DSM-V a la estructura
+        for i in range(len(dsmv_codigos)):
+            datos_formulario_analisis["Analisis"]["Diagnosticos_DSMV"].append({
+                "codigo": dsmv_codigos[i],
+                "diagnostico": dsmv_diagnosticos[i],
+                "estado": dsmv_estados[i] if i < len(dsmv_estados) else None
+            })
+
+        # Obtener la visita y el examen correspondiente
+        visita_examen_id = request.POST.get("visita_examen")
+        paciente_id = request.POST.get("paciente_id")  
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+
+        # Obtener o crear la VisitaExamen correspondiente
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            id=visita_examen_id
+        )
+
+        # Crear o actualizar el registro de ResultadoExamen
+        resultado_examen, created = ResultadoExamen.objects.get_or_create(
+            visita_examen=visita_examen,
+            paciente=paciente,
+            defaults={'resultado': datos_formulario_analisis}
+        )
+
+        if not created:
+            resultado_examen.resultado = datos_formulario_analisis
+            resultado_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+@login_required 
+def guardar_examen_neurologico(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_antecedentes = {
+            "Antecedentes Epidemiológicos": {
+                "antecedente_epidemiologico": request.POST.get('antecedente_epidemiologico'),
+                "descripcion_epidemiologico": request.POST.get('descripcion_epidemiologico'),
+                "fecha_inicio_epidemiologico": request.POST.get('fecha_inicio_epidemiologico'),
+                "tratamiento_epidemiologico": request.POST.get('tratamiento_epidemiologico'),
+                "detalle_tratamiento_epidemiologico": request.POST.get('detalle_tratamiento_epidemiologico'),
+                "complicaciones_epidemiologico": request.POST.get('complicaciones_epidemiologico'),
+                "detalle_complicaciones_epidemiologico": request.POST.get('detalle_complicaciones_epidemiologico'),
+                "activo_epidemiologico": request.POST.get('activo_epidemiologico'),
+                "fecha_finalizacion_epidemiologico": request.POST.get('fecha_finalizacion_epidemiologico'),
+                "observaciones_epidemiologico": request.POST.get('observaciones_epidemiologico'),
+            }
+        }
+
+        # Obtener la visita y el examen correspondiente
+        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen correspondiente
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            id=visita_examen_id
+        )
+        
+        # Crear o actualizar el registro de ResultadoExamen
+        resultado_examen, created = ResultadoExamen.objects.get_or_create(
+            visita_examen=visita_examen,
+            paciente=paciente,
+            defaults={'resultado': datos_formulario_antecedentes}
+        )
+
+        if not created:
+            resultado_examen.resultado = datos_formulario_antecedentes
+            resultado_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+@login_required
+def guardar_examen_medicamentos(request):
+    if request.method == 'POST':
+        print("aqui")
+        # Obtener los datos del formulario para antecedentes epidemiológicos
+        datos_formulario_medicamentos = {
+        "Medicamentos": []
+            }
+
+        # Obtener las listas de medicamentos del formulario (coincidiendo con los nombres en el HTML)
+        nombres_comerciales = request.POST.getlist('nombre_comercial[]')
+        nombres_genericos = request.POST.getlist('nombre_generico[]')
+        presentaciones = request.POST.getlist('presentacion[]')
+        concentraciones = request.POST.getlist('concentracion[]')
+        unidades = request.POST.getlist('unidad[]')
+        vias_administracion = request.POST.getlist('via_administracion[]')
+        cantidades = request.POST.getlist('cantidad[]')
+        frecuencias = request.POST.getlist('frecuencia[]')
+        fechas_inicio = request.POST.getlist('fecha_inicio[]')
+        fechas_finalizacion = request.POST.getlist('fecha_finalizacion[]')
+        indicaciones = request.POST.getlist('indicacion[]')
+
+        # Iterar sobre las listas y construir la lista de medicamentos
+        for i in range(len(nombres_comerciales)):
+            datos_formulario_medicamentos["Medicamentos"].append({
+                "nombre_comercial": nombres_comerciales[i],
+                "nombre_generico": nombres_genericos[i],
+                "presentacion": presentaciones[i],
+                "concentracion": concentraciones[i],
+                "unidad": unidades[i],
+                "via_administracion": vias_administracion[i],
+                "cantidad": cantidades[i],
+                "frecuencia": frecuencias[i],
+                "fecha_inicio": fechas_inicio[i],
+                "fecha_finalizacion": fechas_finalizacion[i],
+                "indicacion": indicaciones[i]
+            })
+
+        # Obtener la visita y el examen correspondiente
+        visita_examen_id = request.POST.get('visita_examen')
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen correspondiente
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            id=visita_examen_id
+        )
+        
+        # Crear o actualizar el registro de ResultadoExamen
+        resultado_examen, created = ResultadoExamen.objects.get_or_create(
+            visita_examen=visita_examen,
+            paciente=paciente,
+            defaults={'resultado': datos_formulario_medicamentos}
+        )
+
+        if not created:
+            resultado_examen.resultado = datos_formulario_medicamentos
+            resultado_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+ 
 @login_required
 def descargar_examen(request, visita_examen_id):
     # Obtener el objeto VisitaExamen
