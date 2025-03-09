@@ -22,7 +22,7 @@ from io import BytesIO
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.http import HttpResponse
-from weasyprint import HTML
+#from weasyprint import HTML
 from .models import VisitaExamen
 
 #vista principal
@@ -121,7 +121,6 @@ def editar_paciente(request, numero_documento):
     paciente = get_object_or_404(DatosDemograficos, numero_documento=numero_documento)  # Obtener el paciente por su ID
     
     if request.method == 'POST':
-        print("aqui")
         form = RegistroDemograficoForm(request.POST, instance=paciente)  # Cargar los datos del paciente
         if form.is_valid():
             form.save()  # Guardar los cambios
@@ -133,7 +132,7 @@ def editar_paciente(request, numero_documento):
         else:
             messages.error(request, f'❌ Error en el formulario. Verifica los campos. {str(form.errors)}')
             return render(request, 'sleepexams/editPacientForm.html', {'form': form})
-            print(form.errors)  # Para depuración en la consola
+            # Para depuración en la consola
         
   # Redirigir a una página de detalle del paciente
     if request.method == 'GET':
@@ -168,8 +167,6 @@ def detalle_paciente(request, paciente_id):
         if resultado_examen and resultado_examen.resultado:
             examenes_realizados.append(visita_examen.id)
             resultados_examenes[visita_examen.id] = resultado_examen.resultado 
-    
-    print(resultados_examenes)
 
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
@@ -347,6 +344,7 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         7: "sleepexams/General_Análisis.html",
         8: "sleepexams/General_Medicamentos.html",
         9: "sleepexams/General_ExamenNeurológico.html",
+        10: "sleepexams/Sueno_anamnesis.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -421,7 +419,7 @@ def guardar_examen_general_revisionsistemas(request):
         
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
-        print('documento_paciente')
+ 
 
         # Obtener o crear el VisitaExamen correspondiente
         visita_examen, created = VisitaExamen.objects.get_or_create(
@@ -444,7 +442,7 @@ def guardar_examen_general_revisionsistemas(request):
 @login_required
 def guardar_examen_fisico(request):
     if request.method == 'POST':
-        print('fisico')
+
         # Obtener los datos del formulario
         datos_formulario_fisico = {
             "Signos Vitales": {
@@ -694,7 +692,6 @@ def guardar_examen_antecedentes(request):
 @login_required
 def guardar_examen_analisis(request):
      if request.method == "POST":
-        print("Guardando examen de análisis...")
 
         # Estructura del análisis del examen
         datos_formulario_analisis = {
@@ -861,6 +858,257 @@ def guardar_examen_medicamentos(request):
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
+@login_required
+def guardar_examen_anamnesis(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        datos_formulario_anamnesis = {
+            "Motivo de consulta": request.POST.get('motivo_consulta'),
+            "Enfermedad actual": request.POST.get('enfermedad_actual'),
+            "Quejas de sueño": [],
+            "Horario de sueño": {
+                "rutina_dormir": request.POST.get('rutina_dormir'),
+                "describa_rutina": request.POST.get('describa_rutina'),
+                "jornada_laboral": request.POST.getlist('jornada_laboral[]'),
+                "hora_acostarse_laboral": request.POST.get('hora_acostarse_laboral'),
+                "tiempo_dormirse_laboral": request.POST.get('tiempo_dormirse_laboral'),
+                "hora_intencion_dormir_laboral": request.POST.get('hora_intencion_dormir_laboral'),
+                "hora_despertar_laboral": request.POST.get('hora_despertar_laboral'),
+                "tiempo_salir_cama_laboral": request.POST.get('tiempo_salir_cama_laboral'),
+                "sueno_reparador_laboral": request.POST.get('sueno_reparador_laboral'),
+                "companero_cama_laboral": request.POST.get('companero_cama_laboral'),
+                "despertador_laboral": request.POST.get('despertador_laboral'),
+                "jornada_fds": request.POST.getlist('jornada_fds[]'),
+                "hora_acostarse_fds": request.POST.get('hora_acostarse_fds'),
+                "tiempo_dormirse_fds": request.POST.get('tiempo_dormirse_fds'),
+                "hora_intencion_dormir_fds": request.POST.get('hora_intencion_dormir_fds'),
+                "hora_despertar_fds": request.POST.get('hora_despertar_fds'),
+                "tiempo_salir_cama_fds": request.POST.get('tiempo_salir_cama_fds'),
+                "sueno_reparador_fds": request.POST.get('sueno_reparador_fds'),
+                "companero_cama_fds": request.POST.get('companero_cama_fds'),
+                "despertador_fds": request.POST.get('despertador_fds'),
+                "hora_acostarse_vacaciones": request.POST.get('hora_acostarse_vacaciones'),
+                "tiempo_dormirse_vacaciones": request.POST.get('tiempo_dormirse_vacaciones'),
+                "hora_intencion_dormir_vacaciones": request.POST.get('hora_intencion_dormir_vacaciones'),
+                "hora_despertar_vacaciones": request.POST.get('hora_despertar_vacaciones'),
+                "tiempo_salir_cama_vacaciones": request.POST.get('tiempo_salir_cama_vacaciones'),
+                "sueno_reparador_vacaciones": request.POST.get('sueno_reparador_vacaciones'),
+                "companero_cama_vacaciones": request.POST.get('companero_cama_vacaciones'),
+                "despertador_vacaciones": request.POST.get('despertador_vacaciones'),
+            },
+            "higiene del sueno":{ 
+           
+            "Siestas": {
+                "realiza_siestas": request.POST.get('realiza_siestas'),
+                "numero_siestas": request.POST.get('numero_siestas'),
+                "duracion_siestas": request.POST.get('duracion_siestas'),
+                "siesta_frecuencia": request.POST.get('siesta_frecuencia'),
+                "momento_dia": request.POST.getlist('momento_dia[]'),  # Lista de momentos del día
+                "siesta_reparadora": request.POST.get('siesta_reparadora'),
+                "periodo_siestas": request.POST.get('periodo_siestas'),
+            },
+            "Lugar_donde_duerme": {
+                "iluminacion": request.POST.getlist('iluminacion[]'),  # Lista de condiciones de iluminación
+                "comodidad": request.POST.getlist('comodidad[]'),  # Lista de comodidad del espacio
+                "ruido": request.POST.getlist('ruido[]'),  # Lista de condiciones de ruido
+            },
+            "Consumo_comidas_bebidas": {
+                "consume": request.POST.get('consume'),
+                "sustancias": [],  # Lista de sustancias dinámicas
+            },
+            "Medicamentos": {
+                "consume_medicamento": request.POST.get('consume_medicamento'),
+                "medicamentos": [],  # Lista de medicamentos dinámicos
+            },
+            "Uso_pantallas": {
+                "usa_pantallas": request.POST.get('usa_pantallas'),
+                "pantallas": [],  # Lista de pantallas dinámicas
+            },
+            "Actividades_en_cama": {
+                "cama_actividades": request.POST.get('cama_actividades'),
+                "actividades": [],  # Lista de actividades dinámicas
+            },
+            "Actividad_fisica": {
+                "actividad_fisica": request.POST.get('actividad_fisica'),
+                "actividades_fisicas": [],  # Lista de actividades físicas dinámicas
+            },
+            },
+            "síntoma diferente asociado al sueño":{
+                 "sintomas": {
+                "sintomas_sueno": request.POST.get('sintomas_sueno'),
+                "sueno": [],  # Lista de actividades dinámicas
+            },
+            "síntoma durante el funcionamiento diurno": {
+                "actividad_diurno": request.POST.get('sintomas_diurnos'),
+                "actividades_funcionamiento_diurno": [],  # Lista de actividades físicas dinámicas
+            },
+            }
+        }
+
+         # Obtener las quejas de sueño dinámicas
+        quejas = request.POST.getlist('tipo_queja[]')  # Lista de quejas seleccionadas
+        for i in range(len(quejas)):  # Usar el índice para recuperar los campos dinámicos
+            datos_queja = {
+                "tipo_queja": quejas[i],
+                "inicio": request.POST.get(f'inicio_{i}'),
+                "evolucion": request.POST.get(f'evolucion_{i}'),
+                "frecuencia_semana": request.POST.get(f'frecuencia_{i}'),
+                "gravedad": request.POST.get(f'gravedad_{i}'),
+            }
+            datos_formulario_anamnesis["Quejas de sueño"].append(datos_queja)
+            
+        # Obtener las sustancias dinámicas
+        # Obtener las sustancias dinámicas
+        i = 0
+        while True:
+            tipo_sustancia = request.POST.get(f'tipo_sustancia_{i}')
+            if not tipo_sustancia:  # Si no hay más sustancias, salir del bucle
+                break
+
+            datos_sustancia = {
+                "tipo_sustancia": tipo_sustancia,
+                "cantidad_sustancia": request.POST.get(f'cantidad_sustancia_{i}'),
+                "frecuencia_sustancia": request.POST.get(f'frecuencia_sustancia_{i}'),
+                "tiempo_sustancia": request.POST.get(f'tiempo_sustancia_{i}'),
+                "observaciones_sustancia": request.POST.get(f'observaciones_sustancia_{i}'),
+            }
+            datos_formulario_anamnesis["higiene del sueno"]["Consumo_comidas_bebidas"]["sustancias"].append(datos_sustancia)
+            i += 1
+            
+        # Obtener los medicamentos dinámicos
+        medicamentos = request.POST.getlist('nombre_medicamento[]')  # Lista de medicamentos seleccionados
+        datos_medicamentos = []  # Lista para almacenar la información de cada medicamento
+
+        for i in range(len(medicamentos)):
+            datos_medicamento = {
+                "nombre_medicamento": medicamentos[i],
+                "dosis_medicamento": request.POST.getlist('dosis_medicamento[]')[i],
+                "observaciones_medicamento": request.POST.getlist('observaciones_medicamento[]')[i],
+                "presentacion": request.POST.getlist('presentacion[]')[i],
+                "veces_dia": request.POST.getlist('veces_dia[]')[i],
+                "frecuencia_medicamentos": request.POST.getlist('frecuencia_medicamentos[]')[i],
+                "tiempo": request.POST.getlist('tiempo_antes_dormir[]')[i],
+            }
+            datos_formulario_anamnesis["higiene del sueno"]["Medicamentos"]["medicamentos"].append(datos_medicamento)
+    
+        # Obtener las pantallas dinámicas
+        # Obtener las pantallas dinámicas
+        pantallas = request.POST.getlist('tipo_pantalla[]')
+        frecuencias = request.POST.getlist('pantalla_frecuencia[]')
+        tiempos_antes_dormir = request.POST.getlist('pantalla_tiempo_dormir[]')
+
+
+        for i in range(len(pantallas)):
+            datos_pantalla = {
+                "tipo_pantalla": pantallas[i],
+                "frecuencia_pantalla": frecuencias[i],
+                "tiempo_antes_dormir": tiempos_antes_dormir[i],
+            }
+            datos_formulario_anamnesis["higiene del sueno"]["Uso_pantallas"]["pantallas"].append(datos_pantalla)
+        # Obtener las actividades en la cama dinámicas
+        
+        
+        tipo_actividad = request.POST.getlist('tipo_actividad[]')  # Lista con actividades seleccionadas
+        frecuencia_actividad = request.POST.getlist('frecuencia_actividad[]')  # Lista de frecuencias
+        observaciones = request.POST.getlist('observaciones_actividades[]')  # Lista de observaciones
+        
+        for i, actividad in enumerate(tipo_actividad):
+            datos_actividad = {
+                "tipo_actividad": tipo_actividad[i],
+                "frecuencia_actividad_otro_text": frecuencia_actividad[i],
+                "observaciones_actividad": observaciones[i],
+            }
+            datos_formulario_anamnesis["higiene del sueno"]["Actividades_en_cama"]["actividades"].append(datos_actividad)
+
+        # Obtener las actividades físicas dinámicas
+        actividades_fisicas = request.POST.getlist('tipo_actividad_fisica[]') 
+        tipo_actividad_otro_texto = request.POST.getlist('tipo_actividad_otro_texto[]')  # Lista con actividades seleccionadas
+        intensidad_fisica = request.POST.getlist('intensidad_fisica[]')  # Lista de frecuencias
+        frecuencia_fisica = request.POST.getlist('frecuencia_fisica[]')
+        observaciones_actividad_fisica = request.POST.getlist('observaciones_actividad_fisica[]')
+        
+        # Lista de actividades físicas seleccionadas
+        for i, actividad_fisica in enumerate(actividades_fisicas):
+            datos_actividad_fisica = {
+                "actividades_fisicas": actividades_fisicas[i],
+                "tipo_actividad_otro_texto": tipo_actividad_otro_texto[i],
+                "intensidad_fisica": intensidad_fisica[i],
+                "frecuencia_fisica": frecuencia_fisica[i],
+                "observaciones_actividad_fisica": observaciones_actividad_fisica[i],
+            }
+            datos_formulario_anamnesis["higiene del sueno"]["Actividad_fisica"]["actividades_fisicas"].append(datos_actividad_fisica)
+
+
+        ##################################################################################################3
+        # Obtener Síntoma diferente asociado al sueño
+        tipo_sintoma = request.POST.getlist('tipo_sintoma[]') 
+        cuando_inicio = request.POST.getlist('cuando_inicio[]')  # Lista con actividades seleccionadas
+        evolucion = request.POST.getlist('evolucion[]')  # Lista de frecuencias
+        frecuencia = request.POST.getlist('frecuencia[]')
+        gravedad = request.POST.getlist('gravedad[]')
+        observaciones_sintoma = request.POST.getlist('observaciones_sintoma[]')
+        
+          # Lista de actividades físicas seleccionadas
+        for i, actividad_fisica in enumerate(tipo_sintoma):
+            datos_sintoma_sueno = {
+                "tipo_sintoma": tipo_sintoma[i],
+                "cuando_inicio": cuando_inicio[i],
+                "evolucion": evolucion[i],
+                "frecuencia": frecuencia[i],
+                "gravedad": gravedad[i],
+                "observaciones_sintoma": observaciones_sintoma[i],
+            }
+            datos_formulario_anamnesis["síntoma diferente asociado al sueño"]["sintomas"]["sueno"].append(datos_sintoma_sueno)
+
+
+        # Obtener Síntoma diferente asociado al sueño
+        tipo_sintoma_diurno = request.POST.getlist('tipo_sintoma_diurno[]') 
+        cuando_inicio_diurno = request.POST.getlist('cuando_inicio_diurno[]')  # Lista con actividades seleccionadas
+        evolucion_diurno = request.POST.getlist('evolucion_diurno[]')  # Lista de frecuencias
+        frecuencia_diurno = request.POST.getlist('frecuencia_diurno[]')
+        gravedad_diurno = request.POST.getlist('gravedad_diurno[]')
+        observaciones_sintoma_diurno = request.POST.getlist('observaciones_sintoma_diurno[]')
+        
+          # Lista de actividades físicas seleccionadas
+        for i, actividad_fisica in enumerate(tipo_sintoma_diurno):
+            datos_sintoma_diurno = {
+                "tipo_sintoma_diurno": tipo_sintoma_diurno[i],
+                "cuando_inicio_diurno": cuando_inicio_diurno[i],
+                "evolucion_diurno": evolucion_diurno[i],
+                "frecuencia_diurno": frecuencia_diurno[i],
+                "gravedad_diurno": gravedad_diurno[i],
+                "observaciones_sintoma_diurno": observaciones_sintoma_diurno[i],
+            }
+            datos_formulario_anamnesis["síntoma diferente asociado al sueño"]["síntoma durante el funcionamiento diurno"]["actividades_funcionamiento_diurno"].append(datos_sintoma_diurno)
+
+        # Aquí puedes guardar los datos en la base de datos o procesarlos como necesites
+        print(datos_formulario_anamnesis)  # Solo para verificar los datos en la consola
+
+        # Obtener la visita y el examen correspondiente
+        visita_examen_id = request.POST.get('visita_examen')
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen correspondiente
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            id=visita_examen_id
+        )
+        
+        # Crear o actualizar el registro de ResultadoExamen
+        resultado_examen, created = ResultadoExamen.objects.get_or_create(
+            visita_examen=visita_examen,
+            paciente=paciente,
+            defaults={'resultado': datos_formulario_anamnesis}
+        )
+
+        if not created:
+            resultado_examen.resultado = datos_formulario_anamnesis
+            resultado_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+ 
  
 @login_required
 def descargar_examen(request, visita_examen_id):
@@ -882,7 +1130,7 @@ def descargar_examen(request, visita_examen_id):
     })
 
     # Crear un objeto HTML de WeasyPrint
-    html = HTML(string=html_string)
+    #html = HTML(string=html_string)
     
     # Generar el PDF
     pdf = html.write_pdf()
