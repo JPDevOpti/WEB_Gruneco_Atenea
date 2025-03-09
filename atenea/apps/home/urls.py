@@ -32,8 +32,9 @@ urlpatterns = [
     path('guardar-examen/general/', views.guardar_examen_general_revisionsistemas, name='guardar_examen_general'),
     path('guardar-examen/fisico/', views.guardar_examen_fisico, name='guardar_examen_fisico'),
     path('guardar-examen/antecedentes/', views.guardar_examen_antecedentes, name='guardar_examen_antecedentes'),
-     path('guardar-examen/anamnesis/', views.guardar_examen_anamnesis, name='guardar_examen_anamnesis'),
-
+    path('guardar-examen/anamnesis/', views.guardar_examen_anamnesis, name='guardar_examen_anamnesis'),
+    path('guardar-examen/cuestionarios/', views.guardar_examen_Sueño_Cuestionarios, name='guardar_Sueño_Cuestionarios'),
+    path('guardar-examen/fisico-sueno/', views.guardar_examen_sueno_fisico, name='guardar_examen_sueno_fisico'),
 
     # Proyectos
     path('proyectos/', views.proyectos, name='proyectos'),

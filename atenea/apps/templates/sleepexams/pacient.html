@@ -11,7 +11,7 @@
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
               <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
-              <li class="breadcrumb-item"><a  href="/pacientes/">Pacientes</a></li>
+              <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
             </ol>
           </nav>
         </div>
@@ -27,7 +27,8 @@
           <div class="card-body pt-0">
             <div class="row">
               <div class="col-md-12 text-center">
-                <h5 class="h3 mt-4">{{ paciente.primer_nombre }} {{ paciente.segundo_nombre }} {{ paciente.primer_apellido }} {{ paciente.segundo_apellido }}</h5>
+                <h5 class="h3 mt-4">{{ paciente.primer_nombre }} {{ paciente.segundo_nombre }}
+                  {{paciente.primer_apellido }} {{ paciente.segundo_apellido }}</h5>
                 <p class="h6 text-muted">
                   <i class="ni business_briefcase-24 mr-2"></i>{{ paciente.escolaridad }}
                 </p>
@@ -39,13 +40,15 @@
                       <select name="proyecto_id" id="proyecto" class="form-control" required>
                         <option value="-"></option>
                         {% for proyecto in proyectos_disponibles %}
-                          <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                        <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
                         {% endfor %}
                       </select>
                       <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
                     </div>
 
-                      <button type="submit" class="btn btn-sm btn-neutral" onclick="return confirm('¿Estás seguro de que deseas agregar el paciente al proyecto?');">Agregar al proyecto</button>
+                    <button type="submit" class="btn btn-sm btn-neutral"
+                      onclick="return confirm('¿Estás seguro de que deseas agregar el paciente al proyecto?');">Agregar
+                      al proyecto</button>
 
                   </form>
                 </div>
@@ -108,98 +111,95 @@
     </div>
 
     <div class="col-xl-8 order-xl-2">
-    <div class="card">
+      <div class="card">
         <div class="card-header">
-            <div class="row align-items-center">
-                <div class="col-8">
-                    <h3 class="mb-0">Proyectos a los que se encuentra asociado</h3>
-                </div>
+          <div class="row align-items-center">
+            <div class="col-8">
+              <h3 class="mb-0">Proyectos a los que se encuentra asociado</h3>
             </div>
+          </div>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-12">
-                    {% for proyecto in proyectos_asociados %}
-                        <h5 class="card-title text-uppercase text-muted mb-3">{{ proyecto.nombre }}</h5>
-                        <!-- Lista de Visitas del Proyecto -->
-                        <ul class="list-group">
-                            {% for visita in proyecto.visitas.all %}
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <span class="font-weight-bold">{{ visita.nombre }} - {{ visita.fecha }}</span>
-                                    <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita-{{ visita.id }}">Ver Exámenes</button>
-                                    
-                                    <!-- Exámenes de la Visita -->
-                                    <div id="examenes-visita-{{ visita.id }}" class="collapse mt-3">
-                                        <ul class="list-group">
-                                            {% for visita_examen in visita.visita_examenes.all %}
-                                            <li class="list-group-item">
-                                              {{ visita_examen.examen.nombre }} - {{ visita_examen.visita.fecha }}
-                                              {% if visita_examen.id in examenes_realizados %}
-                                                  <span class="badge bg-success">Realizado</span>
-                                                  <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen{{ visita_examen.id }}">
-                                                    Ver Detalles
-                                                  </button>
-                                                 <!-- Botón para descargar el PDF -->
-                                                  <a href="{% url 'descargar_examen' visita_examen.id %}" class="btn btn-success btn-sm">Descargar PDF</a>
+          <div class="row">
+            <div class="col-12">
+              {% for proyecto in proyectos_asociados %}
+              <h5 class="card-title text-uppercase text-muted mb-3">{{ proyecto.nombre }}</h5>
+              <!-- Lista de Visitas del Proyecto -->
+              <ul class="list-group">
+                {% for visita in proyecto.visitas.all %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span class="font-weight-bold">{{ visita.nombre }} - {{ visita.fecha }}</span>
+                  <button class="btn btn-sm btn-info" data-toggle="collapse"
+                    data-target="#examenes-visita-{{ visita.id }}">Ver Exámenes</button>
 
-                                                  <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1" aria-labelledby="modalExamenLabel{{ visita_examen.id }}" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
-                                                      <div class="modal-content">
-                                                        <div class="modal-header">
-                                                          <h5 class="modal-title" id="modalExamenLabel{{ visita_examen.id }}">{{ visita_examen.examen.nombre }}</h5>
-                                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                          <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha }}</p>
-                                                          <h6>Resultados del Examen:</h6>
-                                                          <ul class="list-group">
-                                                            {% for key, value in resultados_examenes.items %}
-                                                              {% if key == visita_examen.id %}
-                                                                {% for area, datos in value.items %}
-                                                                  <li class="list-group-item">
-                                                                    <strong>{{ area }}</strong>
-                                                                    <ul>
-                                                                      <li>Síntoma: {{ datos.sintoma_general|default:"N/A" }}</li>
-                                                                      <li>Detalle: {{ datos.detalle_sintoma_general|default:"N/A" }}</li>
-                                                                      <li>Tiempo: {{ datos.tiempo_sintoma_general|default:"N/A" }}</li>
-                                                                      <li>Características: {{ datos.caracteristicas_sintoma_general|default:"N/A" }}</li>
-                                                                    </ul>
-                                                                  </li>
-                                                                {% endfor %}
-                                                              {% endif %}
-                                                            {% endfor %}
-                                                          </ul>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                        </div>
-                                                      </div>
-                                                    </div>
-                                                  </div>
+                  <!-- Exámenes de la Visita -->
+                  <div id="examenes-visita-{{ visita.id }}" class="collapse mt-3">
+                    <ul class="list-group">
+                      {% for visita_examen in visita.visita_examenes.all %}
+                      <li class="list-group-item">
+                        {{ visita_examen.examen.nombre }} - {{ visita_examen.visita.fecha }}
+                        {% if visita_examen.id in examenes_realizados %}
+                        <span class="badge bg-success">Realizado</span>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                          data-bs-target="#modalExamen{{ visita_examen.id }}">
+                          Ver Detalles
+                        </button>
+                        <!-- Botón para descargar el PDF -->
+                        <a href="{% url 'descargar_examen' visita_examen.id %}" class="btn btn-success btn-sm">Descargar
+                          PDF</a>
 
-                                              {% else %}
-                                                  <span class="badge bg-warning">Pendiente</span>
-                                                  <a href="{% url 'realizar_examen' visita_examen.id visita_examen.examen.id paciente.id %}">Realizar Examen</a>
-                                              {% endif %}
-                                          </li>
-                                            {% empty %}
-                                                <li class="list-group-item">No hay exámenes registrados</li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </li>
-                            {% empty %}
-                                <p>No hay visitas registradas en este proyecto.</p>
-                            {% endfor %}
-                        </ul>
-                    {% empty %}
-                        <p>El paciente no está asociado a ningún proyecto.</p>
-                    {% endfor %}
-                </div>
+                        <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1"
+                          aria-labelledby="modalExamenLabel{{ visita_examen.id }}" aria-hidden="true">
+                          <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="modalExamenLabel{{ visita_examen.id }}">{{
+                                  visita_examen.examen.nombre }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                  aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha }}</p>
+                                <h6>Resultados del Examen:</h6>
+                                <ul class="list-group">
+                                  {% for key, value in resultados_examenes.items %}
+                                  {% if key == visita_examen.id %}
+                                  <p><strong>Resultado:</strong> {{ value }}</p>
+                                  {% endif %}
+                                  {% endfor %}
+                                </ul>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {% else %}
+                        <span class="badge bg-warning">Pendiente</span>
+                        <a href="{% url 'realizar_examen' visita_examen.id visita_examen.examen.id paciente.id %}">Realizar
+                          Examen</a>
+                        {% endif %}
+                      </li>
+                      {% empty %}
+                      <li class="list-group-item">No hay exámenes registrados</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </li>
+                {% empty %}
+                <p>No hay visitas registradas en este proyecto.</p>
+                {% endfor %}
+              </ul>
+              {% empty %}
+              <p>El paciente no está asociado a ningún proyecto.</p>
+              {% endfor %}
             </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
   </div>
 </div>

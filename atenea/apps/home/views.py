@@ -345,6 +345,8 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         8: "sleepexams/General_Medicamentos.html",
         9: "sleepexams/General_ExamenNeurológico.html",
         10: "sleepexams/Sueno_anamnesis.html",
+        11: "sleepexams/Sueño_Cuestionarios.html",
+        12: "sleepexams/Sueño_ExamenFisico.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -1108,8 +1110,166 @@ def guardar_examen_anamnesis(request):
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
- 
- 
+@login_required 
+def guardar_examen_sueno_fisico(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_sueno_fisico = {
+            "Peso (Kg)": request.POST.get("peso"),
+            "Talla (cm)": request.POST.get("talla"),
+            "Índice de Masa Corporal (IMC)": request.POST.get("imc"),
+            "Rango IMC": request.POST.get("rango_imc"),
+            "Circunferencia de cuello": request.POST.get("circunferencia_cuello"),
+            "Perímetro abdominal": request.POST.get("perimetro_abdominal"),
+            "Simetría de las narinas": request.POST.get("simetria_narinas"),
+            "Tipo de narina": request.POST.get("tipo_narina"),
+            "Presencia de desviación de septo": request.POST.get("desviacion_septo"),
+            "Hipertrofia de cornetes nasales": request.POST.get("hipertrofia_cornetes"),
+            "Grado": request.POST.get("grado"),
+            "Hipertrofi de úvula": request.POST.get("hipertrofia_uvula"),
+            "Biotipo": request.POST.get("biotipo"),
+            "Clasificación de Mallampati": request.POST.get("mallampati"),
+            "Hipertrofía de amigdalas (Escala de Friedman)": request.POST.get("amigdalas"),
+            "Tipo de mordida": request.POST.get("tipo_mordida"),
+            "Alteración cráneo o cara": request.POST.get("alteracion_craneo"),
+            }
+            
+        
+
+        # Obtener la visita y el examen correspondiente
+        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen correspondiente
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            id=visita_examen_id
+        )
+        
+        # Crear o actualizar el registro de ResultadoExamen
+        resultado_examen, created = ResultadoExamen.objects.get_or_create(
+            visita_examen=visita_examen,
+            paciente=paciente,
+            defaults={'resultado': datos_formulario_sueno_fisico}
+        )
+
+        if not created:
+            resultado_examen.resultado = datos_formulario_sueno_fisico
+            resultado_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+
+@login_required
+def guardar_examen_Sueño_Cuestionarios(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_antecedentes = {
+            "Pittsburgh": {
+                "Hora de acostarse durante el ultimo mes": request.POST.get('hora_acostarse'),
+                "Latencia de inicio de sueño (minutos)": request.POST.get('latencia_sueno'),
+                "Hora de levantarse durante el ultimo mes": request.POST.get('hora_levantarse'),
+                "Cuantas horas duerme verdaderamente cada noche durante el ultimo mes": request.POST.get('horas_dormidas'),
+                "No poder conciliar el sueño": request.POST.get('conciliar_sueno'),
+                "Despertarse durante la noche o de madrugada": request.POST.get('despertarse_sueno'),
+                "Tener que levantarse para ir al servicio": request.POST.get('levantarse_servicio_sueno'),
+                "No poder respirar bien": request.POST.get('respirar'),
+                "Toser o roncar ruidosamente": request.POST.get('toser_roncar_sueno'),
+                "Sentir frio": request.POST.get('Sentir_frio_sueno'),
+                "Sentir demasiado calor": request.POST.get('calor_sueno'),
+                "Tener pesadillas o malos sueños" : request.POST.get('pesadillas_sueno'),
+                "Sufrir dolores": request.POST.get('dolores_sueno'),
+                
+                # Nuevos campos agregados
+                "otras_razones": request.POST.get('otras'),
+                "otras_sueno": request.POST.get('otras_sueno'),
+                "Durante el ultimo mes ¿Como valoraria en conjunto su calidad de sueño?": request.POST.get('calidad_sueno'),
+                "Durante el ultimo mes ¿Cuantas veces habra tomado medicinas (por su cuenta o recetadas por medico) para dormir?": request.POST.get('medicinas_sueno'),
+                "Durante el ultimo mes ¿Cuantas veces ha sentido somnolencia mientras conducia, comia, o desarrollaba alguna otra actividad?": request.POST.get('somnolencia_sueno'),
+                "Durante el ultimo mes ¿ha representado mucho problema el tener animos para realizar alguna de las actividades detalladas en la pregunta anterior?": request.POST.get('problemas_animos_sueno'),
+                "Duerme solo o acompañado": request.POST.get('duerme_acompanado'),
+                
+                # Campos mostrados solo si duerme acompañado
+                "Ronquidos ruidosos": request.POST.get('ronquidos_ruidosos'),
+                "Grandes pausas entre respiraciones mientras duerme": request.POST.get('pausas_respiracion'),
+                "Sacudidas o espasmos de piernas mientras duerme": request.POST.get('sacudidas_piernas'),
+                "Episodios de desorientación o confusión mientras duerme": request.POST.get('desorientacion_confusion'),
+                "Otros inconvenientes mientras duerme (describir)": request.POST.get('otros_inconvenientes'),
+                "descripcion_inconvenientes": request.POST.get('descripcion_inconvenientes'),
+            },
+            "Epworth": {
+                "Con que frecuencia se queda dormido?": {
+                "Sentado y leyendo": request.POST.get('epworth_leyendo'),
+                "Viendo la TV": request.POST.get('epworth_tv'),
+                "Sentado, inactivo en un espectáculo (teatro)": request.POST.get('epworth_teatro'),
+                "En coche, como piloto de un viaje de una hora": request.POST.get('epworth_piloto'),
+                "Tumbado a media tarde": request.POST.get('epworth_tumbado'),
+                "Sentado y charlando con alguien": request.POST.get('epworth_charlando'),
+                "Sentado después de comer sin ingerir alcohol": request.POST.get('epworth_comida'),
+                "En su coche, cuando se para debido al tráfico": request.POST.get('epworth_trafico'),
+                }
+                },
+            "Stop_Bang" : {
+                    "Ronca fuerte": request.POST.get('ronca_fuerte', 'No'),
+                    "Se siente cansado con frecuencia": request.POST.get('cansado_frecuencia', 'No'),
+                    "Lo observaron dejar de respirar o ahogarse mientras dormía": request.POST.get('deja_respirar', 'No'),
+                    "Tiene o está recibiendo tratamiento para la presión arterial": request.POST.get('presion_arterial', 'No'),
+                    "Presenta un índice de masa corporal de más de 35kg/m²": request.POST.get('imc_alto', 'No'),
+                    "Tiene más de 50 años": request.POST.get('mayor_50', 'No'),
+                    "El tamaño de su cuello es grande": request.POST.get('cuello_grande', 'No'),
+                    "Masculino": request.POST.get('masculino', 'No'),
+                },
+            "MEQ" :{
+                "Hora a la que se levantaría si fuera libre de planificar el día": request.POST.get('hora_levantarse_meq'),
+                "Hora a la que se acostaría": request.POST.get('hora_acostarse_meq'),
+                "Necesidad del despertador para levantarse": request.POST.get('uso_despertador_meq'),
+                "Facilidad para levantarse por la mañana": request.POST.get('facilidad_levantarse_meq'),
+                "Nivel de alerta en la primera media hora tras levantarse": request.POST.get('alerta_manana_meq'),
+                "Apetito en la primera media hora tras levantarse": request.POST.get('apetito_manana_meq'),
+                "Sensación de descanso en la primera media hora tras levantarse": request.POST.get('descanso_manana_meq'),
+                "Hora a la que se acostaría en un día sin compromisos": request.POST.get('hora_acostarse_libre_meq'),
+                "Estado físico al realizar ejercicio por la mañana": request.POST.get('ejercicio_fisico_meq'),
+                "Hora aproximada de la noche en que se siente cansado": request.POST.get('hora_cansancio_noche_meq'),
+                "Horario ideal para una prueba mentalmente agotadora": request.POST.get('horario_prueba_mental_meq'),
+                
+                "Si te acostaras a las 11 PM, ¿qué nivel de cansancio notarías?": request.POST.get('nivel_cansancia_11'),
+                "por algún motivo te has acostado varias horas más tarde..¿Cuando crees que te despertarías? ": request.POST.get('hora_despertarse_si_tarde'),
+                
+                "Guardia nocturna, ¿qué preferirías? ": request.form.get("guardia_nocturna"),
+                "Tienes que hacer dos horas de trabajo físico pesado.  ¿qué horario escogerías?": request.form.get("horario_trabajo_fisico"),
+                "Has decidido hacer ejercicio físico intenso nocturno. ¿Cómo crees que te sentaría?": request.form.get("ejercicio_nocturno"),
+                "horario trabajo, ¿Qué CINCO HORAS CONSECUTIVAS seleccionarías? ¿Empezando en qué hora?": request.form.get("horario_trabajo"),
+                "¿A qué hora del día crees que alcanzas tu máximo bienestar?": request.form.get("maximo_bienestar"),
+                "Se habla de personas de tipo matutino y vespertino. ¿Cuál de estos tipos te consideras ser?": request.form.get("tipo_persona"),
+                "puntuacion": request.form.get("puntuacion"),
+            }
+        }
+
+        # Obtener la visita y el examen correspondiente
+        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen correspondiente
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            id=visita_examen_id
+        )
+        
+        # Crear o actualizar el registro de ResultadoExamen
+        resultado_examen, created = ResultadoExamen.objects.get_or_create(
+            visita_examen=visita_examen,
+            paciente=paciente,
+            defaults={'resultado': datos_formulario_antecedentes}
+        )
+
+        if not created:
+            resultado_examen.resultado = datos_formulario_antecedentes
+            resultado_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
 @login_required
 def descargar_examen(request, visita_examen_id):
     # Obtener el objeto VisitaExamen
