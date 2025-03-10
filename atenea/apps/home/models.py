@@ -148,7 +148,6 @@ class Examen(models.Model):
 class Visita(models.Model):
     nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='visitas', verbose_name="Proyecto")
-    fecha = models.DateField(verbose_name="Fecha de la Visita")
     observaciones = models.TextField(verbose_name="Observaciones", blank=True, null=True)
 
     def __str__(self):

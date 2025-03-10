@@ -198,7 +198,6 @@ def proyectos(request):
             visitas_info.append({
                 'id':visita.id,
                 'nombre': visita.nombre,
-                'fecha': visita.fecha,
                 'observaciones': visita.observaciones,
                 'examenes': [ve.examen for ve in examenes_visita]
             })
@@ -251,7 +250,6 @@ def agregar_visita(request):
             examenes_visita = visitaexamen.filter(visita=visita)
             visitas_info.append({
                 'nombre': visita.nombre,
-                'fecha': visita.fecha,
                 'observaciones': visita.observaciones,
                 'examenes': [ve.examen for ve in examenes_visita]
             })
@@ -275,7 +273,6 @@ def agregar_visita(request):
             visita = Visita.objects.create(
                 proyecto_id=proyecto_id,
                 nombre=nombres[i],
-                fecha=fechas[i],
                 observaciones=observaciones_list[i]
             )
 
