@@ -145,28 +145,31 @@ def detalle_paciente(request, paciente_id):
     paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
     # Obtener los proyectos en los que el paciente ya está asignado
     proyectos_asociados = paciente.proyectos.all()
-
     # Obtener proyectos disponibles para asignación (excluye los que ya tiene)
     proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
     
-    # Obtener todas las visitas asociadas al paciente
-    visitas = Visita.objects.filter(proyecto__in=proyectos_asociados)
-
-    # Obtener todos los exámenes realizados o pendientes en esas visitas
-    visita_examenes = VisitaExamen.objects.filter(visita__in=visitas)
-
-    # Crear una lista de IDs de exámenes realizados
-    examenes_realizados = []
-    resultados_examenes = {}
-    
-    for visita_examen in visita_examenes:
-        resultado_examen = ResultadoExamen.objects.filter(
-            visita_examen=visita_examen,
-            paciente=paciente
-        ).first()
-        if resultado_examen and resultado_examen.resultado:
-            examenes_realizados.append(visita_examen.id)
-            resultados_examenes[visita_examen.id] = resultado_examen.resultado 
+    examenes_dict = {int(examen.id): examen.nombre for examen in Examen.objects.all()} 
+    examenes_json = json.dumps(examenes_dict)
+     # Modificar las visitas para incluir los nombres de los exámenes
+    proyectos_con_visitas = []
+    for proyecto in proyectos:
+        visitas_modificadas = []
+        for visita in proyecto.visitas.all():
+            examenes_detallados = [
+                {"id": examen_id, "nombre": examenes_dict.get(examen_id, "Desconocido")}
+                for examen_id in visita.examenes
+            ]
+            visitas_modificadas.append({
+                "id": visita.id,
+                "nombre": visita.nombre,
+                "examenes": examenes_detallados
+            })
+        proyectos_con_visitas.append({
+            "id": proyecto.id,
+            "nombre": proyecto.nombre,
+            "visitas": visitas_modificadas
+        })
+        
 
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
@@ -177,8 +180,7 @@ def detalle_paciente(request, paciente_id):
         proyecto.save()
         
     return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
-        'proyectos_disponibles': proyectos_disponibles,'examenes_realizados': examenes_realizados,
-        'resultados_examenes': resultados_examenes,})
+        'proyectos_disponibles': proyectos_disponibles, 'proyectos_con_visitas': proyectos_con_visitas, "examenes_json": examenes_json,})
 
 #proyectos
 @login_required
@@ -304,6 +306,39 @@ def eliminar_visita(request, id):
         return redirect('proyectos')  # Redirigir a la lista de proyectos o donde corresponda
 
     return redirect('proyectos')
+
+
+def crear_visita(request,paciente_id):
+    
+    proyectos = Proyecto.objects.all()
+    paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+    # Obtener los proyectos en los que el paciente ya está asignado
+    proyectos_asociados = paciente.proyectos.all()
+
+    # Obtener proyectos disponibles para asignación (excluye los que ya tiene)
+    proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
+    
+    # Obtener todas las visitas asociadas al paciente
+    Tipovisitas = TipoVisita.objects.filter(proyecto__in=proyectos_asociados)
+    
+    # Obtener todos los exámenes realizados o pendientes en esas visitas
+    visita_examenes = []
+
+    # Crear una lista de IDs de exámenes realizados
+    examenes_realizados = []
+    resultados_examenes = {}
+    
+    if request.method == "POST":
+        proyecto_id = request.POST.get("proyecto_id")
+        pacientes_ids = request.POST.get("paciente_id")  # Lista de IDs seleccionados
+
+        proyecto = Proyecto.objects.get(id=proyecto_id)
+        proyecto.pacientes.add(pacientes_ids)  # Asigna los pacientes al proyecto
+        proyecto.save()
+        
+    return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
+        'proyectos_disponibles': proyectos_disponibles,'examenes_realizados': examenes_realizados,
+        'resultados_examenes': resultados_examenes,})
 
 #Ingreso y Salida
 @login_required

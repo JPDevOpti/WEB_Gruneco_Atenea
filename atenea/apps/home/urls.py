@@ -55,7 +55,8 @@ urlpatterns = [
     
     #visitas
     path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
-    path('visita/eliminar/<int:id>/', views.eliminar_visita, name='eliminar_visita'),
+    path('Tipovisita/eliminar/<int:id>/', views.eliminar_visita, name='eliminar_visita'),
+    path('visita/<int:id>/', views.crear_visita, name='crear_visita'),
 
     # Estadísticas
     path('estadisticas/', views.estadisticas, name='estadisticas'),

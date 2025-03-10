@@ -123,79 +123,91 @@
           <div class="row">
             <div class="col-12">
               {% for proyecto in proyectos_asociados %}
+              <!-- Botón para abrir el modal de nueva visita -->
               <h5 class="card-title text-uppercase text-muted mb-3">{{ proyecto.nombre }}</h5>
-              <!-- Lista de Visitas del Proyecto -->
-              <ul class="list-group">
-                {% for visita in proyecto.visitas.all %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span class="font-weight-bold">{{ visita.nombre }} - {{ visita.fecha }}</span>
-                  <button class="btn btn-sm btn-info" data-toggle="collapse"
-                    data-target="#examenes-visita-{{ visita.id }}">Ver Exámenes</button>
 
-                  <!-- Exámenes de la Visita -->
-                  <div id="examenes-visita-{{ visita.id }}" class="collapse mt-3">
-                    <ul class="list-group">
-                      {% for visita_examen in visita.visita_examenes.all %}
-                      <li class="list-group-item">
-                        {{ visita_examen.examen.nombre }} - {{ visita_examen.visita.fecha }}
-                        {% if visita_examen.id in examenes_realizados %}
-                        <span class="badge bg-success">Realizado</span>
-                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                          data-bs-target="#modalExamen{{ visita_examen.id }}">
-                          Ver Detalles
-                        </button>
-                        <!-- Botón para descargar el PDF -->
-                        <a href="{% url 'descargar_examen' visita_examen.id %}" class="btn btn-success btn-sm">Descargar
-                          PDF</a>
+              <div class="mb-3">
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal"
+                  data-bs-target="#modalAgregarVisita-{{ proyecto.id }}">
+                  Agregar Visita
+                </button>
+                <hr class="my-4">
+              </div>
 
-                        <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1"
-                          aria-labelledby="modalExamenLabel{{ visita_examen.id }}" aria-hidden="true">
-                          <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="modalExamenLabel{{ visita_examen.id }}">{{
-                                  visita_examen.examen.nombre }}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                  aria-label="Close"></button>
-                              </div>
-                              <div class="modal-body">
-                                <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha }}</p>
-                                <h6>Resultados del Examen:</h6>
-                                <ul class="list-group">
-                                  {% for key, value in resultados_examenes.items %}
-                                  {% if key == visita_examen.id %}
-                                  <p><strong>Resultado:</strong> {{ value }}</p>
-                                  {% endif %}
-                                  {% endfor %}
-                                </ul>
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                              </div>
-                            </div>
-                          </div>
+
+              {% for visita in proyecto.visitas.all %}
+
+              <!-- Modal para agregar una nueva visita -->
+              <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1"
+                aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Nueva Visita para {{ proyecto.nombre }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="{% url 'crear_visita' paciente.id %}">
+                      {% csrf_token %}
+                      <div class="modal-body">
+                        <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
+
+                        <div class="mb-3">
+                          <label for="nombre_visita" class="form-label">Nombre de la Visita</label>
+                          <input type="text" class="form-control" name="nombre" required>
                         </div>
 
-                        {% else %}
-                        <span class="badge bg-warning">Pendiente</span>
-                        <a href="{% url 'realizar_examen' visita_examen.id visita_examen.examen.id paciente.id %}">Realizar
-                          Examen</a>
-                        {% endif %}
-                      </li>
-                      {% empty %}
-                      <li class="list-group-item">No hay exámenes registrados</li>
-                      {% endfor %}
-                    </ul>
+                        <div class="mb-3">
+                          <label for="tipo_visita" class="form-label">Tipo de Visita</label>
+                          <select class="form-control tipo-visita" name="tipo_visita"
+                            data-proyecto-id="{{ proyecto.id }}" required>
+                            <option value="">Seleccione un tipo de visita</option>
+
+                            {% for visita in proyecto.visitas.all %}
+                            <option value="{{ visita.id }}" data-examenes='[{% for examen in visita.examenes %}{"id": "{{ examen }}", "nombre": "{{ examen }}"}
+                              {% if not forloop.last %}, {% endif %}{% endfor %}]'>
+                              {{ visita.nombre }}</option>
+
+                            {% endfor %}
+
+                          </select>
+                        </div>
+
+
+                        <div class="mb-3">
+                          <label for="fecha" class="form-label">Fecha</label>
+                          <input type="date" class="form-control" name="fecha" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="evaluador" class="form-label">Evaluador</label>
+                          <input type="text" class="form-control" name="evaluador">
+                        </div>
+
+                        <!-- Exámenes asociados al tipo de visita (se llenará con JS) -->
+                        <div class="mb-3">
+                          <label>Exámenes Asociados</label>
+                          <div class="examenes-container" id="examenes-container-{{ proyecto.id }}">
+                            <p>Seleccione un tipo de visita para ver los exámenes.</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar Visita</button>
+                      </div>
+                    </form>
                   </div>
-                </li>
-                {% empty %}
-                <p>No hay visitas registradas en este proyecto.</p>
-                {% endfor %}
-              </ul>
+                </div>
+              </div>
+              {% empty %}
+              <p>No hay visitas registradas en este proyecto.</p>
+              {% endfor %}
+
               {% empty %}
               <p>El paciente no está asociado a ningún proyecto.</p>
               {% endfor %}
             </div>
+
           </div>
         </div>
       </div>
@@ -203,4 +215,44 @@
 
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".tipo-visita").forEach(select => {
+      select.addEventListener("change", function () {
+        let proyectoId = this.getAttribute("data-proyecto-id");
+        let examenesContainer = document.getElementById(`examenes-container-${proyectoId}`);
+        let selectedOption = this.options[this.selectedIndex];
+        let examenes = JSON.parse(selectedOption.getAttribute("data-examenes") || "[]");
+
+        // Limpiar el contenedor
+        examenesContainer.innerHTML = "";
+
+        if (examenes.length > 0) {
+          examenes.forEach(examen => {
+            let checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "examenes[]";
+            checkbox.value = examen.id;
+            checkbox.classList.add("form-check-input");
+
+            let label = document.createElement("label");
+            label.classList.add("form-check-label");
+            label.textContent = examen.nombre;
+
+            let div = document.createElement("div");
+            div.classList.add("form-check");
+            div.appendChild(checkbox);
+            div.appendChild(label);
+
+            examenesContainer.appendChild(div);
+          });
+        } else {
+          examenesContainer.innerHTML = "<p>No hay exámenes asignados para este tipo de visita.</p>";
+        }
+      });
+    });
+  });
+
+</script>
 {% endblock %}
