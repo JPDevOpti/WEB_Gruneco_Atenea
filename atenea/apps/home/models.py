@@ -145,11 +145,21 @@ class Examen(models.Model):
         verbose_name = "Examen"
         verbose_name_plural = "Exámenes"
         
-class Visita(models.Model):
+class TipoVisita(models.Model):
     nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='visitas', verbose_name="Proyecto")
     observaciones = models.TextField(verbose_name="Observaciones", blank=True, null=True)
+    examenes = models.JSONField(default=dict, verbose_name="Exámenes",null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.nombre} - {self.proyecto.nombre}"
+        
+class Visita(models.Model):
+    nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
+    Tipo_visita = models.ForeignKey(TipoVisita, on_delete=models.CASCADE, related_name='visitas',null=True, blank=True)
+    fecha = models.DateField(blank=True, null=True)
+    evaluador = models.CharField(max_length=50,null=True, blank=True)
+    
     def __str__(self):
         return f"{self.nombre} - {self.proyecto.nombre}"
 

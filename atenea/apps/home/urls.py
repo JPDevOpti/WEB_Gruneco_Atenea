@@ -38,7 +38,6 @@ urlpatterns = [
 
     # Proyectos
     path('proyectos/', views.proyectos, name='proyectos'),
-    path('proyecto/agregar-visita/', views.agregar_visita, name='agregar_visita'),
     path('proyecto/<int:id>/eliminar/', views.eliminar_proyecto, name='eliminar_proyecto'),
     
     #Historia clinica examenes 

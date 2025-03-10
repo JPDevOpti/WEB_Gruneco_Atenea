@@ -14,7 +14,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from django.contrib import messages
 from apps.home import models,forms
-from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen,ResultadoExamen
+from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen,ResultadoExamen,TipoVisita
 from .forms import  ProyectoForm,RegistroDemograficoForm,AnamnesisForm
 import json
 from reportlab.pdfgen import canvas
@@ -185,8 +185,7 @@ def detalle_paciente(request, paciente_id):
 def proyectos(request):
     proyectos = Proyecto.objects.all()
     examenes = Examen.objects.all()
-    visitas = Visita.objects.all()
-    visitaexamen = VisitaExamen.objects.all()
+    visitas = TipoVisita.objects.all()
     
     # Crear un diccionario para almacenar las visitas y exámenes por proyecto
     proyecto_data = {}
@@ -194,12 +193,17 @@ def proyectos(request):
         visitas_proyecto = visitas.filter(proyecto=proyecto)
         visitas_info = []
         for visita in visitas_proyecto:
-            examenes_visita = visitaexamen.filter(visita=visita)
+            # Convertir la cadena JSON de IDs en una lista de Python
+            examenes_ids =  visita.examenes
+            
+            # Buscar los nombres de los exámenes en la base de datos
+            examenes_nombres = Examen.objects.filter(id__in=examenes_ids).values_list('nombre', flat=True)
+
             visitas_info.append({
                 'id':visita.id,
                 'nombre': visita.nombre,
                 'observaciones': visita.observaciones,
-                'examenes': [ve.examen for ve in examenes_visita]
+                'examenes': examenes_nombres
             })
         proyecto_data[proyecto.id] = visitas_info
     
@@ -207,7 +211,6 @@ def proyectos(request):
         'proyectos': proyectos,
         'examenes': examenes,
         'visitas': visitas,
-        'visitaexamen': visitaexamen,
         'proyecto_data': proyecto_data
     }
     
@@ -236,10 +239,10 @@ def eliminar_proyecto(request, id):
 @login_required
 #visitas
 def agregar_visita(request):
+    
     proyectos = Proyecto.objects.all()
     examenes = Examen.objects.all()
-    visitas = Visita.objects.all()
-    visitaexamen = VisitaExamen.objects.all()
+    visitas = TipoVisita.objects.all()
     
     # Crear un diccionario para almacenar las visitas y exámenes por proyecto
     proyecto_data = {}
@@ -247,11 +250,16 @@ def agregar_visita(request):
         visitas_proyecto = visitas.filter(proyecto=proyecto)
         visitas_info = []
         for visita in visitas_proyecto:
-            examenes_visita = visitaexamen.filter(visita=visita)
+            # Convertir la cadena JSON de IDs en una lista de Python
+            examenes_ids =  visita.examenes
+            
+            # Buscar los nombres de los exámenes en la base de datos
+            examenes_nombres = Examen.objects.filter(id__in=examenes_ids).values_list('nombre', flat=True)
             visitas_info.append({
+                'id':visita.id,
                 'nombre': visita.nombre,
                 'observaciones': visita.observaciones,
-                'examenes': [ve.examen for ve in examenes_visita]
+                'examenes': examenes_nombres,
             })
         proyecto_data[proyecto.id] = visitas_info
     
@@ -259,32 +267,23 @@ def agregar_visita(request):
         'proyectos': proyectos,
         'examenes': examenes,
         'visitas': visitas,
-        'visitaexamen': visitaexamen,
         'proyecto_data': proyecto_data
     }
    
     if request.method == 'POST':
         proyecto_id = request.POST.get('proyecto_id')
         nombres = request.POST.getlist('nombre_visita[]')  # Varias visitas
-        fechas = request.POST.getlist('fecha_visita[]')
         observaciones_list = request.POST.getlist('observaciones[]')
+        examenes_json = request.POST.getlist('examenes[]') 
 
-        for i in range(len(nombres)):
-            visita = Visita.objects.create(
+        for i in range(len(nombres)):  # Crear una visita por cada nombre recibido
+            TipoVisita.objects.create(
                 proyecto_id=proyecto_id,
-                nombre=nombres[i],
-                observaciones=observaciones_list[i]
+                nombre=nombres[i],  # Obtener un solo nombre
+                observaciones=observaciones_list[i],  # Obtener una sola observación
+                examenes=examenes_json  # Guardar la lista completa de exámenes
             )
 
-            examenes_ids = request.POST.getlist('examenes[]') 
-
-            # Guardar cada examen seleccionado en la BD
-            for examen_id in examenes_ids:
-                VisitaExamen.objects.create(
-                    visita=visita,
-                    examen_id=examen_id,  # Más eficiente usar .create() con el ID directo
-                )
-            # Redirigir a la página de proyectos
         return redirect('proyectos')
 
     return render(request, 'home/proyectos.html',context)
@@ -292,11 +291,9 @@ def agregar_visita(request):
 @login_required
 def eliminar_visita(request, id):
     # Obtener la visita o devolver un error 404 si no existe
-    visita = get_object_or_404(Visita, id=id)
+    visita = get_object_or_404(TipoVisita, id=id)
 
     if request.method == "POST":
-        # Eliminar primero las relaciones en VisitaExamen
-        VisitaExamen.objects.filter(visita=visita).delete()
         
         # Luego, eliminar la visita
         visita.delete()
