@@ -70,8 +70,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -79,14 +77,12 @@ DATABASES = {
         'NAME': 'ateneagrunecodb',
         'USER': 'root',
         'PASSWORD': '@tene@2025',
-        'HOST': 'localhost',  # O la dirección de tu servidor MySQL
-        'PORT': '3306',  # Puerto por defecto de MySQL
-        #'OPTIONS': {'unix_socket': '/opt/bitnami/mariadb/tmp/mysql.sock',},
+        'HOST': 'localhost',  
+        'PORT': '3306',  
+        'OPTIONS': {'unix_socket': '/opt/bitnami/mariadb/tmp/mysql.sock',},
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
