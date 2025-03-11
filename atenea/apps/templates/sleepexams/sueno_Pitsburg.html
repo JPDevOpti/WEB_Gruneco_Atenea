@@ -275,7 +275,17 @@
     </form>
 </div>
 
-<script>
 
+<script>
+    function toggleFields() {
+        var select = document.getElementById("duerme_acompanado");
+        var fields = document.getElementById("acompanado_fields");
+        if (select.value === "acompanado") {
+            fields.style.display = "block";
+        } else {
+            fields.style.display = "none";
+        }
+    }
 </script>
+
 {% endblock %}
