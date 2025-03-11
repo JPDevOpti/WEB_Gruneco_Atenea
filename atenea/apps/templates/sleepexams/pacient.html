@@ -144,7 +144,22 @@
                   <strong>Evaluador:</strong> {{ visita.evaluador }}<br>
                   <strong>Tipo de Visita:</strong> {{ visita.Tipo_visita.nombre }}
                 </p>
+
+                <!-- Mostrar los exámenes asociados a esta visita -->
+                <div class="ms-4">
+                  <h6>Exámenes realizados:</h6>
+                  {% for visita_examen in visita.visita_examenes.all %}
+                  <div class="mb-2">
+                    <p>
+                      <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
+                    </p>
+                  </div>
+                  {% empty %}
+                  <p>No se realizaron exámenes en esta visita.</p>
+                  {% endfor %}
+                </div>
               </div>
+
               {% endif %}
               {% empty %}
               <p>No hay visitas registradas para este proyecto.</p>
