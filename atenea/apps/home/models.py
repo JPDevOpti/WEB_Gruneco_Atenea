@@ -161,6 +161,12 @@ class Visita(models.Model):
     fecha = models.DateField(blank=True, null=True)
     evaluador = models.CharField(max_length=50,null=True, blank=True)
     
+    # Campos del acompañante
+    acompanante_nombre = models.CharField(max_length=255, verbose_name="Nombre del Acompañante", blank=True, null=True)
+    acompanante_relacion = models.CharField(max_length=100, verbose_name="Relación con el Paciente", blank=True, null=True)
+    acompanante_correo = models.EmailField(verbose_name="Correo del Acompañante", blank=True, null=True)
+    acompanante_telefono = models.CharField(max_length=20, verbose_name="Teléfono del Acompañante", blank=True, null=True)
+    
     def __str__(self):
         return f"{self.nombre} - {self.proyecto.nombre}"
 

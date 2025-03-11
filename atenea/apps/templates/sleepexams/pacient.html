@@ -137,28 +137,37 @@
 
               {% for visita in visitas_paciente %}
               {% if visita.Tipo_visita.proyecto == proyecto %}
-              <div class="mb-2">
-                <p>
-                  <strong>Visita:</strong> {{ visita.nombre }}<br>
-                  <strong>Fecha:</strong> {{ visita.fecha }}<br>
-                  <strong>Evaluador:</strong> {{ visita.evaluador }}<br>
-                  <strong>Tipo de Visita:</strong> {{ visita.Tipo_visita.nombre }}
-                </p>
+              <div class="d-flex justify-content-between">
+                <!-- Información de la visita -->
+                <div class="me-4">
+                  <p>
+                    <strong>Visita:</strong> {{ visita.nombre }}<br>
+                    <strong>Fecha:</strong> {{ visita.fecha }}<br>
+                    <strong>Evaluador:</strong> {{ visita.evaluador }}<br>
+                    <strong>Tipo de Visita:</strong> {{ visita.Tipo_visita.nombre }}
+                  </p>
+                </div>
 
-                <!-- Mostrar los exámenes asociados a esta visita -->
-                <div class="ms-4">
-                  <h6>Exámenes realizados:</h6>
+                <!-- Exámenes asociados -->
+                <div>
+                  <h4>Exámenes</h4>
                   {% for visita_examen in visita.visita_examenes.all %}
-                  <div class="mb-2">
-                    <p>
-                      <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
-                    </p>
-                  </div>
+                  <p>
+                    <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
+                    {% if visita_examen.resultado %}
+                    <a href="{% url 'ver_examen' visita_examen.id %}" class="btn btn-info btn-sm">Ver Resultado</a>
+                    {% else %}
+                    <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
+                      class="btn btn-primary btn-sm">Realizar Examen</a>
+                    {% endif %}
+                  </p>
                   {% empty %}
                   <p>No se realizaron exámenes en esta visita.</p>
                   {% endfor %}
                 </div>
               </div>
+
+
 
               {% endif %}
               {% empty %}
