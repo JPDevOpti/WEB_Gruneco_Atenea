@@ -1248,7 +1248,7 @@ def guardar_examen_sueno_fisico(request):
 def guardar_examen_Sueño_Cuestionarios(request):
     if request.method == 'POST':
         # Obtener los datos del formulario para antecedentes
-        datos_formulario_antecedentes = {
+        datos_formulario_Cuestionarios = {
             "Pittsburgh": {
                 "Hora de acostarse durante el ultimo mes": request.POST.get('hora_acostarse'),
                 "Latencia de inicio de sueño (minutos)": request.POST.get('latencia_sueno'),
@@ -1360,27 +1360,30 @@ def guardar_examen_Sueño_Cuestionarios(request):
             }
         }
 
-        # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen correspondiente
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
-        
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_antecedentes}
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_antecedentes
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_Cuestionarios)
+        else:
+            visita_examen.resultado = datos_formulario_Cuestionarios
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
     
