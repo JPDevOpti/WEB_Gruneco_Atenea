@@ -50,6 +50,7 @@ urlpatterns = [
     
     #Cuestioanrio de sueno
     path('guardar-examen-Pitsburg', views.guardar_examen_Pitsburg, name='guardar_examen_Pitsburg'),
+    path('guardar-examen-Epworth', views.guardar_examen_Epworth, name='guardar_examen_Epworth'),
     
     #proyectos
     path('proyectos/', views.proyectos, name='proyectos'),

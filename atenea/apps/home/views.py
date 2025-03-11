@@ -421,6 +421,8 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         10: "sleepexams/Sueno_anamnesis.html",
         11: "sleepexams/Sueño_Cuestionarios.html",
         12: "sleepexams/Sueño_ExamenFisico.html",
+        13: "sleepexams/sueno_Pitsburg.html",
+        14: "sleepexams/sueno_Epworth.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -1406,7 +1408,7 @@ def guardar_examen_Pitsburg(request):
     if request.method == 'POST':
         # Obtener los datos del formulario para antecedentes
         datos_formulario_Pitsburg = {
-            "Pittsburgh": {
+             "Pittsburgh": {
                 "Hora de acostarse durante el ultimo mes": request.POST.get('hora_acostarse'),
                 "Latencia de inicio de sueño (minutos)": request.POST.get('latencia_sueno'),
                 "Hora de levantarse durante el ultimo mes": request.POST.get('hora_levantarse'),
@@ -1419,7 +1421,25 @@ def guardar_examen_Pitsburg(request):
                 "Sentir frio": request.POST.get('Sentir_frio_sueno'),
                 "Sentir demasiado calor": request.POST.get('calor_sueno'),
                 "Tener pesadillas o malos sueños" : request.POST.get('pesadillas_sueno'),
-                "Sufrir dolores": request.POST.get('dolores_sueno'),}}
+                "Sufrir dolores": request.POST.get('dolores_sueno'),
+                
+                # Nuevos campos agregados
+                "otras_razones": request.POST.get('otras'),
+                "otras_sueno": request.POST.get('otras_sueno'),
+                "Durante el ultimo mes ¿Como valoraria en conjunto su calidad de sueño?": request.POST.get('calidad_sueno'),
+                "Durante el ultimo mes ¿Cuantas veces habra tomado medicinas (por su cuenta o recetadas por medico) para dormir?": request.POST.get('medicinas_sueno'),
+                "Durante el ultimo mes ¿Cuantas veces ha sentido somnolencia mientras conducia, comia, o desarrollaba alguna otra actividad?": request.POST.get('somnolencia_sueno'),
+                "Durante el ultimo mes ¿ha representado mucho problema el tener animos para realizar alguna de las actividades detalladas en la pregunta anterior?": request.POST.get('problemas_animos_sueno'),
+                "Duerme solo o acompañado": request.POST.get('duerme_acompanado'),
+                
+                # Campos mostrados solo si duerme acompañado
+                "Ronquidos ruidosos": request.POST.get('ronquidos_ruidosos'),
+                "Grandes pausas entre respiraciones mientras duerme": request.POST.get('pausas_respiracion'),
+                "Sacudidas o espasmos de piernas mientras duerme": request.POST.get('sacudidas_piernas'),
+                "Episodios de desorientación o confusión mientras duerme": request.POST.get('desorientacion_confusion'),
+                "Otros inconvenientes mientras duerme (describir)": request.POST.get('otros_inconvenientes'),
+                "descripcion_inconvenientes": request.POST.get('descripcion_inconvenientes'),
+            }}
 
          # Obtener la visita y el examen correspondiente
         visita_id = request.POST.get('visita_id')
@@ -1442,6 +1462,52 @@ def guardar_examen_Pitsburg(request):
             visita_examen.resultado.update(datos_formulario_Pitsburg)
         else:
             visita_examen.resultado = datos_formulario_Pitsburg
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+
+@login_required
+def guardar_examen_Epworth(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_Epworth= {
+             "Epworth": {
+                "Con que frecuencia se queda dormido?": {
+                "Sentado y leyendo": request.POST.get('epworth_leyendo'),
+                "Viendo la TV": request.POST.get('epworth_tv'),
+                "Sentado, inactivo en un espectáculo (teatro)": request.POST.get('epworth_teatro'),
+                "En coche, como piloto de un viaje de una hora": request.POST.get('epworth_piloto'),
+                "Tumbado a media tarde": request.POST.get('epworth_tumbado'),
+                "Sentado y charlando con alguien": request.POST.get('epworth_charlando'),
+                "Sentado después de comer sin ingerir alcohol": request.POST.get('epworth_comida'),
+                "En su coche, cuando se para debido al tráfico": request.POST.get('epworth_trafico'),
+                }
+                }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_Epworth)
+        else:
+            visita_examen.resultado = datos_formulario_Epworth
 
         # Guardar cambios
         visita_examen.save()
