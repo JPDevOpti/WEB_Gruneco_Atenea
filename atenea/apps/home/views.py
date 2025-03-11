@@ -805,27 +805,30 @@ def guardar_examen_analisis(request):
                 "estado": dsmv_estados[i] if i < len(dsmv_estados) else None
             })
 
-        # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get("visita_examen")
-        paciente_id = request.POST.get("paciente_id")  
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
-
-        # Obtener o crear la VisitaExamen correspondiente
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
+            visita=visita, examen=examen
         )
 
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_analisis}
-        )
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_analisis)
+        else:
+            visita_examen.resultado = datos_formulario_analisis
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_analisis
-            resultado_examen.save()
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
@@ -928,9 +931,9 @@ def guardar_examen_medicamentos(request):
 
         # Si ya tiene un resultado, lo actualizamos
         if visita_examen.resultado:
-            visita_examen.resultado.update(datos_formulario_sueno_fisico)
+            visita_examen.resultado.update(datos_formulario_medicamentos)
         else:
-            visita_examen.resultado = datos_formulario_sueno_fisico
+            visita_examen.resultado = datos_formulario_medicamentos
 
         # Guardar cambios
         visita_examen.save()
