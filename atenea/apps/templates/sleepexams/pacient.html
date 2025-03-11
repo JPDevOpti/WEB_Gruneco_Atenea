@@ -154,13 +154,36 @@
                   {% for visita_examen in visita.visita_examenes.all %}
                   <p>
                     <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
+
                     {% if visita_examen.resultado %}
-                    <a href="{% url 'ver_examen' visita_examen.id %}" class="btn btn-info btn-sm">Ver Resultado</a>
-                    {% else %}
-                    <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
-                      class="btn btn-primary btn-sm">Realizar Examen</a>
-                    {% endif %}
+                    <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen"
+                      data-nombre="{{ visita_examen.examen.nombre}}" data-resultado="{{ visita_examen.resultado }}">Ver
+                      Resultado</a>
+                    <!-- Modal -->
+                  <div class="modal fade" id="modalExamen" tabindex="-1" aria-labelledby="modalExamenLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="modalExamenLabel">Resultado del Examen</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <p><strong>Nombre:</strong> <span id="examenNombre"></span></p>
+                          <p><strong>Resultado:</strong> <span id="examenResultado"></span></p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {% else %}
+                  <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
+                    class="btn btn-primary btn-sm">Realizar Examen</a>
+                  {% endif %}
                   </p>
+
                   {% empty %}
                   <p>No se realizaron exámenes en esta visita.</p>
                   {% endfor %}
@@ -170,7 +193,7 @@
                   <form action="{% url 'eliminar_v' visita.id %}" method="POST"
                     onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar visita</button>
                   </form>
                 </div>
               </div>
@@ -258,6 +281,8 @@
                   </div>
                 </div>
               </div>
+
+
               {% empty %}
               <p>No hay visitas registradas en este proyecto.</p>
               {% endfor %}
@@ -372,6 +397,30 @@
       }
     }
   });
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var modalExamen = document.getElementById("modalExamen");
+
+    modalExamen.addEventListener("show.bs.modal", function (event) {
+      var button = event.relatedTarget;  // Botón que abrió el modal
+      var nombre = button.getAttribute("data-nombre");
+      var resultado = button.getAttribute("data-resultado");
+
+      // Si el resultado es JSON, lo convertimos a texto legible
+      try {
+        resultado = JSON.parse(resultado);
+        resultado = JSON.stringify(resultado, null, 2); // Formatear bonito
+      } catch (e) {
+        resultado = resultado || "No disponible";
+      }
+
+      // Insertar los valores en el modal
+      document.getElementById("examenNombre").textContent = nombre;
+      document.getElementById("examenResultado").textContent = resultado;
+    });
+  });
+
 </script>
 
 {% endblock %}
