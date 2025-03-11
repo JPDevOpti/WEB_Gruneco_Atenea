@@ -424,6 +424,7 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         13: "sleepexams/sueno_Pitsburg.html",
         14: "sleepexams/sueno_Epworth.html",
         15: "sleepexams/sueno_Stop_Bang.html",
+        16: "sleepexams/sueno_MEW.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -1552,6 +1553,63 @@ def guardar_examen_StopB(request):
             visita_examen.resultado.update(datos_formulario_Stop_Bang)
         else:
             visita_examen.resultado = datos_formulario_Stop_Bang
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
+@login_required
+def guardar_examen_MEW(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_MEW= {
+              "MEW" :{
+                "Hora a la que se levantaría si fuera libre de planificar el día": request.POST.get('hora_levantarse_meq'),
+                "Hora a la que se acostaría": request.POST.get('hora_acostarse_meq'),
+                "Necesidad del despertador para levantarse": request.POST.get('uso_despertador_meq'),
+                "Facilidad para levantarse por la mañana": request.POST.get('facilidad_levantarse_meq'),
+                "Nivel de alerta en la primera media hora tras levantarse": request.POST.get('alerta_manana_meq'),
+                "Apetito en la primera media hora tras levantarse": request.POST.get('apetito_manana_meq'),
+                "Sensación de descanso en la primera media hora tras levantarse": request.POST.get('descanso_manana_meq'),
+                "Hora a la que se acostaría en un día sin compromisos": request.POST.get('hora_acostarse_libre_meq'),
+                "Estado físico al realizar ejercicio por la mañana": request.POST.get('ejercicio_fisico_meq'),
+                "Hora aproximada de la noche en que se siente cansado": request.POST.get('hora_cansancio_noche_meq'),
+                "Horario ideal para una prueba mentalmente agotadora": request.POST.get('horario_prueba_mental_meq'),
+                
+                "Si te acostaras a las 11 PM, ¿qué nivel de cansancio notarías?": request.POST.get('nivel_cansancia_11'),
+                "por algún motivo te has acostado varias horas más tarde..¿Cuando crees que te despertarías? ": request.POST.get('hora_despertarse_si_tarde'),
+                
+                "Guardia nocturna, ¿qué preferirías? ": request.POST.get("guardia_nocturna"),
+                "Tienes que hacer dos horas de trabajo físico pesado.  ¿qué horario escogerías?": request.POST.get("horario_trabajo_fisico"),
+                "Has decidido hacer ejercicio físico intenso nocturno. ¿Cómo crees que te sentaría?": request.POST.get("ejercicio_nocturno"),
+                "horario trabajo, ¿Qué CINCO HORAS CONSECUTIVAS seleccionarías? ¿Empezando en qué hora?": request.POST.get("horario_trabajo"),
+                "¿A qué hora del día crees que alcanzas tu máximo bienestar?": request.POST.get("maximo_bienestar"),
+                "Se habla de personas de tipo matutino y vespertino. ¿Cuál de estos tipos te consideras ser?": request.POST.get("tipo_persona"),
+                "puntuacion": request.POST.get("puntuacion"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_MEW)
+        else:
+            visita_examen.resultado = datos_formulario_MEW
 
         # Guardar cambios
         visita_examen.save()
