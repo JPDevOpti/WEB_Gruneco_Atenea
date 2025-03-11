@@ -14,7 +14,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from django.contrib import messages
 from apps.home import models,forms
-from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen,ResultadoExamen,TipoVisita
+from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen,TipoVisita
 from .forms import  ProyectoForm,RegistroDemograficoForm,AnamnesisForm
 import json
 from reportlab.pdfgen import canvas
@@ -148,28 +148,6 @@ def detalle_paciente(request, paciente_id):
     # Obtener proyectos disponibles para asignación (excluye los que ya tiene)
     proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
     
-    examenes_dict = {int(examen.id): examen.nombre for examen in Examen.objects.all()} 
-    examenes_json = json.dumps(examenes_dict)
-     # Modificar las visitas para incluir los nombres de los exámenes
-    proyectos_con_visitas = []
-    for proyecto in proyectos:
-        visitas_modificadas = []
-        for visita in proyecto.visitas.all():
-            examenes_detallados = [
-                {"id": examen_id, "nombre": examenes_dict.get(examen_id, "Desconocido")}
-                for examen_id in visita.examenes
-            ]
-            visitas_modificadas.append({
-                "id": visita.id,
-                "nombre": visita.nombre,
-                "examenes": examenes_detallados
-            })
-        proyectos_con_visitas.append({
-            "id": proyecto.id,
-            "nombre": proyecto.nombre,
-            "visitas": visitas_modificadas
-        })
-        
 
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
@@ -180,7 +158,7 @@ def detalle_paciente(request, paciente_id):
         proyecto.save()
         
     return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
-        'proyectos_disponibles': proyectos_disponibles, 'proyectos_con_visitas': proyectos_con_visitas, "examenes_json": examenes_json,})
+        'proyectos_disponibles': proyectos_disponibles,})
 
 #proyectos
 @login_required
@@ -195,8 +173,11 @@ def proyectos(request):
         visitas_proyecto = visitas.filter(proyecto=proyecto)
         visitas_info = []
         for visita in visitas_proyecto:
-            # Convertir la cadena JSON de IDs en una lista de Python
-            examenes_ids =  visita.examenes
+            # Asegurar que los datos sean una lista de diccionarios
+            examenes_data = visita.examenes if isinstance(visita.examenes, list) else json.loads(visita.examenes)
+
+            # Extraer solo los IDs de los exámenes y convertirlos a enteros
+            examenes_ids = [int(examen["id"]) for examen in examenes_data]
             
             # Buscar los nombres de los exámenes en la base de datos
             examenes_nombres = Examen.objects.filter(id__in=examenes_ids).values_list('nombre', flat=True)
@@ -252,8 +233,11 @@ def agregar_visita(request):
         visitas_proyecto = visitas.filter(proyecto=proyecto)
         visitas_info = []
         for visita in visitas_proyecto:
-            # Convertir la cadena JSON de IDs en una lista de Python
-            examenes_ids =  visita.examenes
+            # Asegurar que los datos sean una lista de diccionarios
+            examenes_data = visita.examenes if isinstance(visita.examenes, list) else json.loads(visita.examenes)
+
+            # Extraer solo los IDs de los exámenes y convertirlos a enteros
+            examenes_ids = [int(examen["id"]) for examen in examenes_data]
             
             # Buscar los nombres de los exámenes en la base de datos
             examenes_nombres = Examen.objects.filter(id__in=examenes_ids).values_list('nombre', flat=True)
@@ -276,14 +260,17 @@ def agregar_visita(request):
         proyecto_id = request.POST.get('proyecto_id')
         nombres = request.POST.getlist('nombre_visita[]')  # Varias visitas
         observaciones_list = request.POST.getlist('observaciones[]')
-        examenes_json = request.POST.getlist('examenes[]') 
+        
+        # Recibir el JSON desde el formulario y decodificarlo
+        examenes_json = request.POST.get('examenes_json', '[]')
+        examenes_lista = json.loads(examenes_json)  # Convertir a lista de diccionarios
 
         for i in range(len(nombres)):  # Crear una visita por cada nombre recibido
             TipoVisita.objects.create(
                 proyecto_id=proyecto_id,
-                nombre=nombres[i],  # Obtener un solo nombre
-                observaciones=observaciones_list[i],  # Obtener una sola observación
-                examenes=examenes_json  # Guardar la lista completa de exámenes
+                nombre=nombres[i],
+                observaciones=observaciones_list[i],
+                examenes=examenes_lista  # Guardar la lista completa de exámenes como JSON
             )
 
         return redirect('proyectos')
@@ -307,38 +294,74 @@ def eliminar_visita(request, id):
 
     return redirect('proyectos')
 
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import DatosDemograficos, Proyecto, TipoVisita, Visita
 
-def crear_visita(request,paciente_id):
-    
-    proyectos = Proyecto.objects.all()
+def crear_visita(request, paciente_id):
     paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
-    # Obtener los proyectos en los que el paciente ya está asignado
     proyectos_asociados = paciente.proyectos.all()
 
-    # Obtener proyectos disponibles para asignación (excluye los que ya tiene)
+    # Obtener los proyectos en los que el paciente ya está asignado
     proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
     
-    # Obtener todas las visitas asociadas al paciente
-    Tipovisitas = TipoVisita.objects.filter(proyecto__in=proyectos_asociados)
-    
-    # Obtener todos los exámenes realizados o pendientes en esas visitas
-    visita_examenes = []
-
-    # Crear una lista de IDs de exámenes realizados
-    examenes_realizados = []
-    resultados_examenes = {}
+    # Obtener los tipos de visita disponibles para estos proyectos
+    tipo_visitas = TipoVisita.objects.filter(proyecto__in=proyectos_asociados)
     
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
-        pacientes_ids = request.POST.get("paciente_id")  # Lista de IDs seleccionados
+        tipo_visita_id = request.POST.get("tipo_visita")
+        fecha = request.POST.get("fecha")
+        evaluador = request.POST.get("evaluador")
+        nombre = request.POST.get("nombre")
+    
+        proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+        tipo_visita = get_object_or_404(TipoVisita, id=tipo_visita_id)
 
-        proyecto = Proyecto.objects.get(id=proyecto_id)
-        proyecto.pacientes.add(pacientes_ids)  # Asigna los pacientes al proyecto
-        proyecto.save()
+        # Crear la visita y asignarla al paciente
+        nueva_visita = Visita.objects.create(
+            paciente=paciente,
+            nombre=nombre,
+            Tipo_visita=tipo_visita,
+            fecha=fecha,
+            evaluador=evaluador
+        )
         
-    return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
-        'proyectos_disponibles': proyectos_disponibles,'examenes_realizados': examenes_realizados,
-        'resultados_examenes': resultados_examenes,})
+        # Procesar los exámenes seleccionados
+        examenes_seleccionados = request.POST.get('examenes_seleccionados')
+        if examenes_seleccionados:
+            try:
+                lista_ids_examenes = json.loads(examenes_seleccionados)
+                print(f"Exámenes seleccionados para la visita {nueva_visita.id}: {lista_ids_examenes}")
+                
+                # Crear un registro VisitaExamen para cada examen seleccionado
+                for examen_id in lista_ids_examenes:
+                    examen = Examen.objects.get(id=examen_id)
+                    VisitaExamen.objects.create(
+                        visita=nueva_visita,
+                        examen=examen,
+                        # El campo resultado quedará como NULL
+                        # Los resultados se agregarán en otra función
+                    )
+                
+                # Mensaje de éxito
+                messages.success(request, f"Visita creada con éxito con {len(lista_ids_examenes)} exámenes asociados.")
+                
+            except json.JSONDecodeError as e:
+                print(f"Error al decodificar JSON de exámenes: {examenes_seleccionados}")
+                print(f"Error específico: {str(e)}")
+                messages.error(request, "Error al procesar los exámenes seleccionados.")
+            
+            # Mensaje de éxito
+            messages.success(request, f"Visita  creada con éxito con {len(lista_ids_examenes)} exámenes asociados.")
+        
+        return redirect('detalle_paciente', paciente_id=paciente.id)  # Redirige después de crear
+
+    return render(request, 'sleepexams/pacient.html', {
+        'paciente': paciente,
+        'proyectos_asociados': proyectos_asociados,
+        'proyectos_disponibles': proyectos_disponibles,
+        'tipo_visitas': tipo_visitas
+    })
 
 #Ingreso y Salida
 @login_required

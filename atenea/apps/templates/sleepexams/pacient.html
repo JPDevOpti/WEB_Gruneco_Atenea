@@ -135,8 +135,6 @@
               </div>
 
 
-              {% for visita in proyecto.visitas.all %}
-
               <!-- Modal para agregar una nueva visita -->
               <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1"
                 aria-labelledby="modalLabel" aria-hidden="true">
@@ -158,18 +156,20 @@
 
                         <div class="mb-3">
                           <label for="tipo_visita" class="form-label">Tipo de Visita</label>
-                          <select class="form-control tipo-visita" name="tipo_visita"
-                            data-proyecto-id="{{ proyecto.id }}" required>
+                          <select class="form-control tipo-visita" name="tipo_visita" id="visitaSelect">
                             <option value="">Seleccione un tipo de visita</option>
-
                             {% for visita in proyecto.visitas.all %}
-                            <option value="{{ visita.id }}" data-examenes='[{% for examen in visita.examenes %}{"id": "{{ examen }}", "nombre": "{{ examen }}"}
-                              {% if not forloop.last %}, {% endif %}{% endfor %}]'>
-                              {{ visita.nombre }}</option>
-
+                            <option value="{{ visita.id }}" data-examenes="{{ visita.examenes }}">
+                              {{ visita.nombre }}
+                            </option>
                             {% endfor %}
-
                           </select>
+                        </div>
+
+                        <div class="mb-3">
+                          <h4>Exámenes Asociados:</h4>
+                          <ul id="examenesLista" class="p-0"></ul>
+                          <!-- El input hidden para examenes_seleccionados se agregará automáticamente mediante JavaScript -->
                         </div>
 
 
@@ -183,17 +183,9 @@
                           <input type="text" class="form-control" name="evaluador">
                         </div>
 
-                        <!-- Exámenes asociados al tipo de visita (se llenará con JS) -->
-                        <div class="mb-3">
-                          <label>Exámenes Asociados</label>
-                          <div class="examenes-container" id="examenes-container-{{ proyecto.id }}">
-                            <p>Seleccione un tipo de visita para ver los exámenes.</p>
-                          </div>
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-primary">Guardar Visita</button>
                         </div>
-                      </div>
-
-                      <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Guardar Visita</button>
                       </div>
                     </form>
                   </div>
@@ -201,10 +193,6 @@
               </div>
               {% empty %}
               <p>No hay visitas registradas en este proyecto.</p>
-              {% endfor %}
-
-              {% empty %}
-              <p>El paciente no está asociado a ningún proyecto.</p>
               {% endfor %}
             </div>
 
@@ -215,44 +203,108 @@
 
   </div>
 </div>
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".tipo-visita").forEach(select => {
+    var visitaSelect = document.querySelectorAll(".tipo-visita");
+
+    visitaSelect.forEach(function (select) {
       select.addEventListener("change", function () {
-        let proyectoId = this.getAttribute("data-proyecto-id");
-        let examenesContainer = document.getElementById(`examenes-container-${proyectoId}`);
-        let selectedOption = this.options[this.selectedIndex];
-        let examenes = JSON.parse(selectedOption.getAttribute("data-examenes") || "[]");
+        var selectedOption = this.options[this.selectedIndex];
+        var examenesData = selectedOption.getAttribute("data-examenes");
+        console.log("Data-Examenes (crudo):", examenesData);
 
-        // Limpiar el contenedor
-        examenesContainer.innerHTML = "";
+        // Encontrar el formulario correcto - buscar el formulario padre de este select
+        var currentForm = this.closest("form");
+        var examenesLista = currentForm.querySelector("#examenesLista");
 
-        if (examenes.length > 0) {
-          examenes.forEach(examen => {
-            let checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.name = "examenes[]";
-            checkbox.value = examen.id;
-            checkbox.classList.add("form-check-input");
+        if (!examenesLista) {
+          console.error("No se encontró el elemento #examenesLista en este formulario");
+          return;
+        }
 
-            let label = document.createElement("label");
-            label.classList.add("form-check-label");
-            label.textContent = examen.nombre;
+        examenesLista.innerHTML = ""; // Limpiar la lista antes de actualizar
 
-            let div = document.createElement("div");
-            div.classList.add("form-check");
-            div.appendChild(checkbox);
-            div.appendChild(label);
+        if (examenesData) {
+          try {
+            // Reemplazar comillas simples por comillas dobles
+            var jsonString = examenesData.replace(/'/g, '"');
+            var examenes = JSON.parse(jsonString);
+            console.log("Exámenes parseados:", examenes);
 
-            examenesContainer.appendChild(div);
-          });
-        } else {
-          examenesContainer.innerHTML = "<p>No hay exámenes asignados para este tipo de visita.</p>";
+            // Crear un campo oculto para almacenar los IDs seleccionados
+            var hiddenInputId = "examenes_seleccionados";
+            var hiddenInput = currentForm.querySelector("#" + hiddenInputId);
+
+            // Si no existe el campo oculto, crearlo
+            if (!hiddenInput) {
+              hiddenInput = document.createElement("input");
+              hiddenInput.type = "hidden";
+              hiddenInput.name = "examenes_seleccionados";
+              hiddenInput.id = hiddenInputId;
+              currentForm.appendChild(hiddenInput);
+              console.log("Campo oculto creado:", hiddenInput);
+            }
+
+            examenes.forEach(function (examen) {
+              var li = document.createElement("li");
+              li.style.listStyleType = "none";
+              li.style.margin = "5px 0";
+
+              // Crear el checkbox
+              var checkbox = document.createElement("input");
+              checkbox.type = "checkbox";
+              checkbox.id = "examen_" + examen.id;
+              checkbox.value = examen.id;
+              checkbox.className = "form-check-input examen-checkbox";
+              checkbox.style.marginRight = "8px";
+              checkbox.checked = true; // Marcar por defecto
+
+              // Crear la etiqueta para el checkbox
+              var label = document.createElement("label");
+              label.htmlFor = "examen_" + examen.id;
+              label.textContent = examen.nombre;
+              label.className = "form-check-label";
+
+              // Añadir elementos al DOM
+              li.appendChild(checkbox);
+              li.appendChild(label);
+              examenesLista.appendChild(li);
+
+              // Agregar evento al checkbox
+              checkbox.addEventListener("change", function () {
+                actualizarExamenesSeleccionados(currentForm);
+              });
+            });
+
+            // Inicializar la lista de exámenes seleccionados
+            actualizarExamenesSeleccionados(currentForm);
+
+          } catch (error) {
+            console.error("Error al parsear los exámenes:", error);
+          }
         }
       });
     });
-  });
 
+    // Función para actualizar el campo oculto con los IDs de exámenes seleccionados
+    function actualizarExamenesSeleccionados(form) {
+      var checkboxes = form.querySelectorAll('.examen-checkbox:checked');
+      var examenesSeleccionados = Array.from(checkboxes).map(function (cb) {
+        return cb.value;
+      });
+
+      var hiddenInput = form.querySelector("#examenes_seleccionados");
+      if (hiddenInput) {
+        // Actualizar el campo oculto con los IDs seleccionados como JSON
+        hiddenInput.value = JSON.stringify(examenesSeleccionados);
+        console.log("Exámenes seleccionados:", examenesSeleccionados);
+        console.log("Campo oculto:", hiddenInput);
+        console.log("Valor del campo:", hiddenInput.value);
+      } else {
+        console.error("No se encontró el campo oculto examenes_seleccionados");
+      }
+    }
+  });
 </script>
+
 {% endblock %}

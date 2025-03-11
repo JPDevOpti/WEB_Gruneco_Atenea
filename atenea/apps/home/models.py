@@ -155,6 +155,7 @@ class TipoVisita(models.Model):
         return f"{self.nombre} - {self.proyecto.nombre}"
         
 class Visita(models.Model):
+    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="visitas",null=True, blank=True)
     nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
     Tipo_visita = models.ForeignKey(TipoVisita, on_delete=models.CASCADE, related_name='visitas',null=True, blank=True)
     fecha = models.DateField(blank=True, null=True)
@@ -166,17 +167,9 @@ class Visita(models.Model):
 class VisitaExamen(models.Model):
     visita = models.ForeignKey(Visita, on_delete=models.CASCADE, related_name="visita_examenes")
     examen = models.ForeignKey(Examen, on_delete=models.CASCADE, related_name="examenes_realizados")
+    resultado = models.JSONField(verbose_name="Respuestas del Examen",null=True, blank=True)
     
     def __str__(self):
         return f"{self.visita.nombre} - {self.examen.nombre}"
     
-class ResultadoExamen(models.Model):
-    visita_examen = models.ForeignKey(VisitaExamen, on_delete=models.CASCADE, related_name="resultados")
-    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="resultados_examenes")
-    resultado = models.JSONField(verbose_name="Respuestas del Examen")  # Respuestas específicas
 
-    class Meta:
-        unique_together = ('visita_examen', 'paciente')  # Evita duplicados
-
-    def __str__(self):
-        return f"{self.paciente.nprimer_nombre} - {self.visita_examen}"
