@@ -124,6 +124,7 @@
             <div class="col-12">
               {% for proyecto in proyectos_asociados %}
               <!-- Botón para abrir el modal de nueva visita -->
+              <hr class="my-4">
               <h5 class="card-title text-uppercase text-muted mb-3">{{ proyecto.nombre }}</h5>
 
               <div class="mb-3">
@@ -131,8 +132,24 @@
                   data-bs-target="#modalAgregarVisita-{{ proyecto.id }}">
                   Agregar Visita
                 </button>
-                <hr class="my-4">
+
               </div>
+
+              {% for visita in visitas_paciente %}
+              {% if visita.Tipo_visita.proyecto == proyecto %}
+              <div class="mb-2">
+                <p>
+                  <strong>Visita:</strong> {{ visita.nombre }}<br>
+                  <strong>Fecha:</strong> {{ visita.fecha }}<br>
+                  <strong>Evaluador:</strong> {{ visita.evaluador }}<br>
+                  <strong>Tipo de Visita:</strong> {{ visita.Tipo_visita.nombre }}
+                </p>
+              </div>
+              {% endif %}
+              {% empty %}
+              <p>No hay visitas registradas para este proyecto.</p>
+              {% endfor %}
+
 
 
               <!-- Modal para agregar una nueva visita -->

@@ -148,6 +148,9 @@ def detalle_paciente(request, paciente_id):
     # Obtener proyectos disponibles para asignación (excluye los que ya tiene)
     proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
     
+    # Obtener las visitas asociadas al paciente
+    visitas_paciente = Visita.objects.filter(paciente=paciente)
+    
 
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
@@ -158,7 +161,7 @@ def detalle_paciente(request, paciente_id):
         proyecto.save()
         
     return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
-        'proyectos_disponibles': proyectos_disponibles,})
+        'proyectos_disponibles': proyectos_disponibles,'visitas_paciente': visitas_paciente,})
 
 #proyectos
 @login_required
