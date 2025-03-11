@@ -1,0 +1,278 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-5">
+                    <h6 class="h2 text-white d-inline-block mb-0">Información del Paciente</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <form method="post" action="{% url 'guardar_examen_medicamentos' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Cuestionario de Pitsburg</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label>Hora de acostarse durante el ultimo mes</label>
+                            <input type="time" name="hora_acostarse" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>Latencia de inicio de sueño (minutos)</label>
+                            <input type="number" name="latencia_sueno" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>Hora de levantarse durante el ultimo mes</label>
+                            <input type="time" name="hora_levantarse" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label>Cuantas horas duerme verdaderamente cada noche durante el ultimo mes</label>
+                            <input type="number" name="latencia_sueno" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>No poder conciliar el sueño</label>
+                            <select name="conciliar_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Despertarse durante la noche o de madrugada</label>
+                            <select name="despertarse_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Tener que levantarse para ir al servicio</label>
+                            <select name="levantarse_servicio_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>No poder respirar bien</label>
+                            <select name="respirar" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Toser o roncar ruidosamente</label>
+                            <select name="toser_roncar_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Sentir frio</label>
+                            <select name="Sentir_frio_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Sentir demasiado calor</label>
+                            <select name="calor_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Tener pesadillas o "malos sueños"</label>
+                            <select name="pesadillas_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Sufrir dolores</label>
+                            <select name="dolores_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Otras razones (describir)</label>
+                            <input type="text" name="otras" class="form-control">
+                            <select name="otras_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label>Durante el ultimo mes ¿Como valoraria en conjunto su calidad de sueño?</label>
+                            <select name="calidad_sueno" class="form-control">
+                                <option>Buena</option>
+                                <option>Bastante buena</option>
+                                <option>Mala</option>
+                                <option>Bastante mala</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Durante el ultimo mes ¿Cuantas veces habra tomado medicinas (por su cuenta o
+                                recetadas por medico) para dormir?</label>
+                            <select name="medicinas_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Durante el ultimo mes ¿Cuantas veces ha sentido somnolencia mientras conducia, comia,
+                                o desarrollaba alguna otra actividad?</label>
+                            <select name="somnolencia_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Durante el ultimo mes ¿ha representado mucho problema el "tener animos" para realizar
+                                alguna de las actividades detalladas en la pregunta anterior?</label>
+                            <select name="problemas_animos_sueno" class="form-control">
+                                <option>Ninguna vez</option>
+                                <option>Menos de una vez a la semana</option>
+                                <option>Una o dos veces a la semana</option>
+                                <option>Tres o más veces a la semana</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label>Duerme solo o acompañado</label>
+                            <select name="duerme_acompanado" class="form-control">
+                                <option>Solo</option>
+                                <option>Con alguien en otra habitación</option>
+                                <option>otra cama</option>
+                                <option>En la misma cama</option>
+                            </select>
+                        </div>
+                        <form>
+                            <!-- Otros campos existentes -->
+                            <hr class="my-4">
+                            <div class="mb-3">
+                                <label>Especifique solo o acompañado</label>
+                                <select id="duerme_acompanado" name="duerme_acompanado" class="form-control"
+                                    onchange="toggleFields()">
+                                    <option value="solo">Solo</option>
+                                    <option value="acompanado">Acompañado</option>
+                                </select>
+                            </div>
+
+                            <div id="acompanado_fields" style="display: none;">
+                                <div class="mb-3">
+                                    <label>Ronquidos ruidosos</label>
+                                    <select name="ronquidos_ruidosos" class="form-control">
+                                        <option>Ninguna vez en el último mes</option>
+                                        <option>Menos de una vez a la semana</option>
+                                        <option>Una o dos veces a la semana</option>
+                                        <option>Tres o más veces a la semana</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Grandes pausas entre respiraciones mientras duerme</label>
+                                    <select name="pausas_respiracion" class="form-control">
+                                        <option>Ninguna vez en el último mes</option>
+                                        <option>Menos de una vez a la semana</option>
+                                        <option>Una o dos veces a la semana</option>
+                                        <option>Tres o más veces a la semana</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Sacudidas o espasmos de piernas mientras duerme</label>
+                                    <select name="sacudidas_piernas" class="form-control">
+                                        <option>Ninguna vez en el último mes</option>
+                                        <option>Menos de una vez a la semana</option>
+                                        <option>Una o dos veces a la semana</option>
+                                        <option>Tres o más veces a la semana</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Episodios de desorientación o confusión mientras duerme</label>
+                                    <select name="desorientacion_confusion" class="form-control">
+                                        <option>Ninguna vez en el último mes</option>
+                                        <option>Menos de una vez a la semana</option>
+                                        <option>Una o dos veces a la semana</option>
+                                        <option>Tres o más veces a la semana</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label>Otros inconvenientes mientras duerme (describir)</label>
+                                    <select name="otros_inconvenientes" class="form-control">
+                                        <option>Ninguna vez en el último mes</option>
+                                        <option>Menos de una vez a la semana</option>
+                                        <option>Una o dos veces a la semana</option>
+                                        <option>Tres o más veces a la semana</option>
+                                    </select>
+                                    <textarea name="descripcion_inconvenientes" class="form-control"
+                                        placeholder="Describa otros inconvenientes"></textarea>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 text-right">
+                <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+                    Ver Paciente
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+</script>
+{% endblock %}
