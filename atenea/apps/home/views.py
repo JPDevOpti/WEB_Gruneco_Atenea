@@ -316,7 +316,13 @@ def crear_visita(request, paciente_id):
         fecha = request.POST.get("fecha")
         evaluador = request.POST.get("evaluador")
         nombre = request.POST.get("nombre")
-    
+        
+        # Capturar datos del acompañante
+        acompanante_nombre = request.POST.get("acompanante_nombre")
+        acompanante_relacion = request.POST.get("acompanante_relacion")
+        acompanante_correo = request.POST.get("acompanante_correo")
+        acompanante_telefono = request.POST.get("acompanante_telefono")
+        
         proyecto = get_object_or_404(Proyecto, id=proyecto_id)
         tipo_visita = get_object_or_404(TipoVisita, id=tipo_visita_id)
 
@@ -326,7 +332,11 @@ def crear_visita(request, paciente_id):
             nombre=nombre,
             Tipo_visita=tipo_visita,
             fecha=fecha,
-            evaluador=evaluador
+            evaluador=evaluador,
+            acompanante_nombre=acompanante_nombre,
+            acompanante_relacion=acompanante_relacion,
+            acompanante_correo=acompanante_correo,
+            acompanante_telefono=acompanante_telefono
         )
         
         # Procesar los exámenes seleccionados
