@@ -376,6 +376,14 @@ def crear_visita(request, paciente_id):
         'tipo_visitas': tipo_visitas
     })
 
+def eliminar_v(request, visita_id):
+    visita = get_object_or_404(Visita, id=visita_id)
+    paciente_id = visita.paciente.id  # Para redirigir después de eliminar
+    
+    visita.delete()
+    messages.success(request, "Visita eliminada correctamente.")
+    
+    return redirect('detalle_paciente', paciente_id=paciente_id)
 #Ingreso y Salida
 @login_required
 def logout_view(request):

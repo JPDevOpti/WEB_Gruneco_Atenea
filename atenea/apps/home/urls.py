@@ -53,10 +53,14 @@ urlpatterns = [
     path('proyectos/', views.proyectos, name='proyectos'),
     path('proyecto/eliminar/<int:id>/', views.eliminar_proyecto, name='eliminar_proyecto'),
     
-    #visitas
+    #Tipos de isitas
     path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
     path('Tipovisita/eliminar/<int:id>/', views.eliminar_visita, name='eliminar_visita'),
+    
+    #visitas
     path('visita/<int:paciente_id>/', views.crear_visita, name='crear_visita'),
+    path('eliminar-visita/<int:visita_id>/', views.eliminar_v, name='eliminar_v'),
+
 
     # Estadísticas
     path('estadisticas/', views.estadisticas, name='estadisticas'),

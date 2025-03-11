@@ -164,6 +164,14 @@
                   {% empty %}
                   <p>No se realizaron exámenes en esta visita.</p>
                   {% endfor %}
+
+                </div>
+                <div>
+                  <form action="{% url 'eliminar_v' visita.id %}" method="POST"
+                    onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                  </form>
                 </div>
               </div>
 
