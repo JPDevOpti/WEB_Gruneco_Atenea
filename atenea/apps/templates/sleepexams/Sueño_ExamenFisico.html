@@ -27,8 +27,9 @@
 <div class="container-fluid mt--6">
     <form method="post" action="{% url 'guardar_examen_sueno_fisico' %}">
         {% csrf_token %}
-        <input type="hidden" name="visita_examen" value="{{ visita_examen }}" />
-        <input type="hidden" name="paciente_id" value="{{ paciente_id }}" />
+        <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+        <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+        <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
         <div class="row">
             <div class="col">
                 <div class="card">
