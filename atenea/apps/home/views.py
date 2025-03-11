@@ -423,6 +423,7 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         12: "sleepexams/Sueño_ExamenFisico.html",
         13: "sleepexams/sueno_Pitsburg.html",
         14: "sleepexams/sueno_Epworth.html",
+        15: "sleepexams/sueno_Stop_Bang.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -1508,6 +1509,49 @@ def guardar_examen_Epworth(request):
             visita_examen.resultado.update(datos_formulario_Epworth)
         else:
             visita_examen.resultado = datos_formulario_Epworth
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
+@login_required
+def guardar_examen_StopB(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_Stop_Bang= {
+             "Stop_Bang" : {
+                    "Ronca fuerte": request.POST.get('ronca_fuerte', 'No'),
+                    "Se siente cansado con frecuencia": request.POST.get('cansado_frecuencia', 'No'),
+                    "Lo observaron dejar de respirar o ahogarse mientras dormía": request.POST.get('deja_respirar', 'No'),
+                    "Tiene o está recibiendo tratamiento para la presión arterial": request.POST.get('presion_arterial', 'No'),
+                    "Presenta un índice de masa corporal de más de 35kg/m²": request.POST.get('imc_alto', 'No'),
+                    "Tiene más de 50 años": request.POST.get('mayor_50', 'No'),
+                    "El tamaño de su cuello es grande": request.POST.get('cuello_grande', 'No'),
+                    "Masculino": request.POST.get('masculino', 'No'),
+                }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_Stop_Bang)
+        else:
+            visita_examen.resultado = datos_formulario_Stop_Bang
 
         # Guardar cambios
         visita_examen.save()
