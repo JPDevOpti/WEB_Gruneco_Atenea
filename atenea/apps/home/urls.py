@@ -44,10 +44,12 @@ urlpatterns = [
     path('guardar-examen-general/', views.guardar_examen_general_revisionsistemas, name='guardar_examen'),
     path('guardar-examen-fisico/', views.guardar_examen_fisico, name='guardar_examen_fisico'),
     path('guardar-examen-antecedentes', views.guardar_examen_antecedentes, name='guardar_examen_antecedentes'),
-    path('guardar-examen-medicamentos', views.guardar_examen_medicamentos, name='guardar_examen_medicamentos'),
-    
+    path('guardar-examen-medicamentos', views.guardar_examen_medicamentos, name='guardar_examen_medicamentos'), 
     path('guardar-examen-analisis', views.guardar_examen_analisis, name='guardar_examen_analisis'),
     path('guardar-examen-neurologico', views.guardar_examen_neurologico, name='guardar_examen_neurologico'),
+    
+    #Cuestioanrio de sueno
+    path('guardar-examen-Pitsburg', views.guardar_examen_Pitsburg, name='guardar_examen_Pitsburg'),
     
     #proyectos
     path('proyectos/', views.proyectos, name='proyectos'),
