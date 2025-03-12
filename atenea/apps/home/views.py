@@ -155,9 +155,11 @@ def detalle_paciente(request, paciente_id):
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
         pacientes_ids = request.POST.get("paciente_id")  # Lista de IDs seleccionados
-
+        paciente = DatosDemograficos.objects.get(id=pacientes_ids)\
+            
         proyecto = Proyecto.objects.get(id=proyecto_id)
-        proyecto.pacientes.add(pacientes_ids)  # Asigna los pacientes al proyecto
+        proyecto.pacientes.add(paciente)  # Asigna los pacientes al proyecto
+       
         proyecto.save()
         
     return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
