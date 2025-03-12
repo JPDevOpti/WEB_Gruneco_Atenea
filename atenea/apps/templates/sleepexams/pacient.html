@@ -216,7 +216,7 @@
                     <form method="POST" action="{% url 'crear_visita' paciente.id %}">
                       {% csrf_token %}
                       <div class="modal-body">
-                        <input type="hidden" name="proyecto_id" value="{{ proyecto.id }}">
+
 
                         <div class="mb-3">
                           <label for="nombre_visita" class="form-label">Nombre de la Visita</label>

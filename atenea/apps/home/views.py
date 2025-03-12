@@ -311,7 +311,7 @@ def crear_visita(request, paciente_id):
     tipo_visitas = TipoVisita.objects.filter(proyecto__in=proyectos_asociados)
     
     if request.method == "POST":
-        proyecto_id = request.POST.get("proyecto_id")
+       
         tipo_visita_id = request.POST.get("tipo_visita")
         fecha = request.POST.get("fecha")
         evaluador = request.POST.get("evaluador")
@@ -323,7 +323,7 @@ def crear_visita(request, paciente_id):
         acompanante_correo = request.POST.get("acompanante_correo")
         acompanante_telefono = request.POST.get("acompanante_telefono")
         
-        proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+        
         tipo_visita = get_object_or_404(TipoVisita, id=tipo_visita_id)
 
         # Crear la visita y asignarla al paciente
