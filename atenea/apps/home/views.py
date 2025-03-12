@@ -427,6 +427,7 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         16: "sleepexams/sueno_MEW.html",
         17: "sleepexams/sueno_Berlín.html",
         18: "sleepexams/sueno_atenas.html",
+        19: "sleepexams/sueno_ISI.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -1667,7 +1668,7 @@ def guardar_examen_Berlin(request):
 def guardar_examen_atenas(request):
     if request.method == 'POST':
         # Obtener los datos del formulario para antecedentes
-        datos_formulario_MEW= {
+        datos_formulario_ATENAS= {
               "Atenas":{
                 "Inducción del dormir (tiempo que le toma quedarse dormido una vez acostado)": request.POST.get("induccion_dormir"),
                 "Despertares durante la noche": request.POST.get("despertares_noche"),
@@ -1697,9 +1698,51 @@ def guardar_examen_atenas(request):
 
         # Si ya tiene un resultado, lo actualizamos
         if visita_examen.resultado:
-            visita_examen.resultado.update(datos_formulario_MEW)
+            visita_examen.resultado.update(datos_formulario_ATENAS)
         else:
-            visita_examen.resultado = datos_formulario_MEW
+            visita_examen.resultado = datos_formulario_ATENAS
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
+@login_required
+def guardar_examen_ISI(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_ISI= {
+               "ISI":{
+                "dificultad_dormir": request.POST.get("dificultad_dormir"),
+                "dificultad_mantener_sueno": request.POST.get("dificultad_mantener_sueno"),
+                "despertar_temprano": request.POST.get("despertar_temprano"),
+                "satisfaccion_sueno": request.POST.get("satisfaccion_sueno"),
+                "notabilidad_problema": request.POST.get("notabilidad_problema"),
+                "preocupacion_sueno": request.POST.get("preocupacion_sueno"),
+                "interferencia_sueno": request.POST.get("interferencia_sueno"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_ISI)
+        else:
+            visita_examen.resultado = datos_formulario_ISI
 
         # Guardar cambios
         visita_examen.save()
