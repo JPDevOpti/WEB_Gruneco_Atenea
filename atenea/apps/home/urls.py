@@ -53,6 +53,7 @@ urlpatterns = [
     path('guardar-examen-Epworth', views.guardar_examen_Epworth, name='guardar_examen_Epworth'),
     path('guardar-examen-Stop-Bang', views.guardar_examen_StopB, name='guardar_examen_Stop-Bang'),
     path('guardar-examen-MEW', views.guardar_examen_MEW, name='guardar_examen_MEW'),
+    path('guardar-examen-Berlín', views.guardar_examen_Berlin, name='guardar_examen_Berlin'),
     
     #proyectos
     path('proyectos/', views.proyectos, name='proyectos'),

@@ -425,6 +425,7 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         14: "sleepexams/sueno_Epworth.html",
         15: "sleepexams/sueno_Stop_Bang.html",
         16: "sleepexams/sueno_MEW.html",
+        17: "sleepexams/sueno_Berlín.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -1587,6 +1588,51 @@ def guardar_examen_MEW(request):
                 "¿A qué hora del día crees que alcanzas tu máximo bienestar?": request.POST.get("maximo_bienestar"),
                 "Se habla de personas de tipo matutino y vespertino. ¿Cuál de estos tipos te consideras ser?": request.POST.get("tipo_persona"),
                 "puntuacion": request.POST.get("puntuacion"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_MEW)
+        else:
+            visita_examen.resultado = datos_formulario_MEW
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+@login_required
+def guardar_examen_Berlin(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_MEW= {
+              "Berlín": {
+                "¿Su peso ha cambiado en los últimos 5 años?": request.POST.get("peso_cambio"),
+                "¿Usted ronca?": request.POST.get("ronca"),
+                "Si usted ronca, ¿Su ronquido es?": request.POST.get("tipo_ronquido"),
+                "¿Con qué frecuencia ronca?": request.POST.get("frecuencia_ronquidos"),
+                "¿Alguna vez su ronquido ha molestado a otras personas?": request.POST.get("ronquido_molesto"),
+                "¿Ha notado alguien que usted deja de respirar cuando duerme?": request.POST.get("apnea_observada"),
+                "¿Se siente cansado o fatigado al levantarse por la mañana?": request.POST.get("fatiga_matutina"),
+                "fatiga_dia": request.POST.get("fatiga_dia"),
+                "¿Alguna vez se ha sentido somnoliento o se ha quedado dormido mientras va de pasajero en un carro o maneja un vehículo?": request.POST.get("somnolencia_conducir"),
+                "¿Usted tiene la presión alta?": request.POST.get("presion_alta"),
             }}
 
          # Obtener la visita y el examen correspondiente
