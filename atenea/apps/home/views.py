@@ -426,6 +426,7 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         15: "sleepexams/sueno_Stop_Bang.html",
         16: "sleepexams/sueno_MEW.html",
         17: "sleepexams/sueno_Berlín.html",
+        18: "sleepexams/sueno_atenas.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
@@ -1661,6 +1662,50 @@ def guardar_examen_Berlin(request):
         visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+@login_required
+def guardar_examen_atenas(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_MEW= {
+              "Atenas":{
+                "Inducción del dormir (tiempo que le toma quedarse dormido una vez acostado)": request.POST.get("induccion_dormir"),
+                "Despertares durante la noche": request.POST.get("despertares_noche"),
+                "Despertar final más temprano de lo deseado": request.POST.get("despertar_temprano"),
+                "Duración total del dormir": request.POST.get("duracion_dormir"),
+                "Calidad general del dormir (no importa cuánto tiempo durmió usted)": request.POST.get("calidad_dormir"),
+                "Sensación de bienestar durante el día": request.POST.get("bienestar_dia"),
+                "Funcionamiento (físico y mental) durante el día": request.POST.get("funcionamiento_dia"),
+                "Somnolencia durante el día": request.POST.get("somnolencia_dia"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_MEW)
+        else:
+            visita_examen.resultado = datos_formulario_MEW
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
 
 @login_required
 def descargar_examen(request, visita_examen_id):
