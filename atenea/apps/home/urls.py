@@ -15,10 +15,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('profile/', profile_view, name='profile'),  # Perfil de usuario
 
-    # Registro de pacientes
-    path('registro-demografico/', views.registro_demografico, name='registro_demografico'),
-    path('pacientes/', views.lista_pacientes, name='lista_pacientes'),
-
     #resgistro de pacientes 
     path('registro_demografico/', views.registro_demografico, name='registro_demografico'),
     path('pacientes/', views.lista_pacientes, name='tables.html'),
@@ -29,9 +25,6 @@ urlpatterns = [
     # Exámenes médicos
     path('descargar-examen/<int:visita_examen_id>/', descargar_examen, name='descargar_examen'),
     path('examen/<int:visita_id>/<int:examen_id>/<int:paciente_id>/', views.realizar_examen, name='realizar_examen'),
-    path('guardar-examen/general/', views.guardar_examen_general_revisionsistemas, name='guardar_examen_general'),
-    path('guardar-examen/fisico/', views.guardar_examen_fisico, name='guardar_examen_fisico'),
-    path('guardar-examen/antecedentes/', views.guardar_examen_antecedentes, name='guardar_examen_antecedentes'),
     path('guardar-examen/anamnesis/', views.guardar_examen_anamnesis, name='guardar_examen_anamnesis'),
     path('guardar-examen/cuestionarios/', views.guardar_examen_Sueño_Cuestionarios, name='guardar_Sueño_Cuestionarios'),
     path('guardar-examen/fisico-sueno/', views.guardar_examen_sueno_fisico, name='guardar_examen_sueno_fisico'),
