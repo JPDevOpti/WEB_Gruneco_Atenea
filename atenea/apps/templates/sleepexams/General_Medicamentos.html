@@ -23,39 +23,40 @@
 <div class="container-fluid mt--6">
   <form method="post" action="{% url 'guardar_examen_medicamentos' %}">
     {% csrf_token %}
-  <div class="row">
-    <div class="col">
-      <div class="card">
-        <div class="card-header border-0">
-          <div class="row align-items-center">
-            <div class="col">
-              <h3 class="mb-0">Medicamentos</h3>
-              <input type="hidden" name="visita_examen" value="{{ visita_examen }}">
-              <input type="hidden" name="paciente_id" value="{{ paciente_id }}">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header border-0">
+            <div class="row align-items-center">
+              <div class="col">
+                <h3 class="mb-0">Medicamentos</h3>
+                <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+                <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+                <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
+              </div>
             </div>
           </div>
-        </div>
-        <div class="card-body">
-          <div id="medicamentos"></div>
-          <button type="button" id="agregar-medicamento" class="btn btn-primary">Agregar Medicamento</button>
+          <div class="card-body">
+            <div id="medicamentos"></div>
+            <button type="button" id="agregar-medicamento" class="btn btn-primary">Agregar Medicamento</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row mt-4">
-    <div class="col-12 text-right">
-      <button type="submit" class="btn btn-primary">Guardar Examen</button>
-      <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
-        Ver Paciente
-    </a>
+    <div class="row mt-4">
+      <div class="col-12 text-right">
+        <button type="submit" class="btn btn-primary">Guardar Examen</button>
+        <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+          Ver Paciente
+        </a>
+      </div>
     </div>
-  </div>
- </form>
+  </form>
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('agregar-medicamento').addEventListener('click', function() {
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('agregar-medicamento').addEventListener('click', function () {
       const div = document.createElement('div');
       div.classList.add('medicamento', 'mb-3');
       div.innerHTML = `
@@ -168,9 +169,9 @@
   <hr>
       `;
       document.getElementById('medicamentos').appendChild(div);
-      div.querySelector('.eliminar-medicamento').addEventListener('click', function() {
-                    div.remove();
-                });
+      div.querySelector('.eliminar-medicamento').addEventListener('click', function () {
+        div.remove();
+      });
     });
   });
 </script>

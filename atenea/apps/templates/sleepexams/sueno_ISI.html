@@ -1,0 +1,135 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-5">
+                    <h6 class="h2 text-white d-inline-block mb-0">Información del Paciente</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <form method="post" action="{% url 'guardar_examen_ISI' %}">
+        {% csrf_token %}
+        <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+        <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+        <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Índice de Severidad del Insomnio (ISI)</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Preguntas del ISI -->
+                        <div class="mb-3">
+                            <label class="form-label">Dificultad para dormir</label>
+                            <select class="form-control" name="dificultad_dormir">
+                                <option value="Muy severo">Muy severo</option>
+                                <option value="Severo">Severo</option>
+                                <option value="Moderado">Moderado</option>
+                                <option value="Poco">Poco</option>
+                                <option value="Ninguno">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Dificultad para mantener el sueño</label>
+                            <select class="form-control" name="dificultad_mantener_sueno">
+                                <option value="Muy severo">Muy severo</option>
+                                <option value="Severo">Severo</option>
+                                <option value="Moderado">Moderado</option>
+                                <option value="Poco">Poco</option>
+                                <option value="Ninguno">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Me despierto muy temprano</label>
+                            <select class="form-control" name="despertar_temprano">
+                                <option value="Muy severo">Muy severo</option>
+                                <option value="Severo">Severo</option>
+                                <option value="Moderado">Moderado</option>
+                                <option value="Poco">Poco</option>
+                                <option value="Ninguno">Ninguno</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">¿Qué tan satisfecho/insatisfecho estás con tu patrón de sueño
+                                actual?</label>
+                            <select class="form-control" name="satisfaccion_sueno">
+                                <option value="Muy insatisfecho">Muy insatisfecho</option>
+                                <option value="Insatisfecho">Insatisfecho</option>
+                                <option value="Moderadamente satisfecho">Moderadamente satisfecho</option>
+                                <option value="Satisfecho">Satisfecho</option>
+                                <option value="Muy satisfecho">Muy satisfecho</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">¿Qué tan NOTABLE para los demás cree que es su problema del
+                                sueño?</label>
+                            <select class="form-control" name="notabilidad_problema">
+                                <option value="Demasiado notable">Demasiado notable</option>
+                                <option value="Muy notable">Muy notable</option>
+                                <option value="Moderadamente notable">Moderadamente notable</option>
+                                <option value="Un poco notable">Un poco notable</option>
+                                <option value="No es notable">No es notable</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">¿Qué tan PREOCUPADO/ANGUSTIADO está por su problema de sueño
+                                actual?</label>
+                            <select class="form-control" name="preocupacion_sueno">
+                                <option value="Demasiado preocupado">Demasiado preocupado</option>
+                                <option value="Muy preocupado">Muy preocupado</option>
+                                <option value="Moderadamente preocupado">Moderadamente preocupado</option>
+                                <option value="Un poco preocupado">Un poco preocupado</option>
+                                <option value="Para nada preocupado">Para nada preocupado</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">¿Hasta qué punto su problema de sueño INTERFIERE con su
+                                funcionamiento diario?</label>
+                            <select class="form-control" name="interferencia_sueno">
+                                <option value="Interfiere demasiado">Interfiere demasiado</option>
+                                <option value="Interfiere mucho">Interfiere mucho</option>
+                                <option value="Interfiere moderadamente">Interfiere moderadamente</option>
+                                <option value="Interfiere un poco">Interfiere un poco</option>
+                                <option value="No interfiere">No interfiere</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 text-right">
+                <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+                    Ver Paciente
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+</script>
+{% endblock %}

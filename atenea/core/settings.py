@@ -77,8 +77,13 @@ DATABASES = {
         'NAME': 'ateneagrunecodb',
         'USER': 'root',
         'PASSWORD': '@tene@2025',
+<<<<<<< HEAD
         'HOST': 'localhost',  
         'PORT': '3306',  
+=======
+        'HOST': 'localhost',  # O la dirección de tu servidor MySQL
+        'PORT': '3306',  # Puerto por defecto de MySQL
+>>>>>>> Release_1.0
         'OPTIONS': {'unix_socket': '/opt/bitnami/mariadb/tmp/mysql.sock',},
     }
 }

@@ -1,0 +1,157 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-5">
+                    <h6 class="h2 text-white d-inline-block mb-0">Información del Paciente</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <form method="post" action="{% url 'guardar_examen_Epworth' %}">
+        {% csrf_token %}
+        <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+        <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+        <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Cuestionario de Epworth</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <label ]>Con que frecuencia se queda dormido?</label>
+                        </div>
+                        <div class="form-group">
+                            <label>Sentado y leyendo</label>
+                            <select class="form-control" name="epworth_leyendo">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Viendo la TV</label>
+                            <select class="form-control" name="epworth_tv">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sentado, inactivo en un espectáculo (teatro)</label>
+                            <select class="form-control" name="epworth_teatro">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>En coche, como piloto de un viaje de una hora</label>
+                            <select class="form-control" name="epworth_piloto">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Tumbado a media tarde</label>
+                            <select class="form-control" name="epworth_tumbado">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sentado y charlando con alguien</label>
+                            <select class="form-control" name="epworth_charlando">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Sentado después de comer sin ingerir alcohol</label>
+                            <select class="form-control" name="epworth_comida">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>En su coche, cuando se para debido al tráfico</label>
+                            <select class="form-control" name="epworth_trafico">
+                                <option value="">Elegir uno</option>
+                                <option value="Nunca se ha dormido">Nunca se ha dormido</option>
+                                <option value="Escasa posibilidad de dormirse">Escasa posibilidad de dormirse</option>
+                                <option value="Moderada posibilidad de dormirse">Moderada posibilidad de dormirse
+                                </option>
+                                <option value="Elevada posibilidad de dormirse">Elevada posibilidad de dormirse</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 text-right">
+                <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+                    Ver Paciente
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+</script>
+{% endblock %}

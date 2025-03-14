@@ -14,7 +14,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import redirect
 from django.contrib import messages
 from apps.home import models,forms
-from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen,ResultadoExamen
+from .models import DatosDemograficos, Proyecto, Examen, Visita, VisitaExamen,TipoVisita
 from .forms import  ProyectoForm,RegistroDemograficoForm,AnamnesisForm
 import json
 from reportlab.pdfgen import canvas
@@ -145,48 +145,32 @@ def detalle_paciente(request, paciente_id):
     paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
     # Obtener los proyectos en los que el paciente ya está asignado
     proyectos_asociados = paciente.proyectos.all()
-
     # Obtener proyectos disponibles para asignación (excluye los que ya tiene)
     proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
     
-    # Obtener todas las visitas asociadas al paciente
-    visitas = Visita.objects.filter(proyecto__in=proyectos_asociados)
-
-    # Obtener todos los exámenes realizados o pendientes en esas visitas
-    visita_examenes = VisitaExamen.objects.filter(visita__in=visitas)
-
-    # Crear una lista de IDs de exámenes realizados
-    examenes_realizados = []
-    resultados_examenes = {}
+    # Obtener las visitas asociadas al paciente
+    visitas_paciente = Visita.objects.filter(paciente=paciente)
     
-    for visita_examen in visita_examenes:
-        resultado_examen = ResultadoExamen.objects.filter(
-            visita_examen=visita_examen,
-            paciente=paciente
-        ).first()
-        if resultado_examen and resultado_examen.resultado:
-            examenes_realizados.append(visita_examen.id)
-            resultados_examenes[visita_examen.id] = resultado_examen.resultado 
 
     if request.method == "POST":
         proyecto_id = request.POST.get("proyecto_id")
         pacientes_ids = request.POST.get("paciente_id")  # Lista de IDs seleccionados
-
+        paciente = DatosDemograficos.objects.get(id=pacientes_ids)\
+            
         proyecto = Proyecto.objects.get(id=proyecto_id)
-        proyecto.pacientes.add(pacientes_ids)  # Asigna los pacientes al proyecto
+        proyecto.pacientes.add(paciente)  # Asigna los pacientes al proyecto
+       
         proyecto.save()
         
     return render(request, 'sleepexams/pacient.html', {'paciente': paciente,'proyectos':proyectos,'proyectos_asociados': proyectos_asociados,
-        'proyectos_disponibles': proyectos_disponibles,'examenes_realizados': examenes_realizados,
-        'resultados_examenes': resultados_examenes,})
+        'proyectos_disponibles': proyectos_disponibles,'visitas_paciente': visitas_paciente,})
 
 #proyectos
 @login_required
 def proyectos(request):
     proyectos = Proyecto.objects.all()
     examenes = Examen.objects.all()
-    visitas = Visita.objects.all()
-    visitaexamen = VisitaExamen.objects.all()
+    visitas = TipoVisita.objects.all()
     
     # Crear un diccionario para almacenar las visitas y exámenes por proyecto
     proyecto_data = {}
@@ -194,12 +178,20 @@ def proyectos(request):
         visitas_proyecto = visitas.filter(proyecto=proyecto)
         visitas_info = []
         for visita in visitas_proyecto:
-            examenes_visita = visitaexamen.filter(visita=visita)
+            # Asegurar que los datos sean una lista de diccionarios
+            examenes_data = visita.examenes if isinstance(visita.examenes, list) else json.loads(visita.examenes)
+
+            # Extraer solo los IDs de los exámenes y convertirlos a enteros
+            examenes_ids = [int(examen["id"]) for examen in examenes_data]
+            
+            # Buscar los nombres de los exámenes en la base de datos
+            examenes_nombres = Examen.objects.filter(id__in=examenes_ids).values_list('nombre', flat=True)
+
             visitas_info.append({
                 'id':visita.id,
                 'nombre': visita.nombre,
                 'observaciones': visita.observaciones,
-                'examenes': [ve.examen for ve in examenes_visita]
+                'examenes': examenes_nombres
             })
         proyecto_data[proyecto.id] = visitas_info
     
@@ -207,7 +199,6 @@ def proyectos(request):
         'proyectos': proyectos,
         'examenes': examenes,
         'visitas': visitas,
-        'visitaexamen': visitaexamen,
         'proyecto_data': proyecto_data
     }
     
@@ -236,10 +227,10 @@ def eliminar_proyecto(request, id):
 @login_required
 #visitas
 def agregar_visita(request):
+    
     proyectos = Proyecto.objects.all()
     examenes = Examen.objects.all()
-    visitas = Visita.objects.all()
-    visitaexamen = VisitaExamen.objects.all()
+    visitas = TipoVisita.objects.all()
     
     # Crear un diccionario para almacenar las visitas y exámenes por proyecto
     proyecto_data = {}
@@ -247,11 +238,19 @@ def agregar_visita(request):
         visitas_proyecto = visitas.filter(proyecto=proyecto)
         visitas_info = []
         for visita in visitas_proyecto:
-            examenes_visita = visitaexamen.filter(visita=visita)
+            # Asegurar que los datos sean una lista de diccionarios
+            examenes_data = visita.examenes if isinstance(visita.examenes, list) else json.loads(visita.examenes)
+
+            # Extraer solo los IDs de los exámenes y convertirlos a enteros
+            examenes_ids = [int(examen["id"]) for examen in examenes_data]
+            
+            # Buscar los nombres de los exámenes en la base de datos
+            examenes_nombres = Examen.objects.filter(id__in=examenes_ids).values_list('nombre', flat=True)
             visitas_info.append({
+                'id':visita.id,
                 'nombre': visita.nombre,
                 'observaciones': visita.observaciones,
-                'examenes': [ve.examen for ve in examenes_visita]
+                'examenes': examenes_nombres,
             })
         proyecto_data[proyecto.id] = visitas_info
     
@@ -259,32 +258,26 @@ def agregar_visita(request):
         'proyectos': proyectos,
         'examenes': examenes,
         'visitas': visitas,
-        'visitaexamen': visitaexamen,
         'proyecto_data': proyecto_data
     }
    
     if request.method == 'POST':
         proyecto_id = request.POST.get('proyecto_id')
         nombres = request.POST.getlist('nombre_visita[]')  # Varias visitas
-        fechas = request.POST.getlist('fecha_visita[]')
         observaciones_list = request.POST.getlist('observaciones[]')
+        
+        # Recibir el JSON desde el formulario y decodificarlo
+        examenes_json = request.POST.get('examenes_json', '[]')
+        examenes_lista = json.loads(examenes_json)  # Convertir a lista de diccionarios
 
-        for i in range(len(nombres)):
-            visita = Visita.objects.create(
+        for i in range(len(nombres)):  # Crear una visita por cada nombre recibido
+            TipoVisita.objects.create(
                 proyecto_id=proyecto_id,
                 nombre=nombres[i],
-                observaciones=observaciones_list[i]
+                observaciones=observaciones_list[i],
+                examenes=examenes_lista  # Guardar la lista completa de exámenes como JSON
             )
 
-            examenes_ids = request.POST.getlist('examenes[]') 
-
-            # Guardar cada examen seleccionado en la BD
-            for examen_id in examenes_ids:
-                VisitaExamen.objects.create(
-                    visita=visita,
-                    examen_id=examen_id,  # Más eficiente usar .create() con el ID directo
-                )
-            # Redirigir a la página de proyectos
         return redirect('proyectos')
 
     return render(request, 'home/proyectos.html',context)
@@ -292,11 +285,9 @@ def agregar_visita(request):
 @login_required
 def eliminar_visita(request, id):
     # Obtener la visita o devolver un error 404 si no existe
-    visita = get_object_or_404(Visita, id=id)
+    visita = get_object_or_404(TipoVisita, id=id)
 
     if request.method == "POST":
-        # Eliminar primero las relaciones en VisitaExamen
-        VisitaExamen.objects.filter(visita=visita).delete()
         
         # Luego, eliminar la visita
         visita.delete()
@@ -307,6 +298,94 @@ def eliminar_visita(request, id):
         return redirect('proyectos')  # Redirigir a la lista de proyectos o donde corresponda
 
     return redirect('proyectos')
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import DatosDemograficos, Proyecto, TipoVisita, Visita
+
+def crear_visita(request, paciente_id):
+    paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+    proyectos_asociados = paciente.proyectos.all()
+
+    # Obtener los proyectos en los que el paciente ya está asignado
+    proyectos_disponibles = Proyecto.objects.exclude(id__in=proyectos_asociados.values_list('id', flat=True))
+    
+    # Obtener los tipos de visita disponibles para estos proyectos
+    tipo_visitas = TipoVisita.objects.filter(proyecto__in=proyectos_asociados)
+    
+    if request.method == "POST":
+       
+        tipo_visita_id = request.POST.get("tipo_visita")
+        fecha = request.POST.get("fecha")
+        evaluador = request.POST.get("evaluador")
+        nombre = request.POST.get("nombre")
+        
+        # Capturar datos del acompañante
+        acompanante_nombre = request.POST.get("acompanante_nombre")
+        acompanante_relacion = request.POST.get("acompanante_relacion")
+        acompanante_correo = request.POST.get("acompanante_correo")
+        acompanante_telefono = request.POST.get("acompanante_telefono")
+        
+        
+        tipo_visita = get_object_or_404(TipoVisita, id=tipo_visita_id)
+
+        # Crear la visita y asignarla al paciente
+        nueva_visita = Visita.objects.create(
+            paciente=paciente,
+            nombre=nombre,
+            Tipo_visita=tipo_visita,
+            fecha=fecha,
+            evaluador=evaluador,
+            acompanante_nombre=acompanante_nombre,
+            acompanante_relacion=acompanante_relacion,
+            acompanante_correo=acompanante_correo,
+            acompanante_telefono=acompanante_telefono
+        )
+        
+        # Procesar los exámenes seleccionados
+        examenes_seleccionados = request.POST.get('examenes_seleccionados')
+        if examenes_seleccionados:
+            try:
+                lista_ids_examenes = json.loads(examenes_seleccionados)
+                print(f"Exámenes seleccionados para la visita {nueva_visita.id}: {lista_ids_examenes}")
+                
+                # Crear un registro VisitaExamen para cada examen seleccionado
+                for examen_id in lista_ids_examenes:
+                    examen = Examen.objects.get(id=examen_id)
+                    VisitaExamen.objects.create(
+                        visita=nueva_visita,
+                        examen=examen,
+                        # El campo resultado quedará como NULL
+                        # Los resultados se agregarán en otra función
+                    )
+                
+                # Mensaje de éxito
+                messages.success(request, f"Visita creada con éxito con {len(lista_ids_examenes)} exámenes asociados.")
+                
+            except json.JSONDecodeError as e:
+                print(f"Error al decodificar JSON de exámenes: {examenes_seleccionados}")
+                print(f"Error específico: {str(e)}")
+                messages.error(request, "Error al procesar los exámenes seleccionados.")
+            
+            # Mensaje de éxito
+            messages.success(request, f"Visita  creada con éxito con {len(lista_ids_examenes)} exámenes asociados.")
+        
+        return redirect('detalle_paciente', paciente_id=paciente.id)  # Redirige después de crear
+
+    return render(request, 'sleepexams/pacient.html', {
+        'paciente': paciente,
+        'proyectos_asociados': proyectos_asociados,
+        'proyectos_disponibles': proyectos_disponibles,
+        'tipo_visitas': tipo_visitas
+    })
+
+def eliminar_v(request, visita_id):
+    visita = get_object_or_404(Visita, id=visita_id)
+    paciente_id = visita.paciente.id  # Para redirigir después de eliminar
+    
+    visita.delete()
+    messages.success(request, "Visita eliminada correctamente.")
+    
+    return redirect('detalle_paciente', paciente_id=paciente_id)
 
 #Ingreso y Salida
 @login_required
@@ -344,11 +423,18 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         10: "sleepexams/Sueno_anamnesis.html",
         11: "sleepexams/Sueño_Cuestionarios.html",
         12: "sleepexams/Sueño_ExamenFisico.html",
+        13: "sleepexams/sueno_Pitsburg.html",
+        14: "sleepexams/sueno_Epworth.html",
+        15: "sleepexams/sueno_Stop_Bang.html",
+        16: "sleepexams/sueno_MEW.html",
+        17: "sleepexams/sueno_Berlín.html",
+        18: "sleepexams/sueno_atenas.html",
+        19: "sleepexams/sueno_ISI.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
 
-    return render(request, template, {'visita_examen': visita_id, 'paciente_id':paciente_id})
+    return render(request, template, {'visita_examen': visita_id, 'paciente_id':paciente_id,'examen_id':examen_id})
 
 @login_required
 def guardar_examen_general_revisionsistemas(request):
@@ -412,29 +498,30 @@ def guardar_examen_general_revisionsistemas(request):
             },
         }
 
-        # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
-        paciente_id = request.POST.get('paciente_id') 
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
         
+        paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
- 
-
-        # Obtener o crear el VisitaExamen correspondiente
-        visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
         
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,  # Usar el objeto Paciente, no el ID
-            defaults={'resultado': datos_formulario}
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario)
+        else:
+            visita_examen.resultado = datos_formulario
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)])) # Redirigir a una página de éxito
 
@@ -507,26 +594,29 @@ def guardar_examen_fisico(request):
         }
 
         # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen correspondiente
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
-        
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,  # Usar el objeto Paciente, no el ID
-            defaults={'resultado': datos_formulario_fisico}
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_fisico
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_fisico)
+        else:
+            visita_examen.resultado = datos_formulario_fisico
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)])) # Redirigir a una página de éxito
 
@@ -664,27 +754,30 @@ def guardar_examen_antecedentes(request):
             },
         }
 
-        # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen correspondiente
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
-        
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_antecedentes}
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_antecedentes
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_antecedentes)
+        else:
+            visita_examen.resultado = datos_formulario_antecedentes
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
@@ -728,27 +821,30 @@ def guardar_examen_analisis(request):
                 "estado": dsmv_estados[i] if i < len(dsmv_estados) else None
             })
 
-        # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get("visita_examen")
-        paciente_id = request.POST.get("paciente_id")  
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
-
-        # Obtener o crear la VisitaExamen correspondiente
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
+            visita=visita, examen=examen
         )
 
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_analisis}
-        )
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_analisis)
+        else:
+            visita_examen.resultado = datos_formulario_analisis
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_analisis
-            resultado_examen.save()
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
@@ -833,27 +929,30 @@ def guardar_examen_medicamentos(request):
                 "indicacion": indicaciones[i]
             })
 
-        # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen correspondiente
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
-        
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_medicamentos}
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_medicamentos
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_medicamentos)
+        else:
+            visita_examen.resultado = datos_formulario_medicamentos
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
@@ -1084,26 +1183,29 @@ def guardar_examen_anamnesis(request):
         print(datos_formulario_anamnesis)  # Solo para verificar los datos en la consola
 
         # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen correspondiente
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
-        
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_anamnesis}
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_anamnesis
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_anamnesis)
+        else:
+            visita_examen.resultado = datos_formulario_anamnesis
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
@@ -1133,36 +1235,41 @@ def guardar_examen_sueno_fisico(request):
             
         
 
+         # Aquí puedes guardar los datos en la base de datos o procesarlos como necesites
+        print(datos_formulario_sueno_fisico)  # Solo para verificar los datos en la consola
+
         # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen correspondiente
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
-        
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_sueno_fisico}
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_sueno_fisico
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_sueno_fisico)
+        else:
+            visita_examen.resultado = datos_formulario_sueno_fisico
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
-
 
 @login_required
 def guardar_examen_Sueño_Cuestionarios(request):
     if request.method == 'POST':
         # Obtener los datos del formulario para antecedentes
-        datos_formulario_antecedentes = {
+        datos_formulario_Cuestionarios = {
             "Pittsburgh": {
                 "Hora de acostarse durante el ultimo mes": request.POST.get('hora_acostarse'),
                 "Latencia de inicio de sueño (minutos)": request.POST.get('latencia_sueno'),
@@ -1274,30 +1381,377 @@ def guardar_examen_Sueño_Cuestionarios(request):
             }
         }
 
-        # Obtener la visita y el examen correspondiente
-        visita_examen_id = request.POST.get('visita_examen')  # Asegúrate de pasar el ID de la visita en el formulario
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
         paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen correspondiente
+        # Obtener o crear el VisitaExamen con la relación correcta
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            id=visita_examen_id
-        )
-        
-        # Crear o actualizar el registro de ResultadoExamen
-        resultado_examen, created = ResultadoExamen.objects.get_or_create(
-            visita_examen=visita_examen,
-            paciente=paciente,
-            defaults={'resultado': datos_formulario_antecedentes}
+            visita=visita, examen=examen
         )
 
-        if not created:
-            resultado_examen.resultado = datos_formulario_antecedentes
-            resultado_examen.save()
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_Cuestionarios)
+        else:
+            visita_examen.resultado = datos_formulario_Cuestionarios
+
+        # Guardar cambios
+        visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
     
+    
+
+@login_required
+def guardar_examen_Pitsburg(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_Pitsburg = {
+             "Pittsburgh": {
+                "Hora de acostarse durante el ultimo mes": request.POST.get('hora_acostarse'),
+                "Latencia de inicio de sueño (minutos)": request.POST.get('latencia_sueno'),
+                "Hora de levantarse durante el ultimo mes": request.POST.get('hora_levantarse'),
+                "Cuantas horas duerme verdaderamente cada noche durante el ultimo mes": request.POST.get('horas_dormidas'),
+                "No poder conciliar el sueño": request.POST.get('conciliar_sueno'),
+                "Despertarse durante la noche o de madrugada": request.POST.get('despertarse_sueno'),
+                "Tener que levantarse para ir al servicio": request.POST.get('levantarse_servicio_sueno'),
+                "No poder respirar bien": request.POST.get('respirar'),
+                "Toser o roncar ruidosamente": request.POST.get('toser_roncar_sueno'),
+                "Sentir frio": request.POST.get('Sentir_frio_sueno'),
+                "Sentir demasiado calor": request.POST.get('calor_sueno'),
+                "Tener pesadillas o malos sueños" : request.POST.get('pesadillas_sueno'),
+                "Sufrir dolores": request.POST.get('dolores_sueno'),
+                
+                # Nuevos campos agregados
+                "otras_razones": request.POST.get('otras'),
+                "otras_sueno": request.POST.get('otras_sueno'),
+                "Durante el ultimo mes ¿Como valoraria en conjunto su calidad de sueño?": request.POST.get('calidad_sueno'),
+                "Durante el ultimo mes ¿Cuantas veces habra tomado medicinas (por su cuenta o recetadas por medico) para dormir?": request.POST.get('medicinas_sueno'),
+                "Durante el ultimo mes ¿Cuantas veces ha sentido somnolencia mientras conducia, comia, o desarrollaba alguna otra actividad?": request.POST.get('somnolencia_sueno'),
+                "Durante el ultimo mes ¿ha representado mucho problema el tener animos para realizar alguna de las actividades detalladas en la pregunta anterior?": request.POST.get('problemas_animos_sueno'),
+                "Duerme solo o acompañado": request.POST.get('duerme_acompanado'),
+                
+                # Campos mostrados solo si duerme acompañado
+                "Ronquidos ruidosos": request.POST.get('ronquidos_ruidosos'),
+                "Grandes pausas entre respiraciones mientras duerme": request.POST.get('pausas_respiracion'),
+                "Sacudidas o espasmos de piernas mientras duerme": request.POST.get('sacudidas_piernas'),
+                "Episodios de desorientación o confusión mientras duerme": request.POST.get('desorientacion_confusion'),
+                "Otros inconvenientes mientras duerme (describir)": request.POST.get('otros_inconvenientes'),
+                "descripcion_inconvenientes": request.POST.get('descripcion_inconvenientes'),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_Pitsburg)
+        else:
+            visita_examen.resultado = datos_formulario_Pitsburg
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+
+@login_required
+def guardar_examen_Epworth(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_Epworth= {
+             "Epworth": {
+                "Con que frecuencia se queda dormido?": {
+                "Sentado y leyendo": request.POST.get('epworth_leyendo'),
+                "Viendo la TV": request.POST.get('epworth_tv'),
+                "Sentado, inactivo en un espectáculo (teatro)": request.POST.get('epworth_teatro'),
+                "En coche, como piloto de un viaje de una hora": request.POST.get('epworth_piloto'),
+                "Tumbado a media tarde": request.POST.get('epworth_tumbado'),
+                "Sentado y charlando con alguien": request.POST.get('epworth_charlando'),
+                "Sentado después de comer sin ingerir alcohol": request.POST.get('epworth_comida'),
+                "En su coche, cuando se para debido al tráfico": request.POST.get('epworth_trafico'),
+                }
+                }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_Epworth)
+        else:
+            visita_examen.resultado = datos_formulario_Epworth
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
+@login_required
+def guardar_examen_StopB(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_Stop_Bang= {
+             "Stop_Bang" : {
+                    "Ronca fuerte": request.POST.get('ronca_fuerte', 'No'),
+                    "Se siente cansado con frecuencia": request.POST.get('cansado_frecuencia', 'No'),
+                    "Lo observaron dejar de respirar o ahogarse mientras dormía": request.POST.get('deja_respirar', 'No'),
+                    "Tiene o está recibiendo tratamiento para la presión arterial": request.POST.get('presion_arterial', 'No'),
+                    "Presenta un índice de masa corporal de más de 35kg/m²": request.POST.get('imc_alto', 'No'),
+                    "Tiene más de 50 años": request.POST.get('mayor_50', 'No'),
+                    "El tamaño de su cuello es grande": request.POST.get('cuello_grande', 'No'),
+                    "Masculino": request.POST.get('masculino', 'No'),
+                }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_Stop_Bang)
+        else:
+            visita_examen.resultado = datos_formulario_Stop_Bang
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
+@login_required
+def guardar_examen_MEW(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_MEW= {
+              "MEW" :{
+                "Hora a la que se levantaría si fuera libre de planificar el día": request.POST.get('hora_levantarse_meq'),
+                "Hora a la que se acostaría": request.POST.get('hora_acostarse_meq'),
+                "Necesidad del despertador para levantarse": request.POST.get('uso_despertador_meq'),
+                "Facilidad para levantarse por la mañana": request.POST.get('facilidad_levantarse_meq'),
+                "Nivel de alerta en la primera media hora tras levantarse": request.POST.get('alerta_manana_meq'),
+                "Apetito en la primera media hora tras levantarse": request.POST.get('apetito_manana_meq'),
+                "Sensación de descanso en la primera media hora tras levantarse": request.POST.get('descanso_manana_meq'),
+                "Hora a la que se acostaría en un día sin compromisos": request.POST.get('hora_acostarse_libre_meq'),
+                "Estado físico al realizar ejercicio por la mañana": request.POST.get('ejercicio_fisico_meq'),
+                "Hora aproximada de la noche en que se siente cansado": request.POST.get('hora_cansancio_noche_meq'),
+                "Horario ideal para una prueba mentalmente agotadora": request.POST.get('horario_prueba_mental_meq'),
+                
+                "Si te acostaras a las 11 PM, ¿qué nivel de cansancio notarías?": request.POST.get('nivel_cansancia_11'),
+                "por algún motivo te has acostado varias horas más tarde..¿Cuando crees que te despertarías? ": request.POST.get('hora_despertarse_si_tarde'),
+                
+                "Guardia nocturna, ¿qué preferirías? ": request.POST.get("guardia_nocturna"),
+                "Tienes que hacer dos horas de trabajo físico pesado.  ¿qué horario escogerías?": request.POST.get("horario_trabajo_fisico"),
+                "Has decidido hacer ejercicio físico intenso nocturno. ¿Cómo crees que te sentaría?": request.POST.get("ejercicio_nocturno"),
+                "horario trabajo, ¿Qué CINCO HORAS CONSECUTIVAS seleccionarías? ¿Empezando en qué hora?": request.POST.get("horario_trabajo"),
+                "¿A qué hora del día crees que alcanzas tu máximo bienestar?": request.POST.get("maximo_bienestar"),
+                "Se habla de personas de tipo matutino y vespertino. ¿Cuál de estos tipos te consideras ser?": request.POST.get("tipo_persona"),
+                "puntuacion": request.POST.get("puntuacion"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_MEW)
+        else:
+            visita_examen.resultado = datos_formulario_MEW
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+@login_required
+def guardar_examen_Berlin(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_MEW= {
+              "Berlín": {
+                "¿Su peso ha cambiado en los últimos 5 años?": request.POST.get("peso_cambio"),
+                "¿Usted ronca?": request.POST.get("ronca"),
+                "Si usted ronca, ¿Su ronquido es?": request.POST.get("tipo_ronquido"),
+                "¿Con qué frecuencia ronca?": request.POST.get("frecuencia_ronquidos"),
+                "¿Alguna vez su ronquido ha molestado a otras personas?": request.POST.get("ronquido_molesto"),
+                "¿Ha notado alguien que usted deja de respirar cuando duerme?": request.POST.get("apnea_observada"),
+                "¿Se siente cansado o fatigado al levantarse por la mañana?": request.POST.get("fatiga_matutina"),
+                "fatiga_dia": request.POST.get("fatiga_dia"),
+                "¿Alguna vez se ha sentido somnoliento o se ha quedado dormido mientras va de pasajero en un carro o maneja un vehículo?": request.POST.get("somnolencia_conducir"),
+                "¿Usted tiene la presión alta?": request.POST.get("presion_alta"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_MEW)
+        else:
+            visita_examen.resultado = datos_formulario_MEW
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+@login_required
+def guardar_examen_atenas(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_ATENAS= {
+              "Atenas":{
+                "Inducción del dormir (tiempo que le toma quedarse dormido una vez acostado)": request.POST.get("induccion_dormir"),
+                "Despertares durante la noche": request.POST.get("despertares_noche"),
+                "Despertar final más temprano de lo deseado": request.POST.get("despertar_temprano"),
+                "Duración total del dormir": request.POST.get("duracion_dormir"),
+                "Calidad general del dormir (no importa cuánto tiempo durmió usted)": request.POST.get("calidad_dormir"),
+                "Sensación de bienestar durante el día": request.POST.get("bienestar_dia"),
+                "Funcionamiento (físico y mental) durante el día": request.POST.get("funcionamiento_dia"),
+                "Somnolencia durante el día": request.POST.get("somnolencia_dia"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_ATENAS)
+        else:
+            visita_examen.resultado = datos_formulario_ATENAS
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
+@login_required
+def guardar_examen_ISI(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario para antecedentes
+        datos_formulario_ISI= {
+               "ISI":{
+                "dificultad_dormir": request.POST.get("dificultad_dormir"),
+                "dificultad_mantener_sueno": request.POST.get("dificultad_mantener_sueno"),
+                "despertar_temprano": request.POST.get("despertar_temprano"),
+                "satisfaccion_sueno": request.POST.get("satisfaccion_sueno"),
+                "notabilidad_problema": request.POST.get("notabilidad_problema"),
+                "preocupacion_sueno": request.POST.get("preocupacion_sueno"),
+                "interferencia_sueno": request.POST.get("interferencia_sueno"),
+            }}
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_ISI)
+        else:
+            visita_examen.resultado = datos_formulario_ISI
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+
 @login_required
 def descargar_examen(request, visita_examen_id):
     # Obtener el objeto VisitaExamen

@@ -1,0 +1,176 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-5">
+                    <h6 class="h2 text-white d-inline-block mb-0">Información del Paciente</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <form method="post" action="{% url 'guardar_examen_Berlin' %}">
+        {% csrf_token %}
+        <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+        <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+        <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
+
+
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Cuestionario de Berlín</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Cambio de peso -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Su peso ha cambiado en los últimos 5 años?</label>
+                            <select class="form-control" name="peso_cambio">
+                                <option value="Aumentado">Aumentado</option>
+                                <option value="Disminuido">Disminuido</option>
+                                <option value="No ha cambiado">No ha cambiado</option>
+                            </select>
+                        </div>
+
+                        <!-- ¿Usted ronca? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Usted ronca?</label>
+                            <select class="form-control" name="ronca">
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                                <option value="No sabe">No sabe</option>
+                            </select>
+                        </div>
+
+                        <!-- Si usted ronca, ¿su ronquido es? -->
+                        <div class="mb-3">
+                            <label class="form-label">Si usted ronca, ¿Su ronquido es?</label>
+                            <select class="form-control" name="tipo_ronquido">
+                                <option value="------">----------</option>
+                                <option value="Ligeramente más fuerte que respirar">Ligeramente más fuerte que
+                                    respirar</option>
+                                <option value="Tan fuerte como hablar">Tan fuerte como hablar</option>
+                                <option value="Más fuerte que hablar">Más fuerte que hablar</option>
+                                <option value="Muy fuerte">Muy fuerte - se puede escuchar en habitaciones adyacentes
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- ¿Con qué frecuencia ronca? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Con qué frecuencia ronca?</label>
+                            <select class="form-control" name="frecuencia_ronquidos">
+                                <option value="Todas las noches">Todas las noches</option>
+                                <option value="3-4 veces por semana">3-4 veces por semana</option>
+                                <option value="1-2 veces por semana">1-2 veces por semana</option>
+                                <option value="1-2 veces por mes">1-2 veces por mes</option>
+                                <option value="Nunca o casi nunca">Nunca o casi nunca</option>
+                            </select>
+                        </div>
+
+                        <!-- ¿Alguna vez su ronquido ha molestado a otras personas? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Alguna vez su ronquido ha molestado a otras personas?</label>
+                            <select class="form-control" name="ronquido_molesto">
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                                <option value="No sabe">No sabe</option>
+                            </select>
+                        </div>
+
+                        <!-- ¿Ha notado alguien que usted deja de respirar cuando duerme? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Ha notado alguien que usted deja de respirar cuando
+                                duerme?</label>
+                            <select class="form-control" name="apnea_observada">
+                                <option value="Casi todas las noches">Casi todas las noches</option>
+                                <option value="3-4 veces por semana">3-4 veces por semana</option>
+                                <option value="1-2 veces por semana">1-2 veces por semana</option>
+                                <option value="1-2 veces por mes">1-2 veces por mes</option>
+                                <option value="Nunca o casi nunca">Nunca o casi nunca</option>
+                            </select>
+                        </div>
+
+                        <!-- ¿Se siente cansado o fatigado al levantarse por la mañana? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Se siente cansado o fatigado al levantarse por la mañana
+                                después de dormir?</label>
+                            <select class="form-control" name="fatiga_matutina">
+                                <option value="Casi todos los días">Casi todos los días</option>
+                                <option value="3-4 veces por semana">3-4 veces por semana</option>
+                                <option value="1-2 veces por semana">1-2 veces por semana</option>
+                                <option value="1-2 veces por mes">1-2 veces por mes</option>
+                                <option value="Nunca o casi nunca">Nunca o casi nunca</option>
+                            </select>
+                        </div>
+
+                        <!-- ¿Se siente cansado o fatigado durante el día? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Se siente cansado o fatigado durante el día?</label>
+                            <select class="form-control" name="fatiga_dia">
+                                <option value="Casi todos los días">Casi todos los días</option>
+                                <option value="3-4 veces por semana">3-4 veces por semana</option>
+                                <option value="1-2 veces por semana">1-2 veces por semana</option>
+                                <option value="1-2 veces por mes">1-2 veces por mes</option>
+                                <option value="Nunca o casi nunca">Nunca o casi nunca</option>
+                            </select>
+                        </div>
+
+                        <!-- ¿Alguna vez se ha quedado dormido mientras maneja o va de pasajero? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Alguna vez se ha quedado dormido mientras maneja o va de
+                                pasajero?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="somnolencia_conducir" value="Sí">
+                                <label class="form-check-label">Sí</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="somnolencia_conducir" value="No">
+                                <label class="form-check-label">No</label>
+                            </div>
+                        </div>
+
+                        <!-- ¿Usted tiene la presión alta? -->
+                        <div class="mb-3">
+                            <label class="form-label">¿Usted tiene la presión alta?</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="presion_alta" value="Sí">
+                                <label class="form-check-label">Sí</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="presion_alta" value="No">
+                                <label class="form-check-label">No</label>
+                            </div>
+                        </div>
+                    </div> <!-- Fin card-body -->
+                </div> <!-- Fin card -->
+            </div> <!-- Fin col -->
+        </div> <!-- Fin row -->
+        <div class="row mt-4">
+            <div class="col-12 text-right">
+                <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+                    Ver Paciente
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+</script>
+{% endblock %}

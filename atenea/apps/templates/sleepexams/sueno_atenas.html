@@ -1,0 +1,141 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="header bg-primary pb-6">
+    <div class="container-fluid">
+        <div class="header-body">
+            <div class="row align-items-center py-4">
+                <div class="col-lg-6 col-5">
+                    <h6 class="h2 text-white d-inline-block mb-0">Información del Paciente</h6>
+                    <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                        <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                            <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Pacientes</a></li>
+                            <li class="breadcrumb-item"><a href="/pacientes/">Volver</a></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid mt--6">
+    <form method="post" action="{% url 'guardar_examen_atenas' %}">
+        {% csrf_token %}
+        <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+        <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+        <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="mb-0">Examen de Atenas (Calidad del sueño)</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Preguntas del examen -->
+                        <div class="mb-3">
+                            <label class="form-label">Inducción del dormir (tiempo que le toma quedarse dormido una vez
+                                acostado)</label>
+                            <select class="form-control" name="induccion_dormir">
+                                <option value="Ningún problema">Ningún problema</option>
+                                <option value="Ligeramente retrasado">Ligeramente retrasado</option>
+                                <option value="Marcadamente retrasado">Marcadamente retrasado</option>
+                                <option value="Muy retrasado o no durmió en absoluto">Muy retrasado o no durmió en
+                                    absoluto</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Despertares durante la noche</label>
+                            <select class="form-control" name="despertares_noche">
+                                <option value="Ningún problema">Ningún problema</option>
+                                <option value="Problema menor">Problema menor</option>
+                                <option value="Problema considerable">Problema considerable</option>
+                                <option value="Problema serio o no durmió en absoluto">Problema serio o no durmió en
+                                    absoluto</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Despertar final más temprano de lo deseado</label>
+                            <select class="form-control" name="despertar_temprano">
+                                <option value="No más temprano">No más temprano</option>
+                                <option value="Un poco más temprano">Un poco más temprano</option>
+                                <option value="Marcadamente más temprano">Marcadamente más temprano</option>
+                                <option value="Mucho más temprano o no durmió en absoluto">Mucho más temprano o no
+                                    durmió en absoluto</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Duración total del dormir</label>
+                            <select class="form-control" name="duracion_dormir">
+                                <option value="Suficiente">Suficiente</option>
+                                <option value="Ligeramente insuficiente">Ligeramente insuficiente</option>
+                                <option value="Marcadamente insuficiente">Marcadamente insuficiente</option>
+                                <option value="Muy insuficiente o no durmió en absoluto">Muy insuficiente o no durmió en
+                                    absoluto</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Calidad general del dormir (no importa cuánto tiempo
+                                durmió)</label>
+                            <select class="form-control" name="calidad_dormir">
+                                <option value="Satisfactoria">Satisfactoria</option>
+                                <option value="Ligeramente insatisfactoria">Ligeramente insatisfactoria</option>
+                                <option value="Marcadamente insatisfactoria">Marcadamente insatisfactoria</option>
+                                <option value="Muy insatisfactoria o no durmió en absoluto">Muy insatisfactoria o no
+                                    durmió en absoluto</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Sensación de bienestar durante el día</label>
+                            <select class="form-control" name="bienestar_dia">
+                                <option value="Normal">Normal</option>
+                                <option value="Ligeramente disminuid">Ligeramente disminuida</option>
+                                <option value="Marcadamente disminuida">Marcadamente disminuida</option>
+                                <option value="Muy disminuida">Muy disminuida</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Funcionamiento (físico y mental) durante el día</label>
+                            <select class="form-control" name="funcionamiento_dia">
+                                <option value="Normal">Normal</option>
+                                <option value="Ligeramente disminuid">Ligeramente disminuida</option>
+                                <option value="Marcadamente disminuida">Marcadamente disminuida</option>
+                                <option value="Muy disminuida">Muy disminuida</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Somnolencia durante el día</label>
+                            <select class="form-control" name="somnolencia_dia">
+                                <option value="Ninguna">Ninguna</option>
+                                <option value="Leve">Leve</option>
+                                <option value="Considerable">Considerable</option>
+                                <option value="Intensa">Intensa</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12 text-right">
+                <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+                    Ver Paciente
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+</script>
+{% endblock %}

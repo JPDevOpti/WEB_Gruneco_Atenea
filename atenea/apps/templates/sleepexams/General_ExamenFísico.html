@@ -36,8 +36,9 @@
         <div class="card-body">
           <form method="post" action="{% url 'guardar_examen_fisico' %}">
             {% csrf_token %}
-            <input type="hidden" name="visita_examen" value="{{ visita_examen }}">
-              <input type="hidden" name="paciente_id" value="{{ paciente_id}}">
+            <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+            <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+            <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
 
             <hr class="my-4">
             <!-- Signos Vitales -->
@@ -95,7 +96,8 @@
                   <option value="normal">Normal</option>
                   <option value="anormal">Anormal</option>
                 </select>
-                <input type="text" class="form-control mt-2" placeholder="Observaciones" name="observaciones_cuero_cabelludo">
+                <input type="text" class="form-control mt-2" placeholder="Observaciones"
+                  name="observaciones_cuero_cabelludo">
               </div>
               <div class="col-md-4">
                 <label class="form-control-label">Oídos</label>
@@ -328,7 +330,7 @@
                 <button type="submit" class="btn btn-primary">Guardar Examen</button>
                 <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
                   Ver Paciente
-              </a>
+                </a>
               </div>
             </div>
           </form>

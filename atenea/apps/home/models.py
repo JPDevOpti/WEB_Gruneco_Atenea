@@ -145,28 +145,37 @@ class Examen(models.Model):
         verbose_name = "Examen"
         verbose_name_plural = "Exámenes"
         
-class Visita(models.Model):
+class TipoVisita(models.Model):
     nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='visitas', verbose_name="Proyecto")
     observaciones = models.TextField(verbose_name="Observaciones", blank=True, null=True)
+    examenes = models.JSONField(default=dict, verbose_name="Exámenes",null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.nombre} - {self.proyecto.nombre}"
+        
+class Visita(models.Model):
+    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="visitas",null=True, blank=True)
+    nombre = models.CharField(max_length=255, verbose_name="Nombre de la Visita")
+    Tipo_visita = models.ForeignKey(TipoVisita, on_delete=models.CASCADE, related_name='visitas',null=True, blank=True)
+    fecha = models.DateField(blank=True, null=True)
+    evaluador = models.CharField(max_length=50,null=True, blank=True)
+    
+    # Campos del acompañante
+    acompanante_nombre = models.CharField(max_length=255, verbose_name="Nombre del Acompañante", blank=True, null=True)
+    acompanante_relacion = models.CharField(max_length=100, verbose_name="Relación con el Paciente", blank=True, null=True)
+    acompanante_correo = models.EmailField(verbose_name="Correo del Acompañante", blank=True, null=True)
+    acompanante_telefono = models.CharField(max_length=20, verbose_name="Teléfono del Acompañante", blank=True, null=True)
+    
     def __str__(self):
         return f"{self.nombre} - {self.proyecto.nombre}"
 
 class VisitaExamen(models.Model):
     visita = models.ForeignKey(Visita, on_delete=models.CASCADE, related_name="visita_examenes")
     examen = models.ForeignKey(Examen, on_delete=models.CASCADE, related_name="examenes_realizados")
+    resultado = models.JSONField(verbose_name="Respuestas del Examen",null=True, blank=True)
     
     def __str__(self):
         return f"{self.visita.nombre} - {self.examen.nombre}"
     
-class ResultadoExamen(models.Model):
-    visita_examen = models.ForeignKey(VisitaExamen, on_delete=models.CASCADE, related_name="resultados")
-    paciente = models.ForeignKey(DatosDemograficos, on_delete=models.CASCADE, related_name="resultados_examenes")
-    resultado = models.JSONField(verbose_name="Respuestas del Examen")  # Respuestas específicas
 
-    class Meta:
-        unique_together = ('visita_examen', 'paciente')  # Evita duplicados
-
-    def __str__(self):
-        return f"{self.paciente.nprimer_nombre} - {self.visita_examen}"

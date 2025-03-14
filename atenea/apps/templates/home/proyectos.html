@@ -213,7 +213,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Agregar Visitas al Proyecto</h5>
+        <h5 class="modal-title">Agregar tipo de visita al Proyecto</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -227,7 +227,7 @@
           <div id="visitas-container">
             <div class="visita">
               <div class="form-group">
-                <label>Nombre de la Visita</label>
+                <label>Nombre del tipo de Visita</label>
                 <input type="text" class="form-control" name="nombre_visita[]" required>
               </div>
               <div class="form-group">
@@ -240,10 +240,12 @@
                   <div class="examenes-container">
                     {% for examen in examenes %}
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="examenes[]" value="{{ examen.id }}">
+                      <input class="form-check-input examen-checkbox" type="checkbox" data-id="{{ examen.id }}"
+                        data-nombre="{{ examen.nombre }}">
                       <label class="form-check-label">{{ examen.nombre }}</label>
                     </div>
                     {% endfor %}
+                    <input type="hidden" name="examenes_json" id="examenes-json" value="[]">
                   </div>
                 </div>
 
@@ -320,6 +322,30 @@
       var modal = $(this);
       modal.find('#proyecto_id').val(proyectoId); // Asignar el ID en el formulario
       modal.find('#proyectoNombre').text(nombre); // Asignar el nombre del proyecto
+    });
+
+    let checkboxes = document.querySelectorAll(".examen-checkbox");
+    let hiddenInput = document.getElementById("examenes-json");
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", function () {
+        let examenesSeleccionados = JSON.parse(hiddenInput.value || "[]");
+
+        let examenId = this.dataset.id;
+        let examenNombre = this.dataset.nombre;
+
+        if (this.checked) {
+          // Agregar si no existe
+          if (!examenesSeleccionados.some(e => e.id === examenId)) {
+            examenesSeleccionados.push({ id: examenId, nombre: examenNombre });
+          }
+        } else {
+          // Eliminar si se desmarca
+          examenesSeleccionados = examenesSeleccionados.filter(e => e.id !== examenId);
+        }
+
+        hiddenInput.value = JSON.stringify(examenesSeleccionados);
+      });
     });
   });
 </script>
