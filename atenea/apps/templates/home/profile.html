@@ -53,7 +53,7 @@
 
 <!-- Header con imagen de fondo -->
 <div class="header pb-6 d-flex align-items-center"
-     style="min-height: 300px; background-image: url(/static/assets/img/theme/tem_university.jpg); background-size: cover; background-position: center top;">
+  style="min-height: 300px; background-image: url(/static/assets/img/theme/tem_university.jpg); background-size: cover; background-position: center top;">
   <!-- Máscara para el fondo -->
   <span class="mask bg-gradient-default opacity-8"></span>
   <!-- Contenedor del header -->
@@ -108,12 +108,22 @@
           <p>Horas de Investigación: <strong>120</strong></p>
         </div>
       </div>
+      {% if messages %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {% for message in messages %}
+        <p class="mb-0">{{ message }}</p>
+        {% endfor %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endif %}
 
       <!-- Formulario para cambiar la contraseña -->
       <div class="card mt-4">
         <div class="card-body">
           <h3 class="card-title">Cambiar Contraseña</h3>
-          <form method="POST">
+          <form method="post" action="{% url 'cambiar_contrasena' %}">
             {% csrf_token %}
             <div class="form-group">
               <label for="new_password">Nueva Contraseña</label>
@@ -123,7 +133,8 @@
               <label for="confirm_password">Confirmar Contraseña</label>
               <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
             </div>
-            <button type="submit" class="btn btn-primary" onclick="return confirm('¿Estás seguro de que deseas cambiar la contraseña?');">
+            <button type="submit" class="btn btn-primary"
+              onclick="return confirm('¿Estás seguro de que deseas cambiar la contraseña?');">
               Cambiar Contraseña
             </button>
           </form>
@@ -141,13 +152,12 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
-              <p><strong>Nombre:</strong> Juan Pérez</p>
-              <p><strong>Correo Electrónico:</strong> juan.perez@udea.edu.co</p>
-              <p><strong>Teléfono:</strong> +57 300 123 4567</p>
+              <p><strong>Nombre:</strong> {{ request.user.username }}</p>
+              <p><strong>Correo Electrónico:</strong> {{ request.user.email }}</p>
             </div>
             <div class="col-md-6">
               <p><strong>Área de Investigación:</strong> Neurociencias Cognitivas</p>
-              <p><strong>Fecha de Ingreso:</strong> Enero 2023</p>
+              <p><strong>Fecha de Ingreso:</strong> {{ request.user.last_login }}</p>
             </div>
           </div>
         </div>
@@ -170,7 +180,8 @@
                     </div>
                     <div class="col-10">
                       <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Sueño</h5>
-                      <p>Investigamos el impacto del sueño en la función cognitiva, explorando su relación con la memoria, la atención y el procesamiento emocional.</p>
+                      <p>Investigamos el impacto del sueño en la función cognitiva, explorando su relación con la
+                        memoria, la atención y el procesamiento emocional.</p>
                     </div>
                   </div>
                 </div>
@@ -189,7 +200,8 @@
                     </div>
                     <div class="col-10">
                       <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Envejecimiento</h5>
-                      <p>Estudiamos los efectos del envejecimiento en la plasticidad cerebral y la función cognitiva.</p>
+                      <p>Estudiamos los efectos del envejecimiento en la plasticidad cerebral y la función cognitiva.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -208,39 +220,12 @@
                     </div>
                     <div class="col-10">
                       <h5 class="card-title text-uppercase text-muted mb-0">Proyecto Anosognosia</h5>
-                      <p>Investigamos los mecanismos neurocognitivos de la anosognosia en diversas patologías neurológicas.</p>
+                      <p>Investigamos los mecanismos neurocognitivos de la anosognosia en diversas patologías
+                        neurológicas.</p>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="col-xl-8 order-xl-2">
-      <div class="card">
-        <div class="card-header">
-          <div class="row align-items-center">
-            <div class="col-8">
-              <h3 class="mb-0">Informacion</h3>
-            </div>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-12">
-              <!-- Lista de Visitas -->
-              <ul class="list-group">
-                <!-- Ejemplo de Visita 1 -->
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <span class="font-weight-bold">Informacion</span>
-                </li>
-
-              </ul>
-
             </div>
           </div>
         </div>

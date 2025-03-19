@@ -24,6 +24,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 #from weasyprint import HTML
 from .models import VisitaExamen
+from django.contrib.auth import update_session_auth_hash
 
 #vista principal
 def home(request):
@@ -44,10 +45,34 @@ def estadisticas(request):
     html_template = loader.get_template('home/stadistic.html')
     return HttpResponse(html_template.render(context, request))
 
+@login_required
 def perfil(request):
     context = {'segment': 'perfil'}
     html_template = loader.get_template('home/profile.html')
     return HttpResponse(html_template.render(context, request))
+
+@login_required
+def cambiar_contrasena(request):
+    if request.method == 'POST':
+        print('aqui')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if new_password and confirm_password:
+            if new_password == confirm_password:
+                user = request.user
+                user.set_password(new_password)  # Cambia la contraseña
+                user.save()
+                update_session_auth_hash(request, user)  # Mantiene la sesión activa
+                messages.success(request, '¡Contraseña actualizada con éxito!')
+                return render(request, 'home/profile.html')
+            else:
+                messages.error(request, 'Las contraseñas no coinciden.')
+                return render(request, 'home/profile.html')
+        else:
+            messages.error(request, 'Todos los campos son obligatorios.')
+
+    return render(request, 'home/profile.html')
 
 #pacientes
 @login_required

@@ -14,6 +14,7 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', profile_view, name='profile'),  # Perfil de usuario
+    path('contrasena/', views.cambiar_contrasena, name='cambiar_contrasena'),  # Perfil de usuario
 
     #resgistro de pacientes 
     path('registro_demografico/', views.registro_demografico, name='registro_demografico'),
