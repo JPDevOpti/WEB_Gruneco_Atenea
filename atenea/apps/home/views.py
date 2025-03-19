@@ -168,6 +168,10 @@ def detalle_paciente(request, paciente_id):
 #proyectos
 @login_required
 def proyectos(request):
+    if not request.user.is_superuser:
+        messages.error(request, "No tienes permisos para acceder a esta página.")
+        return redirect('index')  # Cambia 'home' por la vista a la que quieras redirigir
+    
     proyectos = Proyecto.objects.all()
     examenes = Examen.objects.all()
     visitas = TipoVisita.objects.all()
