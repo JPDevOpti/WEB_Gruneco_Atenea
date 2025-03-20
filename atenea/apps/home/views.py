@@ -329,7 +329,7 @@ def eliminar_visita(request, id):
 
     return redirect('proyectos')
 
-
+@login_required
 def crear_visita(request, paciente_id):
     paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
     proyectos_asociados = paciente.proyectos.all()
@@ -406,6 +406,7 @@ def crear_visita(request, paciente_id):
         'tipo_visitas': tipo_visitas
     })
 
+@login_required
 def eliminar_v(request, visita_id):
     visita = get_object_or_404(Visita, id=visita_id)
     paciente_id = visita.paciente.id  # Para redirigir después de eliminar
@@ -414,6 +415,58 @@ def eliminar_v(request, visita_id):
     messages.success(request, "Visita eliminada correctamente.")
     
     return redirect('detalle_paciente', paciente_id=paciente_id)
+
+@login_required
+def editar_v(request, visita_id):
+    visita = get_object_or_404(Visita, id=visita_id)
+    paciente = visita.paciente
+    tipo_visita = visita.Tipo_visita  # Tipo de visita actual
+    # Obtener exámenes disponibles según el tipo de visita (vienen en JSONField)
+    examenes_tipo_visita = [int(examen["id"]) for examen in tipo_visita.examenes]  # Este es un JSONField con los exámenes permitidos
+    print(examenes_tipo_visita)
+    examenes_actuales = VisitaExamen.objects.filter(visita=visita).values_list('examen_id', flat=True)
+    print(examenes_actuales)
+ # Exámenes ya asociados
+    print('aqui')
+    examenes_disponibles =  Examen.objects.filter(id__in=examenes_tipo_visita).exclude(id__in=examenes_actuales)
+    print(examenes_disponibles)
+    if request.method == "POST":
+        # Obtener datos del formulario
+        visita.nombre = request.POST.get("nombre", visita.nombre)
+        visita.fecha = request.POST.get("fecha", visita.fecha)
+        visita.evaluador = request.POST.get("evaluador", visita.evaluador)
+        
+        # Datos del acompañante
+        visita.acompanante_nombre = request.POST.get("acompanante_nombre", visita.acompanante_nombre)
+        visita.acompanante_relacion = request.POST.get("acompanante_relacion", visita.acompanante_relacion)
+        visita.acompanante_correo = request.POST.get("acompanante_correo", visita.acompanante_correo)
+        visita.acompanante_telefono = request.POST.get("acompanante_telefono", visita.acompanante_telefono)
+        
+        # Guardar cambios en la visita
+        visita.save()
+
+        # Procesar los exámenes seleccionados
+        examenes_seleccionados = request.POST.getlist('examenes_seleccionados')
+        if examenes_seleccionados:
+            print(f"Exámenes seleccionados para actualizar en la visita {visita.id}: {examenes_seleccionados}")
+    
+        for examen_id in examenes_seleccionados:
+            examen = Examen.objects.get(id=int(examen_id))  # Convertimos ID a entero
+            if not VisitaExamen.objects.filter(visita=visita, examen=examen).exists():
+                VisitaExamen.objects.create(visita=visita, examen=examen)
+
+                messages.success(request, f"Visita actualizada con éxito con {len(examenes_seleccionados)} exámenes.")
+            else:
+                messages.warning(request, "No se seleccionaron exámenes.")
+
+        return redirect('detalle_paciente', paciente_id=paciente.id)
+    return render(request, 'sleepexams/editar_visita.html', {
+        'visita': visita,
+        'paciente': paciente,
+        'examenes_actuales': examenes_actuales,
+        'examenes_disponibles': examenes_disponibles
+    })
+
 
 #Ingreso y Salida
 @login_required

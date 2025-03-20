@@ -147,7 +147,6 @@
                     <strong>Tipo de Visita:</strong> {{ visita.Tipo_visita.nombre }}
                   </p>
                 </div>
-
                 <!-- Exámenes asociados -->
                 <div>
                   <h4>Exámenes</h4>
@@ -185,7 +184,9 @@
                       </div>
                     </div>
 
-                    <form method="POST" action="{% url 'eliminar_resultado_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}" style="display:inline;">
+                    <form method="POST"
+                      action="{% url 'eliminar_resultado_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
+                      style="display:inline;">
 
 
                       {% csrf_token %}
@@ -219,8 +220,99 @@
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger btn-sm">Eliminar visita</button>
                   </form>
+                  <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    data-bs-target="#modalEditarVisita-{{ visita.id }}">
+                    Editar Visita
+                  </button>
                 </div>
               </div>
+
+              <div class="modal fade" id="modalEditarVisita-{{ visita.id }}" tabindex="-1" aria-labelledby="modalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Editar Visita: {{ visita.nombre }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="{% url 'editar_v' visita.id %}">
+                      {% csrf_token %}
+                      <div class="modal-body">
+
+                        <div class="mb-3">
+                          <label for="nombre" class="form-label">Nombre de la Visita</label>
+                          <input type="text" class="form-control" name="nombre" value="{{ visita.nombre }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="fecha" class="form-label">Fecha</label>
+                          <input type="date" class="form-control" name="fecha" value="{{ visita.fecha|date:'Y-m-d' }}"
+                            required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="evaluador" class="form-label">Evaluador</label>
+                          <input type="text" class="form-control" name="evaluador" value="{{ visita.evaluador }}">
+                        </div>
+
+                        <h4>Acompañante</h4>
+                        <div class="mb-3">
+                          <label for="acompanante_nombre" class="form-label">Nombre</label>
+                          <input type="text" class="form-control" name="acompanante_nombre"
+                            value="{{ visita.acompanante_nombre }}">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_relacion" class="form-label">Relación</label>
+                          <input type="text" class="form-control" name="acompanante_relacion"
+                            value="{{ visita.acompanante_relacion }}">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_correo" class="form-label">Correo</label>
+                          <input type="email" class="form-control" name="acompanante_correo"
+                            value="{{ visita.acompanante_correo }}">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_telefono" class="form-label">Teléfono</label>
+                          <input type="tel" class="form-control" name="acompanante_telefono"
+                            value="{{ visita.acompanante_telefono }}">
+                        </div>
+
+                        <h4>Exámenes Asociados</h4>
+                        <ul id="examenesLista">
+                          {% for visita_examen in visita.visita_examenes.all %}
+
+                          <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
+                          {% endfor %}
+                        </ul>
+
+                        <div class="mb-3">
+                          <label class="form-label">Agregar Examen</label>
+                          <div id="examenesCheckboxes">
+                            {% for examen in visita.Tipo_visita.examenes %}
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="examenes_seleccionados"
+                                value="{{ examen.id }}" id="examen_{{ examen.id }}">
+                              <label class="form-check-label" for="examen_{{ examen.id }}">
+                                {{ examen.nombre }}
+                              </label>
+                            </div>
+                            {% endfor %}
+                          </div>
+                        </div>
+
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+
+
               {% endif %}
               {% empty %}
               <p>No hay visitas registradas para este proyecto.</p>
@@ -305,6 +397,8 @@
                   </div>
                 </div>
               </div>
+
+
 
 
               {% empty %}
@@ -445,6 +539,31 @@
     });
   });
 
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".agregar-examen").forEach(button => {
+      button.addEventListener("click", function () {
+        let visitaId = this.getAttribute("data-visita-id");
+        let listaExamenes = document.getElementById(`examenesLista-${visitaId}`);
+        let selectVisita = document.getElementById(`visitaSelect-${visitaId}`);
+        let selectedOption = selectVisita.options[selectVisita.selectedIndex];
+
+        if (selectedOption.dataset.examenes) {
+          let examenesDisponibles = JSON.parse(selectedOption.dataset.examenes);
+          let nuevoExamen = prompt("Ingrese el nombre del examen:");
+
+          if (nuevoExamen && !examenesDisponibles.includes(nuevoExamen)) {
+            let li = document.createElement("li");
+            li.textContent = nuevoExamen;
+            listaExamenes.appendChild(li);
+          } else {
+            alert("Examen ya incluido o no válido.");
+          }
+        } else {
+          alert("Seleccione un tipo de visita válido.");
+        }
+      });
+    });
+  });
 </script>
 
 {% endblock %}
