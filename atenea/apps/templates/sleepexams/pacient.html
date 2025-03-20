@@ -151,42 +151,66 @@
                 <!-- Exámenes asociados -->
                 <div>
                   <h4>Exámenes</h4>
-                  {% for visita_examen in visita.visita_examenes.all %}
-                  <p>
-                    <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
+                  <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita"
+                    data-toggle="tooltip" data-placement="top" title="Ver Exámenes">
+                    <i class="fas fa-list"></i> <!-- Ícono de Font Awesome -->
+                  </button>
+                  <div id="examenes-visita" class="collapse mt-3">
+                    {% for visita_examen in visita.visita_examenes.all %}
+                    <p>
+                      <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
 
-                    {% if visita_examen.resultado %}
-                    <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen"
-                      data-nombre="{{ visita_examen.examen.nombre}}" data-resultado="{{ visita_examen.resultado }}">Ver
-                      Resultado</a>
-                    <!-- Modal -->
-                  <div class="modal fade" id="modalExamen" tabindex="-1" aria-labelledby="modalExamenLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="modalExamenLabel">Resultado del Examen</h5>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <p><strong>Nombre:</strong> <span id="examenNombre"></span></p>
-                          <p><strong>Resultado:</strong> <span id="examenResultado"></span></p>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                      {% if visita_examen.resultado %}
+                      <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen"
+                        data-nombre="{{ visita_examen.examen.nombre}}"
+                        data-resultado="{{ visita_examen.resultado }}">Ver
+                        Resultado</a>
+                      <!-- Modal -->
+                    <div class="modal fade" id="modalExamen" tabindex="-1" aria-labelledby="modalExamenLabel"
+                      aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="modalExamenLabel">Resultado del Examen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p><strong>Nombre:</strong> <span id="examenNombre"></span></p>
+                            <p><strong>Resultado:</strong> <span id="examenResultado"></span></p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  {% else %}
-                  <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
-                    class="btn btn-primary btn-sm">Realizar Examen</a>
-                  {% endif %}
-                  </p>
 
-                  {% empty %}
-                  <p>No se realizaron exámenes en esta visita.</p>
-                  {% endfor %}
+                    <form method="POST" action="{% url 'eliminar_resultado_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}" style="display:inline;">
+
+
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top"
+                        title="Eliminar Visita">
+                        <i class="fas fa-trash"></i> <!-- Ícono de Font Awesome -->
+                      </button>
+                    </form>
+
+
+
+                    {% else %}
+                    <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
+                      class="btn btn-primary btn-sm">Realizar Examen</a>
+                    {% endif %}
+                    </p>
+
+                    {% empty %}
+                    <p>No se realizaron exámenes en esta visita.</p>
+                    {% endfor %}
+
+
+
+
+                  </div>
 
                 </div>
                 <div>

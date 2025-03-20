@@ -22,6 +22,7 @@ urlpatterns = [
     path('paciente/<int:paciente_id>/', views.detalle_paciente, name='detalle_paciente'),
     path('paciente/<int:numero_documento>/eliminar/', views.eliminar_paciente, name='eliminar_paciente'),
     path('paciente/<int:numero_documento>/editar/', views.editar_paciente, name='editar_paciente'),
+    path('eliminar-resultado-examen/<int:visita_id>/<int:examen_id>/<int:paciente_id>/', views.eliminar_resultado_examen, name='eliminar_resultado_examen'),
 
     # Exámenes médicos
     path('descargar-examen/<int:visita_examen_id>/', descargar_examen, name='descargar_examen'),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('guardar-examen/anamnesis/', views.guardar_examen_anamnesis, name='guardar_examen_anamnesis'),
     path('guardar-examen/cuestionarios/', views.guardar_examen_Sueño_Cuestionarios, name='guardar_Sueño_Cuestionarios'),
     path('guardar-examen/fisico-sueno/', views.guardar_examen_sueno_fisico, name='guardar_examen_sueno_fisico'),
+    
 
     # Proyectos
     path('proyectos/', views.proyectos, name='proyectos'),

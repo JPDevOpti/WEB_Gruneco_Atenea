@@ -26,6 +26,7 @@ from django.http import HttpResponse
 from .models import VisitaExamen
 from django.contrib.auth import update_session_auth_hash
 
+
 #vista principal
 def home(request):
     context = {'segment': 'home'}
@@ -328,8 +329,6 @@ def eliminar_visita(request, id):
 
     return redirect('proyectos')
 
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import DatosDemograficos, Proyecto, TipoVisita, Visita
 
 def crear_visita(request, paciente_id):
     paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
@@ -464,6 +463,18 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
 
     return render(request, template, {'visita_examen': visita_id, 'paciente_id':paciente_id,'examen_id':examen_id})
+
+
+@login_required
+def eliminar_resultado_examen(request, visita_id, examen_id, paciente_id):
+
+    examen = get_object_or_404(VisitaExamen, examen_id=examen_id, visita_id=visita_id)
+    
+    # Vaciar el campo 'resultado'
+    examen.resultado = None
+    examen.save() 
+
+    return redirect('detalle_paciente', paciente_id=paciente_id)
 
 @login_required
 def guardar_examen_general_revisionsistemas(request):
