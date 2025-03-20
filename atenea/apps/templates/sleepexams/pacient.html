@@ -134,6 +134,84 @@
                 </button>
 
               </div>
+              <!-- Modal para agregar una nueva visita -->
+              <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1"
+                aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Nueva Visita para {{ proyecto.nombre }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="{% url 'crear_visita' paciente.id %}">
+                      {% csrf_token %}
+                      <div class="modal-body">
+
+
+                        <div class="mb-3">
+                          <label for="nombre_visita" class="form-label">Nombre de la Visita</label>
+                          <input type="text" class="form-control" name="nombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="tipo_visita" class="form-label">Tipo de Visita</label>
+                          <select class="form-control tipo-visita" name="tipo_visita" id="visitaSelect">
+                            <option value="">Seleccione un tipo de visita</option>
+                            {% for visita in proyecto.visitas.all %}
+                            <option value="{{ visita.id }}" data-examenes="{{ visita.examenes }}">
+                              {{ visita.nombre }}
+                            </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                        <div class="mb-3">
+                          <h4>Exámenes Asociados:</h4>
+                          <ul id="examenesLista" class="p-0"></ul>
+                          <!-- El input hidden para examenes_seleccionados se agregará automáticamente mediante JavaScript -->
+                        </div>
+
+
+                        <div class="mb-3">
+                          <label for="fecha" class="form-label">Fecha</label>
+                          <input type="date" class="form-control" name="fecha" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="evaluador" class="form-label">Evaluador</label>
+                          <input type="text" class="form-control" name="evaluador">
+                        </div>
+
+                        <!-- Campos del acompañante -->
+                        <div class="mb-3">
+                          <label for="acompanante_nombre" class="form-label">Nombre del Acompañante</label>
+                          <input type="text" class="form-control" name="acompanante_nombre">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_relacion" class="form-label">Relación con el Paciente</label>
+                          <input type="text" class="form-control" name="acompanante_relacion">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_correo" class="form-label">Correo del Acompañante</label>
+                          <input type="email" class="form-control" name="acompanante_correo">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_telefono" class="form-label">Teléfono del Acompañante</label>
+                          <input type="tel" class="form-control" name="acompanante_telefono">
+                        </div>
+
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-primary">Guardar Visita</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
 
               {% for visita in visitas_paciente %}
               {% if visita.Tipo_visita.proyecto == proyecto %}
@@ -150,11 +228,13 @@
                 <!-- Exámenes asociados -->
                 <div>
                   <h4>Exámenes</h4>
-                  <button class="btn btn-sm btn-info" data-toggle="collapse" data-target="#examenes-visita"
-                    data-toggle="tooltip" data-placement="top" title="Ver Exámenes">
+                  <button class="btn btn-sm btn-info" data-toggle="collapse"
+                    data-target="#examenes-visita-{{ visita.id }}" data-toggle="tooltip" data-placement="top"
+                    title="Ver Exámenes">
                     <i class="fas fa-list"></i> <!-- Ícono de Font Awesome -->
+                    Ver
                   </button>
-                  <div id="examenes-visita" class="collapse mt-3">
+                  <div id="examenes-visita-{{ visita.id }}" class="collapse mt-3">
                     {% for visita_examen in visita.visita_examenes.all %}
                     <p>
                       <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
@@ -197,7 +277,6 @@
                     </form>
 
 
-
                     {% else %}
                     <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
                       class="btn btn-primary btn-sm">Realizar Examen</a>
@@ -215,15 +294,22 @@
 
                 </div>
                 <div>
-                  <form action="{% url 'eliminar_v' visita.id %}" method="POST"
-                    onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger btn-sm">Eliminar visita</button>
-                  </form>
-                  <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                    data-bs-target="#modalEditarVisita-{{ visita.id }}">
-                    Editar Visita
-                  </button>
+                  <div class="row">
+                    <div class="col-5">
+                      <form action="{% url 'eliminar_v' visita.id %}" method="POST"
+                        onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm" title="Elimianr visita "><i
+                            class="fas fa-trash"></i></button>
+                      </form>
+                    </div>
+                    <div class="col-5"><button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                        title="Editar visita" data-bs-target="#modalEditarVisita-{{ visita.id }}">
+                        editar
+                      </button>
+                    </div>
+
+                  </div>
                 </div>
               </div>
 
@@ -320,83 +406,6 @@
 
 
 
-              <!-- Modal para agregar una nueva visita -->
-              <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1"
-                aria-labelledby="modalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Nueva Visita para {{ proyecto.nombre }}</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="POST" action="{% url 'crear_visita' paciente.id %}">
-                      {% csrf_token %}
-                      <div class="modal-body">
-
-
-                        <div class="mb-3">
-                          <label for="nombre_visita" class="form-label">Nombre de la Visita</label>
-                          <input type="text" class="form-control" name="nombre" required>
-                        </div>
-
-                        <div class="mb-3">
-                          <label for="tipo_visita" class="form-label">Tipo de Visita</label>
-                          <select class="form-control tipo-visita" name="tipo_visita" id="visitaSelect">
-                            <option value="">Seleccione un tipo de visita</option>
-                            {% for visita in proyecto.visitas.all %}
-                            <option value="{{ visita.id }}" data-examenes="{{ visita.examenes }}">
-                              {{ visita.nombre }}
-                            </option>
-                            {% endfor %}
-                          </select>
-                        </div>
-
-                        <div class="mb-3">
-                          <h4>Exámenes Asociados:</h4>
-                          <ul id="examenesLista" class="p-0"></ul>
-                          <!-- El input hidden para examenes_seleccionados se agregará automáticamente mediante JavaScript -->
-                        </div>
-
-
-                        <div class="mb-3">
-                          <label for="fecha" class="form-label">Fecha</label>
-                          <input type="date" class="form-control" name="fecha" required>
-                        </div>
-
-                        <div class="mb-3">
-                          <label for="evaluador" class="form-label">Evaluador</label>
-                          <input type="text" class="form-control" name="evaluador">
-                        </div>
-
-                        <!-- Campos del acompañante -->
-                        <div class="mb-3">
-                          <label for="acompanante_nombre" class="form-label">Nombre del Acompañante</label>
-                          <input type="text" class="form-control" name="acompanante_nombre">
-                        </div>
-
-                        <div class="mb-3">
-                          <label for="acompanante_relacion" class="form-label">Relación con el Paciente</label>
-                          <input type="text" class="form-control" name="acompanante_relacion">
-                        </div>
-
-                        <div class="mb-3">
-                          <label for="acompanante_correo" class="form-label">Correo del Acompañante</label>
-                          <input type="email" class="form-control" name="acompanante_correo">
-                        </div>
-
-                        <div class="mb-3">
-                          <label for="acompanante_telefono" class="form-label">Teléfono del Acompañante</label>
-                          <input type="tel" class="form-control" name="acompanante_telefono">
-                        </div>
-
-                        <div class="modal-footer">
-                          <button type="submit" class="btn btn-primary">Guardar Visita</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
 
 
 
@@ -516,7 +525,6 @@
     }
   });
 
-
   document.addEventListener("DOMContentLoaded", function () {
     var modalExamen = document.getElementById("modalExamen");
 
@@ -536,32 +544,6 @@
       // Insertar los valores en el modal
       document.getElementById("examenNombre").textContent = nombre;
       document.getElementById("examenResultado").textContent = resultado;
-    });
-  });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".agregar-examen").forEach(button => {
-      button.addEventListener("click", function () {
-        let visitaId = this.getAttribute("data-visita-id");
-        let listaExamenes = document.getElementById(`examenesLista-${visitaId}`);
-        let selectVisita = document.getElementById(`visitaSelect-${visitaId}`);
-        let selectedOption = selectVisita.options[selectVisita.selectedIndex];
-
-        if (selectedOption.dataset.examenes) {
-          let examenesDisponibles = JSON.parse(selectedOption.dataset.examenes);
-          let nuevoExamen = prompt("Ingrese el nombre del examen:");
-
-          if (nuevoExamen && !examenesDisponibles.includes(nuevoExamen)) {
-            let li = document.createElement("li");
-            li.textContent = nuevoExamen;
-            listaExamenes.appendChild(li);
-          } else {
-            alert("Examen ya incluido o no válido.");
-          }
-        } else {
-          alert("Seleccione un tipo de visita válido.");
-        }
-      });
     });
   });
 </script>

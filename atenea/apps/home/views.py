@@ -460,6 +460,7 @@ def editar_v(request, visita_id):
                 messages.warning(request, "No se seleccionaron exámenes.")
 
         return redirect('detalle_paciente', paciente_id=paciente.id)
+    
     return render(request, 'sleepexams/editar_visita.html', {
         'visita': visita,
         'paciente': paciente,
