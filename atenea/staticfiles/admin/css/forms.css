@@ -7,6 +7,11 @@
     padding: 10px;
     font-size: 13px;
     border-bottom: 1px solid var(--hairline-color);
+    transition: background-color 0.3s ease;
+}
+
+.form-row:hover {
+    background-color: #f9f9f9;
 }
 
 .form-row img, .form-row input {
@@ -251,6 +256,11 @@ fieldset.monospace textarea {
     border-radius: 4px;
     text-align: right;
     overflow: hidden;
+    transition: background-color 0.3s ease;
+}
+
+.submit-row:hover {
+    background-color: #f1f1f1;
 }
 
 body.popup .submit-row {
@@ -285,6 +295,13 @@ body.popup .submit-row {
     height: 15px;
     line-height: 15px;
     color: var(--button-fg);
+    transition: background-color 0.3s ease;
+}
+
+.submit-row a.deletelink:focus,
+.submit-row a.deletelink:hover,
+.submit-row a.deletelink:active {
+    background: var(--delete-button-hover-bg);
 }
 
 .submit-row a.closelink {
@@ -296,12 +313,7 @@ body.popup .submit-row {
     line-height: 15px;
     margin: 0 0 0 5px;
     color: var(--button-fg);
-}
-
-.submit-row a.deletelink:focus,
-.submit-row a.deletelink:hover,
-.submit-row a.deletelink:active {
-    background: var(--delete-button-hover-bg);
+    transition: background-color 0.3s ease;
 }
 
 .submit-row a.closelink:focus,
@@ -490,6 +502,13 @@ body.popup .submit-row {
     background: url(../img/icon-addlink.svg) 0 1px no-repeat;
     padding-left: 16px;
     font-size: 12px;
+    transition: color 0.3s ease;
+}
+
+.inline-group ul.tools a.add:hover,
+.inline-group div.add-row a:hover,
+.inline-group .tabular tr.add-row td a:hover {
+    color: #5e72e4;
 }
 
 .empty-form {
