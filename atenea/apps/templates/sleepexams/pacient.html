@@ -1,13 +1,12 @@
 {% extends 'layouts/base.html' %}
 {% block content %}
 
-
 <div class="header bg-primary pb-6">
   <div class="container-fluid">
     <div class="header-body">
       <div class="row align-items-center py-4">
         <div class="col-lg-6 col-5">
-          <h6 class="h2 text-white d-inline-block mb-0">Informacion del paciente</h6>
+          <h6 class="h2 text-white d-inline-block mb-0">Información del paciente</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
               <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
@@ -19,9 +18,10 @@
     </div>
   </div>
 </div>
+
 <div class="container-fluid mt--6">
   <div class="row">
-    <div class="col-xl-4 order-xl-1">
+    <div class="col-xl-3 order-xl-1">
       <div class="row justify-content-center">
         <div class="card card-profile">
           <div class="card-body pt-0">
@@ -45,11 +45,9 @@
                       </select>
                       <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
                     </div>
-
                     <button type="submit" class="btn btn-sm btn-neutral"
                       onclick="return confirm('¿Estás seguro de que deseas agregar el paciente al proyecto?');">Agregar
                       al proyecto</button>
-
                   </form>
                 </div>
               </div>
@@ -110,11 +108,11 @@
       </div>
     </div>
 
-    <div class="col-xl-8 order-xl-2">
+    <div class="col-xl-9 order-xl-2">
       <div class="card">
         <div class="card-header">
           <div class="row align-items-center">
-            <div class="col-8">
+            <div class="col-10">
               <h3 class="mb-0">Proyectos a los que se encuentra asociado</h3>
             </div>
           </div>
@@ -123,16 +121,13 @@
           <div class="row">
             <div class="col-12">
               {% for proyecto in proyectos_asociados %}
-              <!-- Botón para abrir el modal de nueva visita -->
-              <hr class="my-4">
+              <hr class="my-2">
               <h5 class="card-title text-uppercase text-muted mb-3">{{ proyecto.nombre }}</h5>
-
               <div class="mb-3">
                 <button class="btn btn-primary mt-3" data-bs-toggle="modal"
                   data-bs-target="#modalAgregarVisita-{{ proyecto.id }}">
                   Agregar Visita
                 </button>
-
               </div>
               <!-- Modal para agregar una nueva visita -->
               <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1"
@@ -238,7 +233,6 @@
                     {% for visita_examen in visita.visita_examenes.all %}
                     <p>
                       <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
-
                       {% if visita_examen.resultado %}
                       <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen"
                         data-nombre="{{ visita_examen.examen.nombre}}"
@@ -277,39 +271,28 @@
                     </form>
 
 
+
                     {% else %}
                     <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
                       class="btn btn-primary btn-sm">Realizar Examen</a>
                     {% endif %}
                     </p>
-
                     {% empty %}
                     <p>No se realizaron exámenes en esta visita.</p>
                     {% endfor %}
-
-
-
-
                   </div>
 
                 </div>
                 <div>
-                  <div class="row">
-                    <div class="col-5">
-                      <form action="{% url 'eliminar_v' visita.id %}" method="POST"
-                        onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm" title="Elimianr visita "><i
-                            class="fas fa-trash"></i></button>
-                      </form>
-                    </div>
-                    <div class="col-5"><button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                        title="Editar visita" data-bs-target="#modalEditarVisita-{{ visita.id }}">
-                        editar
-                      </button>
-                    </div>
-
-                  </div>
+                  <form action="{% url 'eliminar_v' visita.id %}" method="POST"
+                    onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar visita</button>
+                  </form>
+                  <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                    data-bs-target="#modalEditarVisita-{{ visita.id }}">
+                    Editar Visita
+                  </button>
                 </div>
               </div>
 
@@ -324,56 +307,46 @@
                     <form method="POST" action="{% url 'editar_v' visita.id %}">
                       {% csrf_token %}
                       <div class="modal-body">
-
                         <div class="mb-3">
                           <label for="nombre" class="form-label">Nombre de la Visita</label>
                           <input type="text" class="form-control" name="nombre" value="{{ visita.nombre }}" required>
                         </div>
-
                         <div class="mb-3">
                           <label for="fecha" class="form-label">Fecha</label>
                           <input type="date" class="form-control" name="fecha" value="{{ visita.fecha|date:'Y-m-d' }}"
                             required>
                         </div>
-
                         <div class="mb-3">
                           <label for="evaluador" class="form-label">Evaluador</label>
                           <input type="text" class="form-control" name="evaluador" value="{{ visita.evaluador }}">
                         </div>
-
                         <h4>Acompañante</h4>
                         <div class="mb-3">
                           <label for="acompanante_nombre" class="form-label">Nombre</label>
                           <input type="text" class="form-control" name="acompanante_nombre"
                             value="{{ visita.acompanante_nombre }}">
                         </div>
-
                         <div class="mb-3">
                           <label for="acompanante_relacion" class="form-label">Relación</label>
                           <input type="text" class="form-control" name="acompanante_relacion"
                             value="{{ visita.acompanante_relacion }}">
                         </div>
-
                         <div class="mb-3">
                           <label for="acompanante_correo" class="form-label">Correo</label>
                           <input type="email" class="form-control" name="acompanante_correo"
                             value="{{ visita.acompanante_correo }}">
                         </div>
-
                         <div class="mb-3">
                           <label for="acompanante_telefono" class="form-label">Teléfono</label>
                           <input type="tel" class="form-control" name="acompanante_telefono"
                             value="{{ visita.acompanante_telefono }}">
                         </div>
-
                         <h4>Exámenes Asociados</h4>
                         <ul id="examenesLista">
                           {% for visita_examen in visita.visita_examenes.all %}
-
                           <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
                           {% endfor %}
                         </ul>
-
                         <div class="mb-3">
                           <label class="form-label">Agregar Examen</label>
                           <div id="examenesCheckboxes">
@@ -388,7 +361,6 @@
                             {% endfor %}
                           </div>
                         </div>
-
                         <div class="modal-footer">
                           <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                         </div>
@@ -396,9 +368,6 @@
                   </div>
                 </div>
               </div>
-
-
-
               {% endif %}
               {% empty %}
               <p>No hay visitas registradas para este proyecto.</p>
@@ -406,6 +375,83 @@
 
 
 
+              <!-- Modal para agregar una nueva visita -->
+              <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1"
+                aria-labelledby="modalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Nueva Visita para {{ proyecto.nombre }}</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="{% url 'crear_visita' paciente.id %}">
+                      {% csrf_token %}
+                      <div class="modal-body">
+
+
+                        <div class="mb-3">
+                          <label for="nombre_visita" class="form-label">Nombre de la Visita</label>
+                          <input type="text" class="form-control" name="nombre" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="tipo_visita" class="form-label">Tipo de Visita</label>
+                          <select class="form-control tipo-visita" name="tipo_visita" id="visitaSelect">
+                            <option value="">Seleccione un tipo de visita</option>
+                            {% for visita in proyecto.visitas.all %}
+                            <option value="{{ visita.id }}" data-examenes="{{ visita.examenes }}">
+                              {{ visita.nombre }}
+                            </option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                        <div class="mb-3">
+                          <h4>Exámenes Asociados:</h4>
+                          <ul id="examenesLista" class="p-0"></ul>
+                          <!-- El input hidden para examenes_seleccionados se agregará automáticamente mediante JavaScript -->
+                        </div>
+
+
+                        <div class="mb-3">
+                          <label for="fecha" class="form-label">Fecha</label>
+                          <input type="date" class="form-control" name="fecha" required>
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="evaluador" class="form-label">Evaluador</label>
+                          <input type="text" class="form-control" name="evaluador">
+                        </div>
+
+                        <!-- Campos del acompañante -->
+                        <div class="mb-3">
+                          <label for="acompanante_nombre" class="form-label">Nombre del Acompañante</label>
+                          <input type="text" class="form-control" name="acompanante_nombre">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_relacion" class="form-label">Relación con el Paciente</label>
+                          <input type="text" class="form-control" name="acompanante_relacion">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_correo" class="form-label">Correo del Acompañante</label>
+                          <input type="email" class="form-control" name="acompanante_correo">
+                        </div>
+
+                        <div class="mb-3">
+                          <label for="acompanante_telefono" class="form-label">Teléfono del Acompañante</label>
+                          <input type="tel" class="form-control" name="acompanante_telefono">
+                        </div>
+
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-primary">Guardar Visita</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
 
 
 
@@ -414,12 +460,10 @@
               <p>No hay visitas registradas en este proyecto.</p>
               {% endfor %}
             </div>
-
           </div>
         </div>
       </div>
     </div>
-
   </div>
 </div>
 <script>
