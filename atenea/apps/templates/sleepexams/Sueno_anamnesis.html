@@ -801,9 +801,10 @@
                               </div>
 
                               <div id="campos-comida-container" style="display: none;">
+                                <div id="contenedor-sustancias"></div>
                                 <button type="button" id="agregar-sustancia" class="btn btn-primary mb-3">Agregar
                                   sustancia</button>
-                                <div id="contenedor-sustancias"></div>
+
                               </div>
 
                               <div class="form-group mt-3">
@@ -996,6 +997,202 @@
 <script>
   let contador = 0;
   document.addEventListener("DOMContentLoaded", function () {
+    ///////////////////////////////////////////////////////////////
+    // SECCIÓN: ACTIVIDAD FÍSICA
+    ///////////////////////////////////////////////////////////////
+
+    let contadorActividadesFisicas = 0;
+    const actividadFisicaSi = document.getElementById("actividad_fisica_si");
+    const actividadFisicaNo = document.getElementById("actividad_fisica_no");
+    const agregarActividadFisicaBtn = document.getElementById("agregar-actividad-fisica");
+    const contenedorActividadesFisicas = document.getElementById("contenedor-actividades-fisicas");
+
+    function toggleAgregarActividadFisica() {
+      const mostrar = actividadFisicaSi.checked;
+      contenedorActividadesFisicas.style.display = mostrar ? "block" : "none";
+      agregarActividadFisicaBtn.style.display = mostrar ? "block" : "none";
+
+      if (!mostrar) {
+        // Limpiar contenedor pero mantener el botón
+        while (contenedorActividadesFisicas.children.length > 1) {
+          contenedorActividadesFisicas.removeChild(contenedorActividadesFisicas.lastChild);
+        }
+        contadorActividadesFisicas = 0;
+      }
+    }
+
+    function agregarActividadFisica() {
+      contadorActividadesFisicas++;
+
+      const nuevaActividad = document.createElement("div");
+      nuevaActividad.classList.add("border", "p-3", "mb-3");
+      nuevaActividad.innerHTML = `
+    <div class="form-group">
+      <h5>Actividad Física ${contadorActividadesFisicas}</h5>
+      <div class="form-row">
+        <div class="col-md-6">
+          <label>Tipo de actividad</label>
+          <select class="form-control" name="tipo_actividad_fisica[]" required>
+            <option value="" disabled selected>Seleccione una actividad</option>
+            <option value="pesas">Levantamiento de pesas</option>
+            <option value="deportes">Deportes colectivos</option>
+            <option value="natacion">Natación</option>
+            <option value="correr">Correr/trotar</option>
+            <option value="ciclismo">Ciclismo</option>
+            <option value="yoga">Estiramiento/yoga</option>
+            <option value="otro">Otro (Especificar)</option>
+          </select>
+          <input type="text" class="form-control mt-2" name="tipo_actividad_otro_texto[]" 
+                 placeholder="Especificar" style="display: none;">
+        </div>
+        <div class="col-md-3">
+          <label>Intensidad (1-10)</label>
+          <input type="number" class="form-control" name="intensidad_fisica[]" min="1" max="10" required>
+        </div>
+        <div class="col-md-3">
+          <label>Frecuencia</label>
+          <select class="form-control" name="frecuencia_fisica[]" required>
+            <option value="" disabled selected>Seleccione</option>
+            <option value="1">1 vez a la semana</option>
+            <option value="1-3">1-3 veces a la semana</option>
+            <option value="3-5">3-5 veces a la semana</option>
+            <option value="mas_5">Más de 5 veces a la semana</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group mt-3">
+        <label>Observaciones</label>
+        <textarea class="form-control" name="observaciones_actividad_fisica[]" rows="2"></textarea>
+      </div>
+      <button type="button" class="btn btn-danger btn-sm eliminar-actividad-fisica">Eliminar</button>
+    </div>
+  `;
+
+      // Manejar campo "Otro"
+      const selectTipo = nuevaActividad.querySelector('select[name="tipo_actividad_fisica[]"]');
+      const inputOtro = nuevaActividad.querySelector('input[name="tipo_actividad_otro_texto[]"]');
+
+      selectTipo.addEventListener('change', function () {
+        inputOtro.style.display = this.value === 'otro' ? 'block' : 'none';
+        if (this.value !== 'otro') inputOtro.value = '';
+      });
+
+      contenedorActividadesFisicas.appendChild(nuevaActividad);
+    }
+
+    function eliminarActividadFisica(event) {
+      if (event.target.classList.contains("eliminar-actividad-fisica")) {
+        event.target.closest("div.border").remove();
+      }
+    }
+
+    // Event listeners
+    actividadFisicaSi.addEventListener("change", toggleAgregarActividadFisica);
+    actividadFisicaNo.addEventListener("change", toggleAgregarActividadFisica);
+    agregarActividadFisicaBtn.addEventListener("click", agregarActividadFisica);
+    contenedorActividadesFisicas.addEventListener("click", eliminarActividadFisica);
+
+    // Inicializar
+    toggleAgregarActividadFisica();
+
+    ///////////////////////////////////////////////////////////////
+    // SECCIÓN: MEDICAMENTOS
+    ///////////////////////////////////////////////////////////////
+
+    let contadorMedicamentos = 0;
+    const consumeMedSi = document.getElementById("consume_si");
+    const consumeMedNo = document.getElementById("consume_no");
+    const agregarMedicamentoBtn = document.getElementById("agregar-medicamento");
+    const contenedorMedicamentos = document.getElementById("contenedor-medicamentos");
+
+    function toggleAgregarMedicamento() {
+      const mostrar = consumeMedSi.checked;
+      contenedorMedicamentos.style.display = mostrar ? "block" : "none";
+      agregarMedicamentoBtn.style.display = mostrar ? "block" : "none";
+
+      if (!mostrar) {
+        // Limpiar contenedor pero mantener el botón
+        while (contenedorMedicamentos.children.length > 1) {
+          contenedorMedicamentos.removeChild(contenedorMedicamentos.lastChild);
+        }
+        contadorMedicamentos = 0;
+      }
+    }
+
+    function agregarMedicamento() {
+      contadorMedicamentos++;
+
+      const nuevoMedicamento = document.createElement("div");
+      nuevoMedicamento.classList.add("border", "p-3", "mb-3");
+      nuevoMedicamento.innerHTML = `
+    <h5>Medicamento ${contadorMedicamentos}</h5>
+    <div class="form-group">
+      <label>Nombre del medicamento</label>
+      <input type="text" class="form-control" name="nombre_medicamento[]" placeholder="Ej. Paracetamol" required>
+    </div>
+    <div class="form-group">
+      <label>Dosis / Concentración</label>
+      <input type="text" class="form-control" name="dosis_medicamento[]" placeholder="Ej. 500mg" required>
+    </div>
+    <div class="form-group">
+      <label>Presentación</label>
+      <select class="form-control" name="presentacion[]" required>
+        <option value="" disabled selected>Seleccione una opción</option>
+        <option value="Tabletas">Tabletas</option>
+        <option value="Cápsulas">Cápsulas</option>
+        <option value="Solución">Solución</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Número de veces al día</label>
+      <input type="number" class="form-control" name="veces_dia[]" min="1" required>
+    </div>
+    <div class="form-group">
+      <label>Frecuencia</label>
+      <select class="form-control" name="frecuencia_medicamentos[]" required>
+        <option value="" disabled selected>Seleccione una opción</option>
+        <option value="1 vez a la semana">1 vez a la semana</option>
+        <option value="1-3 veces a la semana">1-3 veces a la semana</option>
+        <option value="3-5 veces a la semana">3-5 veces a la semana</option>
+        <option value="Más de 5 veces a la semana">Más de 5 veces a la semana</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Tiempo antes de dormir</label>
+      <select class="form-control" name="tiempo_antes_dormir[]" required>
+        <option value="" disabled selected>Seleccione una opción</option>
+        <option value="Antes de dormir">Antes de dormir</option>
+        <option value="15 minutos antes">15 minutos antes</option>
+        <option value="Entre 15 - 30 minutos antes">Entre 15 - 30 minutos antes</option>
+        <option value="Entre 30 y 60 minutos antes">Entre 30 y 60 minutos antes</option>
+        <option value="Entre 1 a 2 horas antes">Entre 1 a 2 horas antes</option>
+        <option value="Más de 2 horas antes">Más de 2 horas antes</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Observaciones</label>
+      <textarea class="form-control" name="observaciones_medicamento[]" rows="2"></textarea>
+    </div>
+    <button type="button" class="btn btn-danger btn-sm eliminar-medicamento">Eliminar</button>
+  `;
+
+      contenedorMedicamentos.appendChild(nuevoMedicamento);
+    }
+
+    function eliminarMedicamento(event) {
+      if (event.target.classList.contains("eliminar-medicamento")) {
+        event.target.closest("div.border").remove();
+      }
+    }
+
+    // Event listeners
+    consumeMedSi.addEventListener("change", toggleAgregarMedicamento);
+    consumeMedNo.addEventListener("change", toggleAgregarMedicamento);
+    agregarMedicamentoBtn.addEventListener("click", agregarMedicamento);
+    contenedorMedicamentos.addEventListener("click", eliminarMedicamento);
+
+    // Inicializar
+    toggleAgregarMedicamento();
 
     ///////////////////////////////////////////////////////////////
 
@@ -1082,130 +1279,27 @@
     toggleCamposComida();
 
 
-
-    ///////////////////////////////////////////////////////////////////
-
-    let contadorMedicamentos = 0; // Contador para identificar cada medicamento
-
-    // Referencias a los elementos del formulario
-    const consumeSi1 = document.getElementById("consume_si");
-    const consumeNo2 = document.getElementById("consume_no");
-    const agregarMedicamentoBtn = document.getElementById("agregar-medicamento");
-    const contenedorMedicamentos = document.getElementById("contenedor-medicamentos");
-
-    // Función para mostrar u ocultar el botón "Agregar Medicamento"
-    function toggleAgregarMedicamento() {
-      if (consumeSi1.checked) {
-        agregarMedicamentoBtn.style.display = "block"; // Mostrar el botón
-      } else {
-        agregarMedicamentoBtn.style.display = "none"; // Ocultar el botón
-        contenedorMedicamentos.innerHTML = ""; // Limpiar el contenedor de medicamentos
-        contadorMedicamentos = 0; // Reiniciar el contador
-      }
-    }
-
-    // Función para agregar un nuevo medicamento
-    function agregarMedicamento() {
-      contadorMedicamentos++; // Incrementar el contador
-
-      // Crear un nuevo div para el medicamento
-      const nuevoMedicamento = document.createElement("div");
-      nuevoMedicamento.classList.add("border", "p-3", "mb-3");
-      nuevoMedicamento.innerHTML = `
-    <h5>Medicamento ${contadorMedicamentos}</h5>
-    <div class="form-group">
-      <label>Nombre del medicamento</label>
-      <input type="text" class="form-control" name="nombre_medicamento[]" placeholder="Ej. Paracetamol" required>
-    </div>
-    <div class="form-group">
-      <label>Dosis / Concentración</label>
-      <input type="text" class="form-control" name="dosis_medicamento[]" placeholder="Ej. 500mg" required>
-    </div>
-    <div class="form-group">
-      <label>Presentación</label>
-      <select class="form-control" name="presentacion[]">
-        <option value="">Seleccione una opción</option>
-        <option value="Tabletas">Tabletas</option>
-        <option value="Cápsulas">Cápsulas</option>
-        <option value="Solución">Solución</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Número de veces al día</label>
-      <input type="number" class="form-control" name="veces_dia[]" min="1" required>
-    </div>
-    <div class="form-group">
-      <label>Frecuencia</label>
-      <select class="form-control" name="frecuencia_medicamentos[]">
-        <option value="">Seleccione una opción</option>
-        <option value="1 vez a la semana">1 vez a la semana</option>
-        <option value="1-3 veces a la semana">1-3 veces a la semana</option>
-        <option value="3-5 veces a la semana">3-5 veces a la semana</option>
-        <option value="Más de 5 veces a la semana">Más de 5 veces a la semana</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Tiempo antes de dormir</label>
-      <select class="form-control" name="tiempo_antes_dormir[]">
-        <option value="">Seleccione una opción</option>
-        <option value="Antes de dormir">Antes de dormir</option>
-        <option value="15 minutos antes">15 minutos antes</option>
-        <option value="Entre 15 - 30 minutos antes">Entre 15 - 30 minutos antes</option>
-        <option value="Entre 30 y 60 minutos antes">Entre 30 y 60 minutos antes</option>
-        <option value="Entre 1 a 2 horas antes">Entre 1 a 2 horas antes</option>
-        <option value="Más de 2 horas antes">Más de 2 horas antes</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Observaciones</label>
-      <textarea class="form-control" name="observaciones_medicamento[]" rows="2"></textarea>
-    </div>
-    <button type="button" class="btn btn-danger btn-sm eliminar-medicamento">Eliminar</button>
-  `;
-
-      // Agregar el nuevo medicamento al contenedor
-      contenedorMedicamentos.appendChild(nuevoMedicamento);
-    }
-
-    // Función para eliminar un medicamento
-    function eliminarMedicamento(event) {
-      if (event.target.classList.contains("eliminar-medicamento")) {
-        event.target.closest("div.border").remove(); // Elimina el div que contiene el medicamento
-      }
-    }
-
-    // Escuchar cambios en los radio buttons
-    consumeSi1.addEventListener("change", toggleAgregarMedicamento);
-    consumeNo2.addEventListener("change", toggleAgregarMedicamento);
-
-    // Escuchar clic en el botón "Agregar Medicamento"
-    agregarMedicamentoBtn.addEventListener("click", agregarMedicamento);
-
-    // Escuchar clic en el contenedor de medicamentos para eliminar
-    contenedorMedicamentos.addEventListener("click", eliminarMedicamento);
-
-    // Inicializar el estado al cargar la página
-    toggleAgregarMedicamento();
-
-
-
-
-    /////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////
     let contadorPantallas = 0; // Contador para identificar cada pantalla
 
     // Referencias a los elementos del formulario
     const pantallasSi = document.getElementById("pantallas_si");
     const pantallasNo = document.getElementById("pantallas_no");
     const agregarPantallaBtn = document.getElementById("agregar-pantalla");
-
+    const contenedorPantallas = document.getElementById("contenedor-pantallas");
 
     // Función para mostrar u ocultar el botón "Agregar Pantalla"
     function toggleAgregarPantalla() {
       if (pantallasSi.checked) {
+        contenedorPantallas.style.display = "block"; // Mostrar el contenedor
         agregarPantallaBtn.style.display = "block"; // Mostrar el botón
       } else {
+        contenedorPantallas.style.display = "none"; // Ocultar el contenedor
         agregarPantallaBtn.style.display = "none"; // Ocultar el botón
-        contenedorPantallas.innerHTML = ""; // Limpiar el contenedor de pantallas
+        // Limpiar el contenedor de pantallas
+        while (contenedorPantallas.children.length > 1) {
+          contenedorPantallas.removeChild(contenedorPantallas.lastChild);
+        }
         contadorPantallas = 0; // Reiniciar el contador
       }
     }
@@ -1218,44 +1312,44 @@
       const nuevaPantalla = document.createElement("div");
       nuevaPantalla.classList.add("border", "p-3", "mb-3");
       nuevaPantalla.innerHTML = `
-  <h5>Pantalla ${contadorPantallas}</h5>
-  <div class="form-group">
-    <label>Tipo de pantalla</label>
-    <select class="form-control tipo-pantalla" name="tipo_pantalla[]">
-      <option value="">Selecciona una opción</option>
-      <option value="celular">Celular</option>
-      <option value="televisor">Televisor</option>
-      <option value="computador">Computador</option>
-      <option value="videojuegos">Videojuegos</option>
-      <option value="tablet">Ipad / Tablet</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label>Frecuencia a la semana</label>
-    <select class="form-control frecuencia" name="pantalla_frecuencia[]">
-      <option value="">Selecciona una opción</option>
-      <option value="1 vez a la semana">1 vez a la semana</option>
-      <option value="1-3 veces a la semana">1-3 veces a la semana</option>
-      <option value="3-5 veces a la semana">3-5 veces a la semana</option>
-      <option value="Más de 5 veces a la semana">Más de 5 veces a la semana</option>
-    </select>
-  </div>
-  <div class="form-group">
-    <label>¿Cuánto tiempo antes de dormir?</label>
-    <select class="form-control tiempo-dormir" name="pantalla_tiempo_dormir[]">
-      <option value="">Selecciona una opción</option>
-      <option value="Antes de dormir">Antes de dormir</option>
-      <option value="< 15 minutos antes">&lt; 15 minutos antes</option>
-      <option value="Entre 15 - 30 minutos antes">Entre 15 - 30 minutos antes</option>
-      <option value="Entre 30 y 60 minutos antes">Entre 30 y 60 minutos antes</option>
-      <option value="Entre 1 a 2 horas antes">Entre 1 a 2 horas antes</option>
-      <option value="Más de 2 horas antes">Más de 2 horas antes</option>
-    </select>
-  </div>
-  <button type="button" class="btn btn-danger btn-sm eliminar-pantalla">Eliminar</button>
-`;
+    <h5>Pantalla ${contadorPantallas}</h5>
+    <div class="form-group">
+      <label>Tipo de pantalla</label>
+      <select class="form-control tipo-pantalla" name="tipo_pantalla[]" required>
+        <option value="">Selecciona una opción</option>
+        <option value="celular">Celular</option>
+        <option value="televisor">Televisor</option>
+        <option value="computador">Computador</option>
+        <option value="videojuegos">Videojuegos</option>
+        <option value="tablet">Ipad / Tablet</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Frecuencia a la semana</label>
+      <select class="form-control frecuencia" name="pantalla_frecuencia[]" required>
+        <option value="">Selecciona una opción</option>
+        <option value="1 vez a la semana">1 vez a la semana</option>
+        <option value="1-3 veces a la semana">1-3 veces a la semana</option>
+        <option value="3-5 veces a la semana">3-5 veces a la semana</option>
+        <option value="Más de 5 veces a la semana">Más de 5 veces a la semana</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>¿Cuánto tiempo antes de dormir?</label>
+      <select class="form-control tiempo-dormir" name="pantalla_tiempo_dormir[]" required>
+        <option value="">Selecciona una opción</option>
+        <option value="Antes de dormir">Antes de dormir</option>
+        <option value="< 15 minutos antes">&lt; 15 minutos antes</option>
+        <option value="Entre 15 - 30 minutos antes">Entre 15 - 30 minutos antes</option>
+        <option value="Entre 30 y 60 minutos antes">Entre 30 y 60 minutos antes</option>
+        <option value="Entre 1 a 2 horas antes">Entre 1 a 2 horas antes</option>
+        <option value="Más de 2 horas antes">Más de 2 horas antes</option>
+      </select>
+    </div>
+    <button type="button" class="btn btn-danger btn-sm eliminar-pantalla">Eliminar</button>
+  `;
 
-      // Agregar la nueva pantalla al contenedor
+      // Agregar la nueva pantalla al contenedor (después del botón)
       contenedorPantallas.appendChild(nuevaPantalla);
     }
 
@@ -1278,186 +1372,6 @@
 
     // Inicializar el estado al cargar la página
     toggleAgregarPantalla();
-
-
-    ////////////////////////////////////////////////////////////////////
-    let contadorActividades = 0; // Contador para identificar cada actividad
-
-    // Referencias a los elementos del formulario
-    const camaActividadesSi = document.getElementById("cama_actividades_si");
-    const camaActividadesNo = document.getElementById("cama_actividades_no");
-    const agregarActividadBtn = document.getElementById("agregar-actividad");
-    const contenedorActividades = document.getElementById("contenedor-actividades");
-
-    // Función para mostrar u ocultar el botón "Agregar Actividad"
-    function toggleAgregarActividad() {
-      if (camaActividadesSi.checked) {
-        agregarActividadBtn.style.display = "block"; // Mostrar el botón
-      } else {
-        agregarActividadBtn.style.display = "none"; // Ocultar el botón
-        contenedorActividades.innerHTML = ""; // Limpiar el contenedor de actividades
-        contadorActividades = 0; // Reiniciar el contador
-      }
-    }
-
-    // Función para agregar una nueva actividad
-    function agregarActividad() {
-      contadorActividades++; // Incrementar el contador
-
-      // Crear un nuevo div para la actividad
-      const nuevaActividad = document.createElement("div");
-      nuevaActividad.classList.add("border", "p-3", "mb-3");
-      nuevaActividad.innerHTML = `
-  <h5>Actividad ${contadorActividades}</h5>
-<div class="form-group">
-  <label for="tipo_actividad_${contadorActividades}">Tipo de actividad</label>
-  <select class="form-control" id="tipo_actividad_${contadorActividades}" name="tipo_actividad[]" multiple>
-    <option value="comer">Comer</option>
-    <option value="videojuegos">Jugar videojuegos</option>
-    <option value="peliculas">Ver películas/series</option>
-    <option value="internet">Navegar en internet</option>
-    <option value="redes">Revisar redes sociales</option>
-    <option value="leer">Leer</option>
-    <option value="estudiar">Estudiar</option>
-    <option value="yoga">Estiramientos/Yoga</option>
-    <option value="teletrabajo">Teletrabajo</option>
-    <option value="otros">Otros</option>
-  </select>
-</div>
-
-<div class="form-group">
-  <label for="frecuencia_${contadorActividades}">Frecuencia a la semana</label>
-  <select class="form-control" id="frecuencia_${contadorActividades}" name="frecuencia_actividad[]">
-    <option value="1 vez">1 vez a la semana</option>
-    <option value="1-3 veces">1-3 veces a la semana</option>
-    <option value="3-5 veces">3-5 veces a la semana</option>
-    <option value="más de 5">Más de 5 veces a la semana</option>
-  </select>
-</div>
-
-<div class="form-group">
-  <label for="observaciones_${contadorActividades}">Observaciones</label>
-  <textarea class="form-control" id="observaciones_${contadorActividades}" name="observaciones_actividades[]" rows="2"></textarea>
-</div>
-
-<button type="button" class="btn btn-danger btn-sm eliminar-actividad">Eliminar</button>`;
-
-      // Agregar la nueva actividad al contenedor
-      contenedorActividades.appendChild(nuevaActividad);
-    }
-
-    // Función para eliminar una actividad
-    function eliminarActividad(event) {
-      if (event.target.classList.contains("eliminar-actividad")) {
-        event.target.closest("div.border").remove(); // Elimina el div que contiene la actividad
-      }
-    }
-
-    // Escuchar cambios en los radio buttons
-    camaActividadesSi.addEventListener("change", toggleAgregarActividad);
-    camaActividadesNo.addEventListener("change", toggleAgregarActividad);
-
-    // Escuchar clic en el botón "Agregar Actividad"
-    agregarActividadBtn.addEventListener("click", agregarActividad);
-
-    // Escuchar clic en el contenedor de actividades para eliminar
-    contenedorActividades.addEventListener("click", eliminarActividad);
-
-    // Inicializar el estado al cargar la página
-    toggleAgregarActividad();
-
-    //////////////////////////////////////////////
-
-    let contadorActividadesFisicas = 0; // Contador para identificar cada actividad física
-
-    // Referencias a los elementos del formulario
-    const actividadFisicaSi = document.getElementById("actividad_fisica_si");
-    const actividadFisicaNo = document.getElementById("actividad_fisica_no");
-    const agregarActividadFisicaBtn = document.getElementById("agregar-actividad-fisica");
-    const contenedorActividadesFisicas = document.getElementById("contenedor-actividades-fisicas");
-
-    // Función para mostrar u ocultar el botón "Agregar Actividad Física"
-    function toggleAgregarActividadFisica() {
-      if (actividadFisicaSi.checked) {
-        agregarActividadFisicaBtn.style.display = "block"; // Mostrar el botón
-      } else {
-        agregarActividadFisicaBtn.style.display = "none"; // Ocultar el botón
-        contenedorActividadesFisicas.innerHTML = ""; // Limpiar el contenedor de actividades físicas
-        contadorActividadesFisicas = 0; // Reiniciar el contador
-      }
-    }
-
-    // Función para agregar una nueva actividad física
-    function agregarActividadFisica() {
-      contadorActividadesFisicas++; // Incrementar el contador
-
-      // Crear un nuevo div para la actividad física
-      const nuevaActividadFisica = document.createElement("div");
-      nuevaActividadFisica.classList.add("border", "p-3", "mb-3");
-      nuevaActividadFisica.innerHTML = `
-      <div class="form-group">
-  <h5>Actividad Física ${contadorActividadesFisicas}</h5>
-  <div class="form-row">
-    <div class="col-md-6">
-      <label>Tipo de actividad</label>
-      <select class="form-control" name="tipo_actividad_fisica[]">
-        <option value="" disabled selected>Seleccione una actividad</option>
-        <option value="pesas">Levantamiento de pesas</option>
-        <option value="deportes">Deportes colectivos</option>
-        <option value="natacion">Natación</option>
-        <option value="correr">Correr/trotar</option>
-        <option value="ciclismo">Ciclismo</option>
-        <option value="yoga">Estiramiento/yoga</option>
-        <option value="otro">Otro (Especificar)</option>
-      </select>
-      <input type="text" class="form-control mt-2 d-none" name="tipo_actividad_otro_texto[]" placeholder="Especificar">
-    </div>
-    <div class="col-md-3">
-      <label>Intensidad (1-10)</label>
-      <input type="number" class="form-control" name="intensidad_fisica[]" min="1" max="10" required>
-    </div>
-    <div class="col-md-3">
-      <label>Frecuencia</label>
-      <select class="form-control" name="frecuencia_fisica[]">
-        <option value="" disabled selected>Seleccione</option>
-        <option value="1">1 vez a la semana</option>
-        <option value="1-3">1-3 veces a la semana</option>
-        <option value="3-5">3-5 veces a la semana</option>
-        <option value="mas_5">Más de 5 veces a la semana</option>
-      </select>
-    </div>
-  </div>
-  <div class="form-group mt-3">
-    <label>Observaciones</label>
-    <textarea class="form-control" name="observaciones_actividad_fisica[]" rows="2"></textarea>
-  </div>
-  <button type="button" class="btn btn-danger btn-sm eliminar-actividad-fisica">Eliminar</button>
-</div>
-  `;
-
-      // Agregar la nueva actividad física al contenedor
-      contenedorActividadesFisicas.appendChild(nuevaActividadFisica);
-    }
-
-    // Función para eliminar una actividad física
-    function eliminarActividadFisica(event) {
-      if (event.target.classList.contains("eliminar-actividad-fisica")) {
-        event.target.closest("div.border").remove(); // Elimina el div que contiene la actividad física
-      }
-    }
-
-    // Escuchar cambios en los radio buttons
-    actividadFisicaSi.addEventListener("change", toggleAgregarActividadFisica);
-    actividadFisicaNo.addEventListener("change", toggleAgregarActividadFisica);
-
-    // Escuchar clic en el botón "Agregar Actividad Física"
-    agregarActividadFisicaBtn.addEventListener("click", agregarActividadFisica);
-
-    // Escuchar clic en el contenedor de actividades físicas para eliminar
-    contenedorActividadesFisicas.addEventListener("click", eliminarActividadFisica);
-
-    // Inicializar el estado al cargar la página
-    toggleAgregarActividadFisica();
 
     ///////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////?/
@@ -1807,6 +1721,7 @@
     if (this.checked) document.getElementById('describa_rutina').value = '';
   });
   document.addEventListener('DOMContentLoaded', function () {
+
     // Mostrar/ocultar sección de siestas
     document.querySelectorAll('input[name="realiza_siestas"]').forEach(radio => {
       radio.addEventListener('change', function () {
@@ -1831,30 +1746,98 @@
       });
     });
 
-    // Mostrar/ocultar sección de actividades en cama
-    document.querySelectorAll('input[name="cama_actividades"]').forEach(radio => {
-      radio.addEventListener('change', function () {
-        document.getElementById('contenedor-actividades').style.display =
-          this.value === 'Si' ? 'block' : 'none';
-      });
-    });
 
-    // Mostrar/ocultar sección de actividad física
-    document.querySelectorAll('input[name="actividad_fisica"]').forEach(radio => {
-      radio.addEventListener('change', function () {
-        document.getElementById('contenedor-actividades-fisicas').style.display =
-          this.value === 'Si' ? 'block' : 'none';
-      });
-    });
-
-    // Mostrar/ocultar sección de medicamentos
-    document.querySelectorAll('input[name="consume_medicamento"]').forEach(radio => {
-      radio.addEventListener('change', function () {
-        document.getElementById('contenedor-medicamentos').style.display =
-          this.value === 'Si' ? 'block' : 'none';
-      });
+    radio.addEventListener('change', function () {
+      document.getElementById('contenedor-medicamentos').style.display =
+        this.value === 'Si' ? 'block' : 'none';
     });
   });
+  document.addEventListener("DOMContentLoaded", function () {
+    // Contador para actividades
+    let contadorActividades = 0;
+
+    // Referencias a los elementos
+    const camaActividadesSi = document.getElementById("cama_actividades_si");
+    const camaActividadesNo = document.getElementById("cama_actividades_no");
+    const agregarActividadBtn = document.getElementById("agregar-actividad");
+    const contenedorActividades = document.getElementById("contenedor-actividades");
+
+    // Función para mostrar/ocultar sección
+    function toggleAgregarActividad() {
+      if (camaActividadesSi.checked) {
+        contenedorActividades.style.display = "block";
+        agregarActividadBtn.style.display = "block";
+      } else {
+        contenedorActividades.style.display = "none";
+        agregarActividadBtn.style.display = "none";
+        // Limpiar contenedor pero mantener el botón
+        while (contenedorActividades.children.length > 1) {
+          contenedorActividades.removeChild(contenedorActividades.lastChild);
+        }
+        contadorActividades = 0;
+      }
+    }
+
+    // Función para agregar actividad
+    function agregarActividad() {
+      contadorActividades++;
+
+      const nuevaActividad = document.createElement("div");
+      nuevaActividad.classList.add("border", "p-3", "mb-3");
+      nuevaActividad.innerHTML = `
+      <h5>Actividad ${contadorActividades}</h5>
+      <div class="form-group">
+        <label>Tipo de actividad</label>
+        <select class="form-control" name="tipo_actividad[]" multiple required>
+          <option value="comer">Comer</option>
+          <option value="videojuegos">Jugar videojuegos</option>
+          <option value="peliculas">Ver películas/series</option>
+          <option value="internet">Navegar en internet</option>
+          <option value="redes">Revisar redes sociales</option>
+          <option value="leer">Leer</option>
+          <option value="estudiar">Estudiar</option>
+          <option value="yoga">Estiramientos/Yoga</option>
+          <option value="teletrabajo">Teletrabajo</option>
+          <option value="otros">Otros</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Frecuencia a la semana</label>
+        <select class="form-control" name="frecuencia_actividad[]" required>
+          <option value="1 vez">1 vez a la semana</option>
+          <option value="1-3 veces">1-3 veces a la semana</option>
+          <option value="3-5 veces">3-5 veces a la semana</option>
+          <option value="más de 5">Más de 5 veces a la semana</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Observaciones</label>
+        <textarea class="form-control" name="observaciones_actividades[]" rows="2"></textarea>
+      </div>
+      <button type="button" class="btn btn-danger btn-sm eliminar-actividad">Eliminar</button>
+    `;
+
+      contenedorActividades.appendChild(nuevaActividad);
+    }
+
+    // Función para eliminar actividad
+    function eliminarActividad(event) {
+      if (event.target.classList.contains("eliminar-actividad")) {
+        event.target.closest("div.border").remove();
+      }
+    }
+
+    // Event listeners
+    camaActividadesSi.addEventListener("change", toggleAgregarActividad);
+    camaActividadesNo.addEventListener("change", toggleAgregarActividad);
+    agregarActividadBtn.addEventListener("click", agregarActividad);
+    contenedorActividades.addEventListener("click", eliminarActividad);
+
+    // Inicializar estado
+    toggleAgregarActividad();
+  });
+
+
 </script>
 {% endblock javascripts %}
 {% endblock content %}
