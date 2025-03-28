@@ -1056,7 +1056,16 @@ def guardar_examen_anamnesis(request):
         datos_formulario_anamnesis = {
             "Motivo de consulta": request.POST.get('motivo_consulta'),
             "Enfermedad actual": request.POST.get('enfermedad_actual'),
-            "Quejas de sueño": [],
+            "QuejaSueno": {
+                "presenta_queja": request.POST.get("queja_sueno") == "si",
+                "tipos_queja": request.POST.getlist("tipo_queja[]"),
+                "detalles_quejas": {},
+                "causa_conocida": {
+                    "presenta_causa": request.POST.get("causa_conocida") == "Si",
+                    "especificacion": request.POST.get("especifique_causas", "") if request.POST.get("causa_conocida") == "Si" else ""
+                },
+                "observaciones": request.POST.get("observaciones_queja", "") if request.POST.get("queja_sueno") == "si" else ""
+            },
             "Horario de sueño": {
                 "rutina_dormir": request.POST.get('rutina_dormir'),
                 "describa_rutina": request.POST.get('describa_rutina'),
@@ -1136,17 +1145,15 @@ def guardar_examen_anamnesis(request):
             }
         }
 
-         # Obtener las quejas de sueño dinámicas
-        quejas = request.POST.getlist('tipo_queja[]')  # Lista de quejas seleccionadas
-        for i in range(len(quejas)):  # Usar el índice para recuperar los campos dinámicos
-            datos_queja = {
-                "tipo_queja": quejas[i],
-                "inicio": request.POST.get(f'inicio_{i}'),
-                "evolucion": request.POST.get(f'evolucion_{i}'),
-                "frecuencia_semana": request.POST.get(f'frecuencia_{i}'),
-                "gravedad": request.POST.get(f'gravedad_{i}'),
-            }
-            datos_formulario_anamnesis["Quejas de sueño"].append(datos_queja)
+        if request.POST.get("queja_sueno") == "si":
+            for queja in request.POST.getlist("tipo_queja[]"):
+                queja_id = queja.replace(" ", "_").lower()
+                datos_formulario_anamnesis["QuejaSueno"]["detalles_quejas"][queja] = {
+                    "inicio": request.POST.get(f"{queja_id}_inicio", ""),
+                    "evolucion": request.POST.get(f"{queja_id}_evolucion", ""),
+                    "frecuencia": request.POST.get(f"{queja_id}_frecuencia", ""),
+                    "gravedad": request.POST.get(f"{queja_id}_gravedad", "")
+                }
             
         # Obtener las sustancias dinámicas
         # Obtener las sustancias dinámicas

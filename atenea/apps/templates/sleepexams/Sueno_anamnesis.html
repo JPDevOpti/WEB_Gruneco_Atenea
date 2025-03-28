@@ -1,4 +1,16 @@
 {% extends 'layouts/base.html' %} {% block content %}
+<style>
+  .custom-control-label {
+    margin-left: 2rem;
+    /* Ajusta este valor según sea necesario */
+  }
+
+  .custom-control.custom-switch {
+    display: flex;
+    align-items: center;
+  }
+</style>
+
 <div class="header bg-primary pb-6">
   <div class="container-fluid">
     <div class="header-body">
@@ -23,812 +35,978 @@
     </div>
   </div>
 </div>
-<form method="post" action="{% url 'guardar_examen_anamnesis' %}">
-  {% csrf_token %}
-  <div class="container-fluid mt--6">
-    <div class="row">
-      <div class="col">
-        <div class="card">
+{% csrf_token %}
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
+        <form method="post" action="{% url 'guardar_examen_anamnesis' %}">
+
+          <!-- Card header -->
           <div class="card-header border-0">
             <div class="row align-items-center">
               <div class="col">
-                <h3 class="mb-0">Anamnesis de Sueño</h3>
-                <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
-                <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
-                <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
+                <h3 class="mb-0">Examen sueno anamnesis</h3>
+              </div>
+              <div class="col text-right">
+                <span class="text-muted">Fecha: {% now "d/m/Y" %}</span>
               </div>
             </div>
           </div>
+          <!-- Card body -->
           <div class="card-body">
-            <!-- Sección: Motivo de consulta y Enfermedad actual -->
-            <div class="form-group">
-              <label for="motivo_consulta">Motivo de consulta</label>
-              <textarea class="form-control" id="motivo_consulta" name="motivo_consulta" rows="3"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="enfermedad_actual">Enfermedad actual</label>
-              <textarea class="form-control" id="enfermedad_actual" name="enfermedad_actual" rows="3"></textarea>
-            </div>
 
-            <hr class="my-4" />
-            <!-- Sección: Queja de sueño -->
-            <h4 class="mt-4 mb-3">Queja de sueño</h4>
-            <div class="form-group">
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="queja_sueno" name="queja_sueno" value="si" />
-                <label class="custom-control-label" for="queja_sueno">Queja de sueño</label>
-              </div>
-            </div>
+            {% csrf_token %}
+            <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+            <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+            <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
 
-            <!-- Quejas de sueño -->
-            <h4 class="mt-4 mb-3">Queja de sueño</h4>
-            <div class="form-group">
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input queja-checkbox" id="dificultad_conciliacion"
-                  name="tipo_queja[]" value="Dificultad de conciliación" />
-                <label class="custom-control-label" for="dificultad_conciliacion">Dificultad de conciliación</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input queja-checkbox" id="ronquido" name="tipo_queja[]"
-                  value="Ronquido" />
-                <label class="custom-control-label" for="ronquido">Ronquido</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input queja-checkbox" id="apnea" name="tipo_queja[]"
-                  value="Apnea" />
-                <label class="custom-control-label" for="apnea">Apnea</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input queja-checkbox" id="hipersomnolencia"
-                  name="tipo_queja[]" value="Hipersomnolencia" />
-                <label class="custom-control-label" for="hipersomnolencia">Hipersomnolencia</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input queja-checkbox" id="somnolencia_diurna"
-                  name="tipo_queja[]" value="Somnolencia diurna" />
-                <label class="custom-control-label" for="somnolencia_diurna">Somnolencia diurna</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input queja-checkbox" id="dificultad_mantenimiento"
-                  name="tipo_queja[]" value="Dificultad mantenimiento" />
-                <label class="custom-control-label" for="dificultad_mantenimiento">Dificultad mantenimiento</label>
-              </div>
-            </div>
-
-            <!-- Contenedor donde se agregarán los campos dinámicamente -->
-            <div id="quejas-container"></div>
-
-            <div class="form-group">
-              <label>Existe alguna causa conocida o a la que le atribuya el problema</label>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="causa_conocida" name="causa_conocida"
-                  value="si" />
-                <label class="custom-control-label" for="causa_conocida">Sí</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="no_causa_conocida" name="causa_conocida"
-                  value="no" />
-                <label class="custom-control-label" for="no_causa_conocida">No</label>
-              </div>
-            </div>
-
-            <div class="form-group" id="especifique-causas">
-              <label for="especifique_causas">Especifique cuál o cuáles causas</label>
-              <textarea class="form-control" id="especifique_causas" name="especifique_causas" rows="2"></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="observaciones_queja">Observaciones</label>
-              <textarea class="form-control" id="observaciones_queja" name="observaciones_queja" rows="2"></textarea>
-            </div>
-
-            <hr class="my-4" />
-            <!-- Sección: Horario de sueño -->
-            <h4 class="mt-4 mb-3">Horario de sueño</h4>
-            <div class="form-group">
-              <label>¿Tiene alguna rutina antes de dormir?</label>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="rutina_si" name="rutina_dormir" value="si" />
-                <label class="custom-control-label" for="rutina_si">Sí</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="rutina_no" name="rutina_dormir" value="no" />
-                <label class="custom-control-label" for="rutina_no">No</label>
-              </div>
-            </div>
-
-            <div class="form-group" id="describa-rutina">
-              <label for="describa_rutina">Describa</label>
-              <textarea class="form-control" id="describa_rutina" name="describa_rutina" rows="2"></textarea>
-            </div>
-
-            <hr class="my-4" />
-            <!-- Horario sueño - Jornada Laboral -->
-            <h5 class="mt-3 mb-2">
-              Horario de sueño en jornada laboral / Académica - Lunes a Viernes
-            </h5>
-            <div class="form-group">
-              <label>Horario Jornada Académica / Laboral Lunes a Viernes</label>
-              <div class="ml-3">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="jornada_diurna" name="jornada_laboral[]"
-                    value="Diurna" />
-                  <label class="custom-control-label" for="jornada_diurna">Diurna</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="jornada_nocturna" name="jornada_laboral[]"
-                    value="Nocturna" />
-                  <label class="custom-control-label" for="jornada_nocturna">Nocturna</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="jornada_mixta" name="jornada_laboral[]"
-                    value="Mixta" />
-                  <label class="custom-control-label" for="jornada_mixta">Mixta</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_acostarse_laboral">Hora aproximada de acostarse</label>
-                  <input type="text" class="form-control" id="hora_acostarse_laboral" name="hora_acostarse_laboral"
-                    placeholder="hh:mm" />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="tiempo_dormirse_laboral">Cuanto tiempo le toma quedarse dormido(a) (en minutos)</label>
-                  <input type="number" class="form-control" id="tiempo_dormirse_laboral"
-                    name="tiempo_dormirse_laboral" />
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_intencion_dormir_laboral">Hora aproximada de intención de dormir</label>
-                  <input type="text" class="form-control" id="hora_intencion_dormir_laboral"
-                    name="hora_intencion_dormir_laboral" placeholder="hh:mm" />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_despertar_laboral">Hora aproximada de despertarse</label>
-                  <input type="text" class="form-control" id="hora_despertar_laboral" name="hora_despertar_laboral"
-                    placeholder="hh:mm" />
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="tiempo_salir_cama_laboral">Cuánto tiempo le toma para salir de la cama (en minutos)</label>
-              <input type="number" class="form-control" id="tiempo_salir_cama_laboral"
-                name="tiempo_salir_cama_laboral" />
-            </div>
-
-            <div class="row">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>El sueño es reparador</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="sueno_reparador_si_laboral"
-                      name="sueno_reparador_laboral" value="Si" />
-                    <label class="custom-control-label" for="sueno_reparador_si_laboral">Sí</label>
+            <!-- Navegación de secciones -->
+            <ul class="nav nav-pills nav-fill mb-4" id="examTabs" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" id="anamnesis-tab" data-toggle="tab" href="#anamnesis"
+                  role="tab">Anamnesis</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="evaluacion_queja-tab" data-toggle="tab" href="#evaluacion_queja"
+                  role="tab">Queja de sueño</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="horario-tab" data-toggle="tab" href="#horario" role="tab">Horario de sueño</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="Higiene-tab" data-toggle="tab" href="#Higiene" role="tab">Higiene de sueño</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="pensamiento-tab" data-toggle="tab" href="#pensamiento" role="tab">Síntomas
+                  asociados</a>
+              </li>
+            </ul>
+            <div class="tab-content" id="examTabContent">
+              <!-- Anamnesis -->
+              <div class="tab-pane fade show active" id="anamnesis" role="tabpanel">
+                <div class="card bg-gradient-default shadow-sm mb-4">
+                  <div class="card-header bg-transparent">
+                    <h4 class="text-white mb-0">Anamnesis</h4>
                   </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="sueno_reparador_no_laboral"
-                      name="sueno_reparador_laboral" value="No" />
-                    <label class="custom-control-label" for="sueno_reparador_no_laboral">No</label>
+                  <div class="card-body bg-white">
+                    <!-- Sección: Motivo de consulta y Enfermedad actual -->
+                    <div class="form-group">
+                      <label for="motivo_consulta">Motivo de consulta</label>
+                      <textarea class="form-control" id="motivo_consulta" name="motivo_consulta" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label for="enfermedad_actual">Enfermedad actual</label>
+                      <textarea class="form-control" id="enfermedad_actual" name="enfermedad_actual"
+                        rows="3"></textarea>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Compañero(a) de cama</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="companero_cama_si_laboral"
-                      name="companero_cama_laboral" value="Si" />
-                    <label class="custom-control-label" for="companero_cama_si_laboral">Sí</label>
+              <!-- Queja de sueño -->
+              <div class="tab-pane fade" id="evaluacion_queja" role="tabpanel">
+                <div class="card bg-gradient-default shadow-sm mb-4">
+                  <div class="card-header bg-transparent">
+                    <h4 class="text-white mb-0">Queja de sueño</h4>
                   </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="companero_cama_no_laboral"
-                      name="companero_cama_laboral" value="No" />
-                    <label class="custom-control-label" for="companero_cama_no_laboral">No</label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>¿Necesita despertador?</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="despertador_si_laboral"
-                      name="despertador_laboral" value="Si" />
-                    <label class="custom-control-label" for="despertador_si_laboral">Sí</label>
-                  </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="despertador_no_laboral"
-                      name="despertador_laboral" value="No" />
-                    <label class="custom-control-label" for="despertador_no_laboral">No</label>
-                  </div>
-                </div>
-              </div>
-            </div>
+                  <div class="card-body bg-white">
+                    <div class="row">
+                      <!-- Sección: Queja de sueño -->
+                      <div class="form-group">
+                        <label class="form-label" for="queja_sueno">Queja de sueño</label>
+                        <div class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" id="queja_sueno-si" name="queja_sueno"
+                            value="si">
+                          <label class="custom-control-label" for="queja_sueno-si">Sí</label>
+                        </div>
+                        <div class="custom-control custom-radio">
+                          <input type="radio" class="custom-control-input" id="queja_sueno-no" name="queja_sueno"
+                            value="no" checked>
+                          <label class="custom-control-label" for="queja_sueno-no">No</label>
+                        </div>
+                      </div>
 
-            <hr class="my-4" />
-            <!-- Horario sueño - Fines de semana -->
-            <h5 class="mt-4 mb-2">Horario de sueño en fines de semana</h5>
-            <div class="form-group">
-              <label>Horario Jornada Académica / Laboral Fines de semana</label>
-              <div class="ml-3">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="jornada_diurna_fds" name="jornada_fds[]"
-                    value="Diurna" />
-                  <label class="custom-control-label" for="jornada_diurna_fds">Diurna</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="jornada_nocturna_fds" name="jornada_fds[]"
-                    value="Nocturna" />
-                  <label class="custom-control-label" for="jornada_nocturna_fds">Nocturna</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="jornada_mixta_fds" name="jornada_fds[]"
-                    value="Mixta" />
-                  <label class="custom-control-label" for="jornada_mixta_fds">Mixta</label>
-                </div>
-              </div>
-            </div>
+                      <div id="campos-queja-container" style="display: none;">
+                        <div class="form-group">
+                          <label class="form-control-label">Tipo de queja de sueño</label>
+                          <div class="d-flex flex-wrap">
+                            <!-- Lista de checkboxes para tipos de quejas -->
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Dificultad de conciliación" id="dificultad_conciliacion">
+                              <label class="form-check-label" for="dificultad_conciliacion">Dificultad de
+                                conciliación</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Dificultad de mantenimiento" id="dificultad_mantenimiento">
+                              <label class="form-check-label" for="dificultad_mantenimiento">Dificultad de
+                                mantenimiento</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Trastornos de conducta del sueño" id="trastornos_conducta">
+                              <label class="form-check-label" for="trastornos_conducta">Trastornos de conducta del
+                                sueño</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Apnea" id="apnea">
+                              <label class="form-check-label" for="apnea">Apnea</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Ronquido" id="ronquido">
+                              <label class="form-check-label" for="ronquido">Ronquido</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Somnolencia diurna" id="somnolencia_diurna">
+                              <label class="form-check-label" for="somnolencia_diurna">Somnolencia diurna</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Narcolepsia" id="narcolepsia">
+                              <label class="form-check-label" for="narcolepsia">Narcolepsia</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Hipersomnolencia" id="hipersomnolencia">
+                              <label class="form-check-label" for="hipersomnolencia">Hipersomnolencia</label>
+                            </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="Despertares nocturnos" id="despertares_nocturnos">
+                              <label class="form-check-label" for="despertares_nocturnos">Despertares nocturnos</label>
+                            </div>
+                            <!-- Resto de checkboxes... -->
+                          </div>
+                        </div>
 
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_acostarse_fds">Hora aproximada de acostarse</label>
-                  <input type="text" class="form-control" id="hora_acostarse_fds" name="hora_acostarse_fds"
-                    placeholder="hh:mm" />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="tiempo_dormirse_fds">Cuanto tiempo le toma quedarse dormido(a) (en minutos)</label>
-                  <input type="number" class="form-control" id="tiempo_dormirse_fds" name="tiempo_dormirse_fds" />
-                </div>
-              </div>
-            </div>
+                        <!-- Contenedor para campos dinámicos de cada queja -->
+                        <div id="quejas-container" class="col-12"></div>
 
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_intencion_dormir_fds">Hora aproximada de intención de dormir</label>
-                  <input type="text" class="form-control" id="hora_intencion_dormir_fds"
-                    name="hora_intencion_dormir_fds" placeholder="hh:mm" />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_despertar_fds">Hora aproximada de despertarse</label>
-                  <input type="text" class="form-control" id="hora_despertar_fds" name="hora_despertar_fds"
-                    placeholder="hh:mm" />
-                </div>
-              </div>
-            </div>
+                        <!-- Sección de causas (solo visible si queja_sueno es "Sí") -->
+                        <div id="seccion-causas" style="display: none;">
+                          <div class="form-group">
+                            <label class="form-control-label">Existe alguna causa conocida o a la que le atribuya el
+                              problema</label>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="causa_conocida" id="causa_conocida_si"
+                                value="Si">
+                              <label class="form-check-label" for="causa_conocida_si">Sí</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="causa_conocida" id="causa_conocida_no"
+                                value="No" checked>
+                              <label class="form-check-label" for="causa_conocida_no">No</label>
+                            </div>
+                          </div>
 
-            <div class="form-group">
-              <label for="tiempo_salir_cama_fds">Cuánto tiempo le toma para salir de la cama (en minutos)</label>
-              <input type="number" class="form-control" id="tiempo_salir_cama_fds" name="tiempo_salir_cama_fds" />
-            </div>
+                          <div id="causas-container" class="col-md-12" style="display: none;">
+                            <div class="form-group">
+                              <label class="form-control-label">Especifique cuál o cuáles causas</label>
+                              <textarea class="form-control" name="especifique_causas"
+                                id="especifique_causas"></textarea>
+                            </div>
+                            <div class="col-md-12">
+                              <div class="form-group">
+                                <label class="form-control-label">Observaciones</label>
+                                <textarea class="form-control" name="observaciones_queja"
+                                  id="observaciones_queja"></textarea>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- alerta -->
+              <div class="tab-pane fade" id="horario" role="tabpanel">
+                <div class="card bg-gradient-default shadow-sm mb-4">
+                  <div class="card-header bg-transparent">
+                    <h4 class="text-white mb-0">Horario de sueño</h4>
+                  </div>
+                  <div class="card-body bg-white">
+                    <div class="row">
+                      <hr class="my-4" />
+                      <!-- Sección: Horario de sueño -->
+                      <h4 class="mt-4 mb-3">Horario de sueño</h4>
+                      <div class="form-group">
+                        <label>¿Tiene alguna rutina antes de dormir?</label>
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="rutina_si" name="rutina_dormir"
+                            value="si" />
+                          <label class="custom-control-label" for="rutina_si">Sí</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="rutina_no" name="rutina_dormir"
+                            value="no" />
+                          <label class="custom-control-label" for="rutina_no">No</label>
+                        </div>
+                      </div>
 
-            <div class="row">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>El sueño es reparador</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="sueno_reparador_si_fds"
-                      name="sueno_reparador_fds" value="Si" />
-                    <label class="custom-control-label" for="sueno_reparador_si_fds">Sí</label>
-                  </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="sueno_reparador_no_fds"
-                      name="sueno_reparador_fds" value="No" />
-                    <label class="custom-control-label" for="sueno_reparador_no_fds">No</label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Compañero(a) de cama</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="companero_cama_si_fds"
-                      name="companero_cama_fds" value="Si" />
-                    <label class="custom-control-label" for="companero_cama_si_fds">Sí</label>
-                  </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="companero_cama_no_fds"
-                      name="companero_cama_fds" value="No" />
-                    <label class="custom-control-label" for="companero_cama_no_fds">No</label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>¿Necesita despertador?</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="despertador_si_fds" name="despertador_fds"
-                      value="Si" />
-                    <label class="custom-control-label" for="despertador_si_fds">Sí</label>
-                  </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="despertador_no_fds" name="despertador_fds"
-                      value="No" />
-                    <label class="custom-control-label" for="despertador_no_fds">No</label>
-                  </div>
-                </div>
-              </div>
-            </div>
+                      <div class="form-group" id="describa-rutina">
+                        <label for="describa_rutina">Describa</label>
+                        <textarea class="form-control" id="describa_rutina" name="describa_rutina" rows="2"></textarea>
+                      </div>
 
-            <hr class="my-4" />
-            <!-- Horario sueño - Vacaciones -->
-            <h5 class="mt-4 mb-2">Horario de sueño en vacaciones</h5>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_acostarse_vacaciones">Hora aproximada de acostarse</label>
-                  <input type="text" class="form-control" id="hora_acostarse_vacaciones"
-                    name="hora_acostarse_vacaciones" placeholder="hh:mm" />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="tiempo_dormirse_vacaciones">Cuanto tiempo le toma quedarse dormido(a) (en minutos)</label>
-                  <input type="number" class="form-control" id="tiempo_dormirse_vacaciones"
-                    name="tiempo_dormirse_vacaciones" />
-                </div>
-              </div>
-            </div>
+                      <hr class="my-4" />
+                      <!-- Horario sueño - Jornada Laboral -->
+                      <h5 class="mt-3 mb-2">
+                        Horario de sueño en jornada laboral / Académica - Lunes a Viernes
+                      </h5>
+                      <div class="form-group">
+                        <label>Horario Jornada Académica / Laboral Lunes a Viernes</label>
+                        <div class="ml-3">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="jornada_diurna"
+                              name="jornada_laboral[]" value="Diurna" />
+                            <label class="custom-control-label" for="jornada_diurna">Diurna</label>
+                          </div>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="jornada_nocturna"
+                              name="jornada_laboral[]" value="Nocturna" />
+                            <label class="custom-control-label" for="jornada_nocturna">Nocturna</label>
+                          </div>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="jornada_mixta"
+                              name="jornada_laboral[]" value="Mixta" />
+                            <label class="custom-control-label" for="jornada_mixta">Mixta</label>
+                          </div>
+                        </div>
+                      </div>
 
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_intencion_dormir_vacaciones">Hora aproximada de intención de dormir</label>
-                  <input type="text" class="form-control" id="hora_intencion_dormir_vacaciones"
-                    name="hora_intencion_dormir_vacaciones" placeholder="hh:mm" />
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="hora_despertar_vacaciones">Hora aproximada de despertarse</label>
-                  <input type="text" class="form-control" id="hora_despertar_vacaciones"
-                    name="hora_despertar_vacaciones" placeholder="hh:mm" />
-                </div>
-              </div>
-            </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_acostarse_laboral">Hora aproximada de acostarse</label>
+                            <input type="text" class="form-control" id="hora_acostarse_laboral"
+                              name="hora_acostarse_laboral" placeholder="hh:mm" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="tiempo_dormirse_laboral">Cuanto tiempo le toma quedarse dormido(a) (en
+                              minutos)</label>
+                            <input type="number" class="form-control" id="tiempo_dormirse_laboral"
+                              name="tiempo_dormirse_laboral" />
+                          </div>
+                        </div>
+                      </div>
 
-            <div class="form-group">
-              <label for="tiempo_salir_cama_vacaciones">Cuánto tiempo le toma para salir de la cama (en minutos)</label>
-              <input type="number" class="form-control" id="tiempo_salir_cama_vacaciones"
-                name="tiempo_salir_cama_vacaciones" />
-            </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_intencion_dormir_laboral">Hora aproximada de intención de dormir</label>
+                            <input type="text" class="form-control" id="hora_intencion_dormir_laboral"
+                              name="hora_intencion_dormir_laboral" placeholder="hh:mm" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_despertar_laboral">Hora aproximada de despertarse</label>
+                            <input type="text" class="form-control" id="hora_despertar_laboral"
+                              name="hora_despertar_laboral" placeholder="hh:mm" />
+                          </div>
+                        </div>
+                      </div>
 
-            <div class="row">
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>El sueño es reparador</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="sueno_reparador_si_vac"
-                      name="sueno_reparador_vacaciones" value="Si" />
-                    <label class="custom-control-label" for="sueno_reparador_si_vac">Sí</label>
-                  </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="sueno_reparador_no_vac"
-                      name="sueno_reparador_vacaciones" value="No" />
-                    <label class="custom-control-label" for="sueno_reparador_no_vac">No</label>
+                      <div class="form-group">
+                        <label for="tiempo_salir_cama_laboral">Cuánto tiempo le toma para salir de la cama (en
+                          minutos)</label>
+                        <input type="number" class="form-control" id="tiempo_salir_cama_laboral"
+                          name="tiempo_salir_cama_laboral" />
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>El sueño es reparador</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="sueno_reparador_si_laboral"
+                                name="sueno_reparador_laboral" value="Si" />
+                              <label class="custom-control-label" for="sueno_reparador_si_laboral">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="sueno_reparador_no_laboral"
+                                name="sueno_reparador_laboral" value="No" />
+                              <label class="custom-control-label" for="sueno_reparador_no_laboral">No</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Compañero(a) de cama</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="companero_cama_si_laboral"
+                                name="companero_cama_laboral" value="Si" />
+                              <label class="custom-control-label" for="companero_cama_si_laboral">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="companero_cama_no_laboral"
+                                name="companero_cama_laboral" value="No" />
+                              <label class="custom-control-label" for="companero_cama_no_laboral">No</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>¿Necesita despertador?</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="despertador_si_laboral"
+                                name="despertador_laboral" value="Si" />
+                              <label class="custom-control-label" for="despertador_si_laboral">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="despertador_no_laboral"
+                                name="despertador_laboral" value="No" />
+                              <label class="custom-control-label" for="despertador_no_laboral">No</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <hr class="my-4" />
+                      <!-- Horario sueño - Fines de semana -->
+                      <h5 class="mt-4 mb-2">Horario de sueño en fines de semana</h5>
+                      <div class="form-group">
+                        <label>Horario Jornada Académica / Laboral Fines de semana</label>
+                        <div class="ml-3">
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="jornada_diurna_fds"
+                              name="jornada_fds[]" value="Diurna" />
+                            <label class="custom-control-label" for="jornada_diurna_fds">Diurna</label>
+                          </div>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="jornada_nocturna_fds"
+                              name="jornada_fds[]" value="Nocturna" />
+                            <label class="custom-control-label" for="jornada_nocturna_fds">Nocturna</label>
+                          </div>
+                          <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="jornada_mixta_fds"
+                              name="jornada_fds[]" value="Mixta" />
+                            <label class="custom-control-label" for="jornada_mixta_fds">Mixta</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_acostarse_fds">Hora aproximada de acostarse</label>
+                            <input type="text" class="form-control" id="hora_acostarse_fds" name="hora_acostarse_fds"
+                              placeholder="hh:mm" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="tiempo_dormirse_fds">Cuanto tiempo le toma quedarse dormido(a) (en
+                              minutos)</label>
+                            <input type="number" class="form-control" id="tiempo_dormirse_fds"
+                              name="tiempo_dormirse_fds" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_intencion_dormir_fds">Hora aproximada de intención de dormir</label>
+                            <input type="text" class="form-control" id="hora_intencion_dormir_fds"
+                              name="hora_intencion_dormir_fds" placeholder="hh:mm" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_despertar_fds">Hora aproximada de despertarse</label>
+                            <input type="text" class="form-control" id="hora_despertar_fds" name="hora_despertar_fds"
+                              placeholder="hh:mm" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="tiempo_salir_cama_fds">Cuánto tiempo le toma para salir de la cama (en
+                          minutos)</label>
+                        <input type="number" class="form-control" id="tiempo_salir_cama_fds"
+                          name="tiempo_salir_cama_fds" />
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>El sueño es reparador</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="sueno_reparador_si_fds"
+                                name="sueno_reparador_fds" value="Si" />
+                              <label class="custom-control-label" for="sueno_reparador_si_fds">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="sueno_reparador_no_fds"
+                                name="sueno_reparador_fds" value="No" />
+                              <label class="custom-control-label" for="sueno_reparador_no_fds">No</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Compañero(a) de cama</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="companero_cama_si_fds"
+                                name="companero_cama_fds" value="Si" />
+                              <label class="custom-control-label" for="companero_cama_si_fds">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="companero_cama_no_fds"
+                                name="companero_cama_fds" value="No" />
+                              <label class="custom-control-label" for="companero_cama_no_fds">No</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>¿Necesita despertador?</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="despertador_si_fds"
+                                name="despertador_fds" value="Si" />
+                              <label class="custom-control-label" for="despertador_si_fds">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="despertador_no_fds"
+                                name="despertador_fds" value="No" />
+                              <label class="custom-control-label" for="despertador_no_fds">No</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <hr class="my-4" />
+                      <!-- Horario sueño - Vacaciones -->
+                      <h5 class="mt-4 mb-2">Horario de sueño en vacaciones</h5>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_acostarse_vacaciones">Hora aproximada de acostarse</label>
+                            <input type="text" class="form-control" id="hora_acostarse_vacaciones"
+                              name="hora_acostarse_vacaciones" placeholder="hh:mm" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="tiempo_dormirse_vacaciones">Cuanto tiempo le toma quedarse dormido(a) (en
+                              minutos)</label>
+                            <input type="number" class="form-control" id="tiempo_dormirse_vacaciones"
+                              name="tiempo_dormirse_vacaciones" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_intencion_dormir_vacaciones">Hora aproximada de intención de dormir</label>
+                            <input type="text" class="form-control" id="hora_intencion_dormir_vacaciones"
+                              name="hora_intencion_dormir_vacaciones" placeholder="hh:mm" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="hora_despertar_vacaciones">Hora aproximada de despertarse</label>
+                            <input type="text" class="form-control" id="hora_despertar_vacaciones"
+                              name="hora_despertar_vacaciones" placeholder="hh:mm" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="tiempo_salir_cama_vacaciones">Cuánto tiempo le toma para salir de la cama (en
+                          minutos)</label>
+                        <input type="number" class="form-control" id="tiempo_salir_cama_vacaciones"
+                          name="tiempo_salir_cama_vacaciones" />
+                      </div>
+
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>El sueño es reparador</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="sueno_reparador_si_vac"
+                                name="sueno_reparador_vacaciones" value="Si" />
+                              <label class="custom-control-label" for="sueno_reparador_si_vac">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="sueno_reparador_no_vac"
+                                name="sueno_reparador_vacaciones" value="No" />
+                              <label class="custom-control-label" for="sueno_reparador_no_vac">No</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>Compañero(a) de cama</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="companero_cama_si_vac"
+                                name="companero_cama_vacaciones" value="Si" />
+                              <label class="custom-control-label" for="companero_cama_si_vac">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="companero_cama_no_vac"
+                                name="companero_cama_vacaciones" value="No" />
+                              <label class="custom-control-label" for="companero_cama_no_vac">No</label>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label>¿Necesita despertador?</label>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="despertador_si_vac"
+                                name="despertador_vacaciones" value="Si" />
+                              <label class="custom-control-label" for="despertador_si_vac">Sí</label>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" class="custom-control-input" id="despertador_no_vac"
+                                name="despertador_vacaciones" value="No" />
+                              <label class="custom-control-label" for="despertador_no_vac">No</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>Compañero(a) de cama</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="companero_cama_si_vac"
-                      name="companero_cama_vacaciones" value="Si" />
-                    <label class="custom-control-label" for="companero_cama_si_vac">Sí</label>
+              <!-- memoria -->
+              <div class="tab-pane fade" id="Higiene" role="tabpanel">
+
+                <div class="card bg-gradient-default shadow-sm mb-4">
+                  <div class="card-header bg-transparent">
+                    <h4 class="text-white mb-0">Higiene de sueño</h4>
                   </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="companero_cama_no_vac"
-                      name="companero_cama_vacaciones" value="No" />
-                    <label class="custom-control-label" for="companero_cama_no_vac">No</label>
+                  <div class="card-body bg-white">
+                    <div class="row">
+                      <div class="col">
+                        <div class="card">
+                          <div class="card-header border-0">
+                            <div class="row align-items-center">
+                              <div class="col">
+                                <h3 class="mb-0">Higiene de sueño</h3>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body">
+                            <!-- Sección: Siestas durante el día -->
+                            <div class="form-group">
+                              <label>¿Realiza siestas durante el día?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="siestas_si" name="realiza_siestas"
+                                  value="Si">
+                                <label class="custom-control-label" for="siestas_si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="siestas_no" name="realiza_siestas"
+                                  value="No">
+                                <label class="custom-control-label" for="siestas_no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Detalles de las siestas (visible si se selecciona "Sí") -->
+                            <div id="siestas-container" class="pl-4">
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="numero_siestas">Número de siestas al día</label>
+                                    <input type="number" class="form-control" id="numero_siestas" name="numero_siestas">
+                                  </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <div class="form-group">
+                                    <label for="duracion_siestas">Duración aproximada (en minutos)</label>
+                                    <input type="number" class="form-control" id="duracion_siestas"
+                                      name="duracion_siestas">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <!-- Frecuencia de las siestas -->
+                              <div class="form-group">
+                                <label>Frecuencia a la semana</label>
+                                <div class="ml-3">
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_una"
+                                      name="siesta_frecuencia" value="Una vez">
+                                    <label class="custom-control-label" for="siesta_frecuencia_una">Una vez</label>
+                                  </div>
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_dos_tres"
+                                      name="siesta_frecuencia" value="2-3 veces">
+                                    <label class="custom-control-label" for="siesta_frecuencia_dos_tres">2-3
+                                      veces</label>
+                                  </div>
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_cuatro_cinco"
+                                      name="siesta_frecuencia" value="4-5 veces">
+                                    <label class="custom-control-label" for="siesta_frecuencia_cuatro_cinco">4-5
+                                      veces</label>
+                                  </div>
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_mas_cinco"
+                                      name="siesta_frecuencia" value="> 5 veces">
+                                    <label class="custom-control-label" for="siesta_frecuencia_mas_cinco">> 5
+                                      veces</label>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <!-- Momento del día de las siestas -->
+                              <div class="form-group">
+                                <label>Momento del día en que realiza siestas</label>
+                                <div class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input" id="manana" name="momento_dia"
+                                    value="Mañana">
+                                  <label class="custom-control-label" for="manana">Mañana</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input" id="tarde" name="momento_dia"
+                                    value="Tarde">
+                                  <label class="custom-control-label" for="tarde">Tarde</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input" id="noche" name="momento_dia"
+                                    value="Noche">
+                                  <label class="custom-control-label" for="noche">Noche</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                  <input type="checkbox" class="custom-control-input" id="variable" name="momento_dia"
+                                    value="Variable">
+                                  <label class="custom-control-label" for="variable">Variable</label>
+                                </div>
+                              </div>
+
+                              <!-- ¿La siesta es reparadora? -->
+                              <div class="form-group">
+                                <label>¿La siesta es reparadora?</label>
+                                <div class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" id="siesta_reparadora_si"
+                                    name="siesta_reparadora" value="Si">
+                                  <label class="custom-control-label" for="siesta_reparadora_si">Sí</label>
+                                </div>
+                                <div class="custom-control custom-radio">
+                                  <input type="radio" class="custom-control-input" id="siesta_reparadora_no"
+                                    name="siesta_reparadora" value="No">
+                                  <label class="custom-control-label" for="siesta_reparadora_no">No</label>
+                                </div>
+                              </div>
+
+                              <!-- Periodo en el que realiza las siestas -->
+                              <div class="form-group">
+                                <label>Periodo en el que realiza las siestas</label>
+                                <select class="form-control" name="periodo_siestas">
+                                  <option value="Jornada laboral / académica">Jornada laboral / académica</option>
+                                  <option value="Fines de Semana">Fines de Semana</option>
+                                  <option value="Vacaciones">Vacaciones</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <!-- Sección: Características del lugar donde duerme -->
+                            <h4 class="mt-4 mb-3">Características del lugar donde duerme</h4>
+
+                            <!-- Condiciones de iluminación -->
+                            <div class="form-group">
+                              <label>Condiciones de iluminación</label>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="muy_iluminado"
+                                  name="iluminacion" value="Muy iluminado">
+                                <label class="custom-control-label" for="muy_iluminado">Muy iluminado</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="levemente_iluminado"
+                                  name="iluminacion" value="Levemente iluminado">
+                                <label class="custom-control-label" for="levemente_iluminado">Levemente
+                                  iluminado</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="levemente_oscuro"
+                                  name="iluminacion" value="Levemente oscuro">
+                                <label class="custom-control-label" for="levemente_oscuro">Levemente oscuro</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="muy_oscuro" name="iluminacion"
+                                  value="Muy oscuro">
+                                <label class="custom-control-label" for="muy_oscuro">Muy oscuro</label>
+                              </div>
+                            </div>
+
+                            <!-- Comodidad del espacio -->
+                            <div class="form-group">
+                              <label>Comodidad del espacio</label>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="muy_incomodo" name="comodidad"
+                                  value="Muy incómodo">
+                                <label class="custom-control-label" for="muy_incomodo">Muy incómodo</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="levemente_incomodo"
+                                  name="comodidad" value="Levemente incómodo">
+                                <label class="custom-control-label" for="levemente_incomodo">Levemente incómodo</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="levemente_comodo"
+                                  name="comodidad" value="Levemente cómodo">
+                                <label class="custom-control-label" for="levemente_comodo">Levemente cómodo</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="muy_comodo" name="comodidad"
+                                  value="Muy cómodo">
+                                <label class="custom-control-label" for="muy_comodo">Muy cómodo</label>
+                              </div>
+                            </div>
+
+                            <!-- Condiciones de ruido -->
+                            <div class="form-group">
+                              <label>Condiciones de ruido</label>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="muy_ruidoso" name="ruido"
+                                  value="Muy ruidoso">
+                                <label class="custom-control-label" for="muy_ruidoso">Muy ruidoso</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="levemente_ruidoso" name="ruido"
+                                  value="Levemente ruidoso">
+                                <label class="custom-control-label" for="levemente_ruidoso">Levemente ruidoso</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="levemente_silencioso"
+                                  name="ruido" value="Levemente silencioso">
+                                <label class="custom-control-label" for="levemente_silencioso">Levemente
+                                  silencioso</label>
+                              </div>
+                              <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="muy_silencioso" name="ruido"
+                                  value="Muy silencioso">
+                                <label class="custom-control-label" for="muy_silencioso">Muy silencioso</label>
+                              </div>
+                            </div>
+
+                            <!-- Consumo de comidas o bebidas antes de dormir ---------------------------------------->
+                            <div class="form-group">
+                              <label class="form-label">¿Consume comidas o bebidas antes de dormir?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="consume-si" name="consume"
+                                  value="si">
+                                <label class="custom-control-label" for="consume-si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="consume-no" name="consume"
+                                  value="no" checked>
+                                <label class="custom-control-label" for="consume-no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Campos adicionales (se muestran si se selecciona "Sí") -->
+                            <div id="campos-comida-container" style="display: none;">
+                              <!-- Botón para agregar sustancias -->
+                              <button type="button" id="agregar-sustancia" class="btn btn-primary mb-3">Agregar
+                                sustancia</button>
+
+                              <!-- Contenedor dinámico para las sustancias -->
+                              <div id="contenedor-sustancias"></div>
+                            </div>
+
+                            <!-- Pregunta sobre consumo de medicamentos -->
+                            <div class="form-group">
+                              <label>¿Consume algún medicamento u otro tipo de sustancias?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="consume_si"
+                                  name="consume_medicamento" value="Si">
+                                <label class="custom-control-label" for="consume_si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="consume_no"
+                                  name="consume_medicamento" value="No">
+                                <label class="custom-control-label" for="consume_no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Botón para agregar medicamentos -->
+                            <button id="agregar-medicamento" class="btn btn-primary" style="display: none;">Agregar
+                              Medicamento</button>
+
+                            <!-- Contenedor dinámico para los medicamentos -->
+                            <div id="contenedor-medicamentos" class="mt-3"></div>
+
+                            <!-- Pregunta sobre uso de pantallas antes de dormir -->
+                            <div class="form-group">
+                              <label>¿Utiliza pantallas cerca al horario de dormir?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="pantallas_si" name="usa_pantallas"
+                                  value="Si">
+                                <label class="custom-control-label" for="pantallas_si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="pantallas_no" name="usa_pantallas"
+                                  value="No">
+                                <label class="custom-control-label" for="pantallas_no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Botón para agregar información sobre pantallas -->
+                            <button id="agregar-pantalla" type="button" class="btn btn-primary"
+                              style="display: none;">Agregar
+                              Pantalla</button>
+
+                            <!-- Contenedor dinámico para las pantallas -->
+                            <div id="contenedor-pantallas" class="mt-3"></div>
+
+                            <!-- Pregunta sobre uso de la cama para otras actividades -->
+                            <div class="form-group">
+                              <label>¿Utiliza la cama para actividades diferentes a dormir y relaciones
+                                sexuales?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="cama_actividades_si"
+                                  name="cama_actividades" value="Si">
+                                <label class="custom-control-label" for="cama_actividades_si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="cama_actividades_no"
+                                  name="cama_actividades" value="No">
+                                <label class="custom-control-label" for="cama_actividades_no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Botón para agregar información sobre actividades en la cama -->
+                            <button id="agregar-actividad" type="button" class="btn btn-primary"
+                              style="display: none;">Agregar
+                              Actividad</button>
+
+                            <!-- Contenedor dinámico para las actividades -->
+                            <div id="contenedor-actividades" class="mt-3"></div>
+
+                            <!-- Pregunta sobre actividad física durante el día -->
+                            <div class="form-group">
+                              <label>¿Realiza actividad física durante el día?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="actividad_fisica_si"
+                                  name="actividad_fisica" value="Si">
+                                <label class="custom-control-label" for="actividad_fisica_si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="actividad_fisica_no"
+                                  name="actividad_fisica" value="No">
+                                <label class="custom-control-label" for="actividad_fisica_no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Botón para agregar información sobre actividades físicas -->
+                            <button id="agregar-actividad-fisica" type="button" class="btn btn-primary"
+                              style="display: none;">Agregar
+                              Actividad Física</button>
+
+                            <!-- Contenedor dinámico para las actividades físicas -->
+                            <div id="contenedor-actividades-fisicas" class="mt-3"></div>
+
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <!-- pensamiento -->
+              <div class="tab-pane fade" id="pensamiento" role="tabpanel">
+                <div class="card bg-gradient-default shadow-sm mb-4">
+                  <div class="card-header bg-transparent">
+                    <h4 class="text-white mb-0">Pensamiento</h4>
+                  </div>
+                  <div class="card-body bg-white">
+                    <div class="row">
+                      <div class="col">
+                        <div class="card">
+                          <div class="card-header border-0">
+                            <div class="row align-items-center">
+                              <div class="col">
+                                <h3 class="mb-0">Síntomas asociados al sueño</h3>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body">
+                            <!-- Pregunta sobre síntomas asociados al sueño -->
+                            <div class="form-group">
+                              <label>¿Presenta algún síntoma diferente asociado al sueño?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="sintomas_sueno_si"
+                                  name="sintomas_sueno" value="Si">
+                                <label class="custom-control-label" for="sintomas_sueno_si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="sintomas_sueno_no"
+                                  name="sintomas_sueno" value="No">
+                                <label class="custom-control-label" for="sintomas_sueno_no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Botón para agregar información sobre síntomas -->
+                            <button id="agregar-sintoma" type="button" class="btn btn-primary"
+                              style="display: none;">Agregar
+                              Síntoma</button>
+
+                            <!-- Contenedor dinámico para los síntomas -->
+                            <div id="contenedor-sintomas" class="mt-3"></div>
+
+                            <!-- Pregunta sobre síntomas durante el funcionamiento diurno -->
+                            <div class="form-group">
+                              <label>¿Presenta algún síntoma durante el funcionamiento diurno?</label>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="sintomas_diurnos_si"
+                                  name="sintomas_diurnos" value="Si">
+                                <label class="custom-control-label" for="sintomas_diurnos_si">Sí</label>
+                              </div>
+                              <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" id="sintomas_diurnos_no"
+                                  name="sintomas_diurnos" value="No">
+                                <label class="custom-control-label" for="sintomas_diurnos_no">No</label>
+                              </div>
+                            </div>
+
+                            <!-- Botón para agregar información sobre síntomas diurnos -->
+                            <button id="agregar-sintoma-diurno" type="button" class="btn btn-primary"
+                              style="display: none;">Agregar
+                              Síntoma Diurno</button>
+
+                            <!-- Contenedor dinámico para los síntomas diurnos -->
+                            <div id="contenedor-sintomas-diurnos" class="mt-3"></div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="col-md-4">
-                <div class="form-group">
-                  <label>¿Necesita despertador?</label>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="despertador_si_vac"
-                      name="despertador_vacaciones" value="Si" />
-                    <label class="custom-control-label" for="despertador_si_vac">Sí</label>
-                  </div>
-                  <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="despertador_no_vac"
-                      name="despertador_vacaciones" value="No" />
-                    <label class="custom-control-label" for="despertador_no_vac">No</label>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-header border-0">
-            <div class="row align-items-center">
-              <div class="col">
-                <h3 class="mb-0">Higiene de sueño</h3>
-              </div>
+          <!-- Botones de acción -->
+          <div class="row">
+            <div class="col-12 text-right">
+              <button type="submit" class="btn btn-primary">Guardar Examen</button>
+              <a href="{% url 'detalle_paciente' paciente_id %}" class="btn btn-primary">Ver Paciente</a>
             </div>
           </div>
-          <div class="card-body">
-            <!-- Sección: Siestas durante el día -->
-            <div class="form-group">
-              <label>¿Realiza siestas durante el día?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="siestas_si" name="realiza_siestas" value="Si">
-                <label class="custom-control-label" for="siestas_si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="siestas_no" name="realiza_siestas" value="No">
-                <label class="custom-control-label" for="siestas_no">No</label>
-              </div>
-            </div>
-
-            <!-- Detalles de las siestas (visible si se selecciona "Sí") -->
-            <div id="siestas-container" class="pl-4">
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="numero_siestas">Número de siestas al día</label>
-                    <input type="number" class="form-control" id="numero_siestas" name="numero_siestas">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="duracion_siestas">Duración aproximada (en minutos)</label>
-                    <input type="number" class="form-control" id="duracion_siestas" name="duracion_siestas">
-                  </div>
-                </div>
-              </div>
-
-              <!-- Frecuencia de las siestas -->
-              <div class="form-group">
-                <label>Frecuencia a la semana</label>
-                <div class="ml-3">
-                  <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_una" name="siesta_frecuencia"
-                      value="Una vez">
-                    <label class="custom-control-label" for="siesta_frecuencia_una">Una vez</label>
-                  </div>
-                  <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_dos_tres"
-                      name="siesta_frecuencia" value="2-3 veces">
-                    <label class="custom-control-label" for="siesta_frecuencia_dos_tres">2-3 veces</label>
-                  </div>
-                  <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_cuatro_cinco"
-                      name="siesta_frecuencia" value="4-5 veces">
-                    <label class="custom-control-label" for="siesta_frecuencia_cuatro_cinco">4-5 veces</label>
-                  </div>
-                  <div class="custom-control custom-radio">
-                    <input type="radio" class="custom-control-input" id="siesta_frecuencia_mas_cinco"
-                      name="siesta_frecuencia" value="> 5 veces">
-                    <label class="custom-control-label" for="siesta_frecuencia_mas_cinco">> 5 veces</label>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Momento del día de las siestas -->
-              <div class="form-group">
-                <label>Momento del día en que realiza siestas</label>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="manana" name="momento_dia" value="Mañana">
-                  <label class="custom-control-label" for="manana">Mañana</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="tarde" name="momento_dia" value="Tarde">
-                  <label class="custom-control-label" for="tarde">Tarde</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="noche" name="momento_dia" value="Noche">
-                  <label class="custom-control-label" for="noche">Noche</label>
-                </div>
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="variable" name="momento_dia" value="Variable">
-                  <label class="custom-control-label" for="variable">Variable</label>
-                </div>
-              </div>
-
-              <!-- ¿La siesta es reparadora? -->
-              <div class="form-group">
-                <label>¿La siesta es reparadora?</label>
-                <div class="custom-control custom-radio">
-                  <input type="radio" class="custom-control-input" id="siesta_reparadora_si" name="siesta_reparadora"
-                    value="Si">
-                  <label class="custom-control-label" for="siesta_reparadora_si">Sí</label>
-                </div>
-                <div class="custom-control custom-radio">
-                  <input type="radio" class="custom-control-input" id="siesta_reparadora_no" name="siesta_reparadora"
-                    value="No">
-                  <label class="custom-control-label" for="siesta_reparadora_no">No</label>
-                </div>
-              </div>
-
-              <!-- Periodo en el que realiza las siestas -->
-              <div class="form-group">
-                <label>Periodo en el que realiza las siestas</label>
-                <select class="form-control" name="periodo_siestas">
-                  <option value="Jornada laboral / académica">Jornada laboral / académica</option>
-                  <option value="Fines de Semana">Fines de Semana</option>
-                  <option value="Vacaciones">Vacaciones</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Sección: Características del lugar donde duerme -->
-            <h4 class="mt-4 mb-3">Características del lugar donde duerme</h4>
-
-            <!-- Condiciones de iluminación -->
-            <div class="form-group">
-              <label>Condiciones de iluminación</label>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="muy_iluminado" name="iluminacion"
-                  value="Muy iluminado">
-                <label class="custom-control-label" for="muy_iluminado">Muy iluminado</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="levemente_iluminado" name="iluminacion"
-                  value="Levemente iluminado">
-                <label class="custom-control-label" for="levemente_iluminado">Levemente iluminado</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="levemente_oscuro" name="iluminacion"
-                  value="Levemente oscuro">
-                <label class="custom-control-label" for="levemente_oscuro">Levemente oscuro</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="muy_oscuro" name="iluminacion"
-                  value="Muy oscuro">
-                <label class="custom-control-label" for="muy_oscuro">Muy oscuro</label>
-              </div>
-            </div>
-
-            <!-- Comodidad del espacio -->
-            <div class="form-group">
-              <label>Comodidad del espacio</label>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="muy_incomodo" name="comodidad"
-                  value="Muy incómodo">
-                <label class="custom-control-label" for="muy_incomodo">Muy incómodo</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="levemente_incomodo" name="comodidad"
-                  value="Levemente incómodo">
-                <label class="custom-control-label" for="levemente_incomodo">Levemente incómodo</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="levemente_comodo" name="comodidad"
-                  value="Levemente cómodo">
-                <label class="custom-control-label" for="levemente_comodo">Levemente cómodo</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="muy_comodo" name="comodidad" value="Muy cómodo">
-                <label class="custom-control-label" for="muy_comodo">Muy cómodo</label>
-              </div>
-            </div>
-
-            <!-- Condiciones de ruido -->
-            <div class="form-group">
-              <label>Condiciones de ruido</label>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="muy_ruidoso" name="ruido" value="Muy ruidoso">
-                <label class="custom-control-label" for="muy_ruidoso">Muy ruidoso</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="levemente_ruidoso" name="ruido"
-                  value="Levemente ruidoso">
-                <label class="custom-control-label" for="levemente_ruidoso">Levemente ruidoso</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="levemente_silencioso" name="ruido"
-                  value="Levemente silencioso">
-                <label class="custom-control-label" for="levemente_silencioso">Levemente silencioso</label>
-              </div>
-              <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" id="muy_silencioso" name="ruido"
-                  value="Muy silencioso">
-                <label class="custom-control-label" for="muy_silencioso">Muy silencioso</label>
-              </div>
-            </div>
-
-            <!-- Consumo de comidas o bebidas antes de dormir ---------------------------------------->
-            <div class="form-group">
-              <label class="form-label">¿Consume comidas o bebidas antes de dormir?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="consume-si" name="consume" value="si">
-                <label class="custom-control-label" for="consume-si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="consume-no" name="consume" value="no" checked>
-                <label class="custom-control-label" for="consume-no">No</label>
-              </div>
-            </div>
-
-            <!-- Campos adicionales (se muestran si se selecciona "Sí") -->
-            <div id="campos-comida-container" style="display: none;">
-              <!-- Botón para agregar sustancias -->
-              <button type="button" id="agregar-sustancia" class="btn btn-primary mb-3">Agregar sustancia</button>
-
-              <!-- Contenedor dinámico para las sustancias -->
-              <div id="contenedor-sustancias"></div>
-            </div>
-
-            <!-- Pregunta sobre consumo de medicamentos -->
-            <div class="form-group">
-              <label>¿Consume algún medicamento u otro tipo de sustancias?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="consume_si" name="consume_medicamento" value="Si">
-                <label class="custom-control-label" for="consume_si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="consume_no" name="consume_medicamento" value="No">
-                <label class="custom-control-label" for="consume_no">No</label>
-              </div>
-            </div>
-
-            <!-- Botón para agregar medicamentos -->
-            <button id="agregar-medicamento" class="btn btn-primary" style="display: none;">Agregar Medicamento</button>
-
-            <!-- Contenedor dinámico para los medicamentos -->
-            <div id="contenedor-medicamentos" class="mt-3"></div>
-
-            <!-- Pregunta sobre uso de pantallas antes de dormir -->
-            <div class="form-group">
-              <label>¿Utiliza pantallas cerca al horario de dormir?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="pantallas_si" name="usa_pantallas" value="Si">
-                <label class="custom-control-label" for="pantallas_si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="pantallas_no" name="usa_pantallas" value="No">
-                <label class="custom-control-label" for="pantallas_no">No</label>
-              </div>
-            </div>
-
-            <!-- Botón para agregar información sobre pantallas -->
-            <button id="agregar-pantalla" type="button" class="btn btn-primary" style="display: none;">Agregar
-              Pantalla</button>
-
-            <!-- Contenedor dinámico para las pantallas -->
-            <div id="contenedor-pantallas" class="mt-3"></div>
-
-            <!-- Pregunta sobre uso de la cama para otras actividades -->
-            <div class="form-group">
-              <label>¿Utiliza la cama para actividades diferentes a dormir y relaciones sexuales?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="cama_actividades_si" name="cama_actividades"
-                  value="Si">
-                <label class="custom-control-label" for="cama_actividades_si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="cama_actividades_no" name="cama_actividades"
-                  value="No">
-                <label class="custom-control-label" for="cama_actividades_no">No</label>
-              </div>
-            </div>
-
-            <!-- Botón para agregar información sobre actividades en la cama -->
-            <button id="agregar-actividad" type="button" class="btn btn-primary" style="display: none;">Agregar
-              Actividad</button>
-
-            <!-- Contenedor dinámico para las actividades -->
-            <div id="contenedor-actividades" class="mt-3"></div>
-
-            <!-- Pregunta sobre actividad física durante el día -->
-            <div class="form-group">
-              <label>¿Realiza actividad física durante el día?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="actividad_fisica_si" name="actividad_fisica"
-                  value="Si">
-                <label class="custom-control-label" for="actividad_fisica_si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="actividad_fisica_no" name="actividad_fisica"
-                  value="No">
-                <label class="custom-control-label" for="actividad_fisica_no">No</label>
-              </div>
-            </div>
-
-            <!-- Botón para agregar información sobre actividades físicas -->
-            <button id="agregar-actividad-fisica" type="button" class="btn btn-primary" style="display: none;">Agregar
-              Actividad Física</button>
-
-            <!-- Contenedor dinámico para las actividades físicas -->
-            <div id="contenedor-actividades-fisicas" class="mt-3"></div>
-
-
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-header border-0">
-            <div class="row align-items-center">
-              <div class="col">
-                <h3 class="mb-0">Síntomas asociados al sueño</h3>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <!-- Pregunta sobre síntomas asociados al sueño -->
-            <div class="form-group">
-              <label>¿Presenta algún síntoma diferente asociado al sueño?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="sintomas_sueno_si" name="sintomas_sueno"
-                  value="Si">
-                <label class="custom-control-label" for="sintomas_sueno_si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="sintomas_sueno_no" name="sintomas_sueno"
-                  value="No">
-                <label class="custom-control-label" for="sintomas_sueno_no">No</label>
-              </div>
-            </div>
-
-            <!-- Botón para agregar información sobre síntomas -->
-            <button id="agregar-sintoma" type="button" class="btn btn-primary" style="display: none;">Agregar
-              Síntoma</button>
-
-            <!-- Contenedor dinámico para los síntomas -->
-            <div id="contenedor-sintomas" class="mt-3"></div>
-
-            <!-- Pregunta sobre síntomas durante el funcionamiento diurno -->
-            <div class="form-group">
-              <label>¿Presenta algún síntoma durante el funcionamiento diurno?</label>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="sintomas_diurnos_si" name="sintomas_diurnos"
-                  value="Si">
-                <label class="custom-control-label" for="sintomas_diurnos_si">Sí</label>
-              </div>
-              <div class="custom-control custom-radio">
-                <input type="radio" class="custom-control-input" id="sintomas_diurnos_no" name="sintomas_diurnos"
-                  value="No">
-                <label class="custom-control-label" for="sintomas_diurnos_no">No</label>
-              </div>
-            </div>
-
-            <!-- Botón para agregar información sobre síntomas diurnos -->
-            <button id="agregar-sintoma-diurno" type="button" class="btn btn-primary" style="display: none;">Agregar
-              Síntoma Diurno</button>
-
-            <!-- Contenedor dinámico para los síntomas diurnos -->
-            <div id="contenedor-sintomas-diurnos" class="mt-3"></div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Botones de acción -->
-    <div class="row">
-      <div class="col-12 text-right">
-        <button type="submit" class="btn btn-primary">Guardar Examen</button>
-        <a href="{% url 'detalle_paciente' paciente_id %}" class="btn btn-primary">Ver Paciente</a>
+        </form>
       </div>
     </div>
   </div>
-</form>
+</div>
+
+
+
 
 
 
@@ -836,67 +1014,6 @@
 <script>
   let contador = 0;
   document.addEventListener("DOMContentLoaded", function () {
-    let contadorQuejas = 0; // Contador global para generar índices únicos
-
-    // Seleccionamos todos los checkboxes de quejas
-    const checkboxes = document.querySelectorAll(".queja-checkbox");
-    const container = document.getElementById("quejas-container");
-
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener("change", function () {
-        const queja = this.value; // Obtiene el valor del checkbox (nombre de la queja)
-        const quejaId = `queja-${contadorQuejas}`; // ID único para los campos
-
-        if (this.checked) {
-          // Verifica si ya existe la sección antes de agregarla
-          if (!document.getElementById(quejaId)) {
-            // Crea el formulario dinámico
-            const section = document.createElement("div");
-            section.id = quejaId;
-            section.classList.add("pl-4", "mt-3", "border", "p-2");
-
-            section.innerHTML = `
-          <h5>${queja}</h5>
-          <div class="form-group">
-            <label>¿Cuándo inició?</label>
-            <input type="text" class="form-control" name="inicio_${contadorQuejas}">
-          </div>
-          <div class="form-group">
-            <label>Cómo ha evolucionado</label>
-            <textarea class="form-control" name="evolucion_${contadorQuejas}" rows="2"></textarea>
-          </div>
-          <div class="form-group">
-            <label>Frecuencia Semana</label>
-            <select class="form-control" name="frecuencia_${contadorQuejas}">
-              <option value="1">Una vez</option>
-              <option value="2-3">2-3 veces</option>
-              <option value="4-5">4-5 veces</option>
-              <option value="5+">Más de 5 veces</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Gravedad</label>
-            <select class="form-control" name="gravedad_${contadorQuejas}">
-              <option value="Leve">Leve</option>
-              <option value="Moderado">Moderado</option>
-              <option value="Grave">Grave</option>
-            </select>
-          </div>
-        `;
-
-            container.appendChild(section);
-            contadorQuejas++; // Incrementar el contador para la próxima queja
-          }
-        } else {
-          // Si se desmarca, eliminar la sección de la queja
-          const sectionToRemove = document.getElementById(quejaId);
-          if (sectionToRemove) {
-            sectionToRemove.remove();
-          }
-        }
-      });
-    });
-
 
     ///////////////////////////////////////////////////////////////
 
@@ -1576,6 +1693,121 @@
 
     // Inicializar el estado al cargar la página
     toggleAgregarSintomaDiurno();
+  });
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Elementos principales
+    const quejaSi = document.getElementById("queja_sueno-si");
+    const quejaNo = document.getElementById("queja_sueno-no");
+    const camposQueja = document.getElementById("campos-queja-container");
+    const seccionCausas = document.getElementById("seccion-causas");
+
+    // Mostrar/ocultar sección completa de quejas
+    function toggleQuejaSection() {
+      const mostrar = quejaSi.checked;
+      camposQueja.style.display = mostrar ? "block" : "none";
+      seccionCausas.style.display = mostrar ? "block" : "none";
+
+      if (!mostrar) {
+        // Limpiar todo si se selecciona "No"
+        document.querySelectorAll('.queja-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById("quejas-container").innerHTML = "";
+        document.getElementById("causa_conocida_no").checked = true;
+        document.getElementById("especifique_causas").value = "";
+        document.getElementById("observaciones_queja").value = "";
+      }
+    }
+
+    quejaSi.addEventListener("change", toggleQuejaSection);
+    quejaNo.addEventListener("change", toggleQuejaSection);
+
+    // Control para causas conocidas
+    const causaSi = document.getElementById("causa_conocida_si");
+    const causaNo = document.getElementById("causa_conocida_no");
+    const causasContainer = document.getElementById("causas-container");
+
+    function toggleCausas() {
+      causasContainer.style.display = causaSi.checked ? "block" : "none";
+      if (causaNo.checked) {
+        document.getElementById("especifique_causas").value = "";
+      }
+    }
+
+    causaSi.addEventListener("change", toggleCausas);
+    causaNo.addEventListener("change", toggleCausas);
+
+    // Generar campos dinámicos para cada queja
+    const checkboxes = document.querySelectorAll(".queja-checkbox");
+    const container = document.getElementById("quejas-container");
+    const quejaFields = {};
+
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", function () {
+        const quejaValue = this.value;
+        const quejaId = quejaValue.replace(/\s+/g, '_').toLowerCase();
+        const sectionId = `queja-${quejaId}`;
+
+        if (this.checked) {
+          // Solo crear si no existe
+          if (!quejaFields[quejaId]) {
+            const section = document.createElement("div");
+            section.id = sectionId;
+            section.className = "queja-section mb-4 p-3 border rounded";
+
+            section.innerHTML = `
+                        <h5>${quejaValue}</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>¿Cuándo inició?</label>
+                                    <input type="text" class="form-control" name="${quejaId}_inicio">
+                                </div>
+                            </div>
+                                  <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Cómo ha evolucionado</label>
+                                    <textarea class="form-control" name="${quejaId}_evolucion" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Frecuencia Semana</label>
+                                    <select class="form-control" name="${quejaId}_frecuencia">
+                                        <option value="Una vez">Una vez</option>
+                                        <option value="2-3 veces">2-3 veces</option>
+                                        <option value="4-5 veces">4-5 veces</option>
+                                        <option value="> 5 veces">> 5 veces</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="form-control-label">Gravedad</label>
+                                    <select class="form-control" name="${quejaId}_gravedad">
+                                        <option value="Leve">Leve</option>
+                                        <option value="Moderado">Moderado</option>
+                                        <option value="Grave">Grave</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Resto de campos... -->
+                        </div>
+                    `;
+
+            container.appendChild(section);
+            quejaFields[quejaId] = true;
+          }
+        } else {
+          // Eliminar sección si existe
+          const section = document.getElementById(sectionId);
+          if (section) {
+            section.remove();
+            delete quejaFields[quejaId];
+          }
+        }
+      });
+    });
   });
 </script>
 {% endblock javascripts %}

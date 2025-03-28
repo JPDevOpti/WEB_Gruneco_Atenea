@@ -27,7 +27,6 @@ urlpatterns = [
     # Exámenes médicos
     path('descargar-examen/<int:visita_examen_id>/', descargar_examen, name='descargar_examen'),
     path('examen/<int:visita_id>/<int:examen_id>/<int:paciente_id>/', views.realizar_examen, name='realizar_examen'),
-    path('guardar-examen/anamnesis/', views.guardar_examen_anamnesis, name='guardar_examen_anamnesis'),
     path('guardar-examen/cuestionarios/', views.guardar_examen_Sueño_Cuestionarios, name='guardar_Sueño_Cuestionarios'),
     path('guardar-examen/fisico-sueno/', views.guardar_examen_sueno_fisico, name='guardar_examen_sueno_fisico'),
     
@@ -45,6 +44,7 @@ urlpatterns = [
     path('guardar-examen-neurologico', views.guardar_examen_neurologico, name='guardar_examen_neurologico'),
     
     #Cuestioanrio de sueno
+    path('guardar-examen/anamnesis/', views.guardar_examen_anamnesis, name='guardar_examen_anamnesis'),
     path('guardar-examen-Pitsburg', views.guardar_examen_Pitsburg, name='guardar_examen_Pitsburg'),
     path('guardar-examen-Epworth', views.guardar_examen_Epworth, name='guardar_examen_Epworth'),
     path('guardar-examen-Stop-Bang', views.guardar_examen_StopB, name='guardar_examen_Stop-Bang'),
@@ -52,6 +52,8 @@ urlpatterns = [
     path('guardar-examen-Berlín', views.guardar_examen_Berlin, name='guardar_examen_Berlin'),
     path('guardar-examen-Atenas', views.guardar_examen_atenas, name='guardar_examen_atenas'),
     path('guardar-examen-ISI', views.guardar_examen_ISI, name='guardar_examen_ISI'),
+    
+    
     path('guardar-examen-cognitvio-anamnesis', views.guardar_examen_cognitivo_anamnesis, name='guardar_examen_cognitivo_anamnesis'),
     
     #proyectos

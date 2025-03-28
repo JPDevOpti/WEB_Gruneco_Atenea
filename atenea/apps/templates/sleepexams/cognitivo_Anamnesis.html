@@ -272,212 +272,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- funcioanlidad -->
-                            <div class="tab-pane fade" id="funcionalidad" role="tabpanel">
-                                <div class="card bg-gradient-default shadow-sm mb-4">
-                                    <div class="card-header bg-transparent">
-                                        <h4 class="text-white mb-0">Funcionalidad</h4>
-                                    </div>
-                                    <div class="card-body bg-white">
-                                        <div class="row">
-                                            <!-- Apariencia - Descripción -->
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Descripción de la
-                                                        funcionalidad</label>
-                                                    <textarea class="form-control" name="funcionalidad_descripcion"
-                                                        id="funcionalidad_descripcion"></textarea>
-                                                    <small class="form-text text-muted">Descripción de la
-                                                        funcionalidad.</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <!-- Independencia en actividades de la vida diaria -->
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Es independiente para todas las
-                                                        actividades de la vida diaria</label>
-                                                    <select class="form-control" id="independencia_vida_diaria"
-                                                        name="independencia_vida_diaria" onchange="toggleCombobox()">
-                                                        <option value="no" selected>No</option>
-                                                        <option value="si">Sí</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6" id="actividades_vida_diaria" style="display:none;">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Actividades para las que necesita
-                                                        ayuda</label>
-                                                    <div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_vida_diaria[]" value="comer">
-                                                            <label class="form-check-label">Comer</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_vida_diaria[]" value="asearse">
-                                                            <label class="form-check-label">Asearse</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_vida_diaria[]" value="vestirse">
-                                                            <label class="form-check-label">Vestirse</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_vida_diaria[]" value="desplazarse">
-                                                            <label class="form-check-label">Desplazarse</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_vida_diaria[]" value="comunicarse">
-                                                            <label class="form-check-label">Comunicarse</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_vida_diaria[]"
-                                                                value="control_esfinteres">
-                                                            <label class="form-check-label">Control de
-                                                                esfínteres</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-
-                                            <!-- Independencia en actividades instrumentales complejas -->
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Es independiente para todas las
-                                                        actividades instrumentales complejas</label>
-                                                    <select class="form-control"
-                                                        id="independencia_actividades_complejas"
-                                                        name="independencia_actividades_complejas"
-                                                        onchange="toggleActividadesComplejas()">
-                                                        <option value="no" selected>No</option>
-                                                        <option value="si">Sí</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <!-- Checkboxes de actividades (solo aparecen si la respuesta es "No") -->
-                                            <div class="col-md-6" id="actividades_complejas" style="display:none;">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Actividades para las que necesita
-                                                        ayuda</label>
-                                                    <div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]" value="telefono">
-                                                            <label class="form-check-label">Teléfono</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]" value="compras">
-                                                            <label class="form-check-label">Compras</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]" value="cocinar">
-                                                            <label class="form-check-label">Cocinar</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]" value="cuidado_hogar">
-                                                            <label class="form-check-label">Cuidado del hogar</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]" value="lavar_ropa">
-                                                            <label class="form-check-label">Lavar ropa</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]" value="transporte">
-                                                            <label class="form-check-label">Transporte</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]" value="medicacion">
-                                                            <label class="form-check-label">Manejo de medicación</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                name="actividades_complejas[]"
-                                                                value="asuntos_economicos">
-                                                            <label class="form-check-label">Asuntos económicos</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card bg-gradient-default shadow-sm mb-4">
-                                    <div class="card-header bg-transparent">
-                                        <h4 class="text-white mb-0">Conducta Motora - Trastornos Cuantitativos</h4>
-                                    </div>
-                                    <div class="card-body bg-white">
-                                        <div class="row">
-                                            <!-- Apariencia - Descripción -->
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Conducta Motora</label>
-                                                    <textarea class="form-control" name="conducta_motora_descripcion"
-                                                        id="funcionalidad_descripcion"></textarea>
-                                                    <small class="form-text text-muted">Descripción de la
-                                                        Conducta Motora.</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Seleccione si presenta alguna de
-                                                        las siguientes trastornos cuantitativos de la conducta
-                                                        motora</label>
-                                                    <select class="form-control" name="trastornos_cuantitativos">
-                                                        <option value="">Seleccione...</option>
-                                                        <option value="hiperactividad">Hiperactividad</option>
-                                                        <option value="inquietud">Inquietud</option>
-                                                        <option value="agitacion">Agitación</option>
-                                                        <option value="retardo_psicomotor">Retardo psicomotor</option>
-                                                        <option value="hipoactividad">Hipoactividad</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card bg-gradient-default shadow-sm mb-4">
-                                    <div class="card-header bg-transparent">
-                                        <h4 class="text-white mb-0">Conducta Motora - Trastornos Cualitativos</h4>
-                                    </div>
-                                    <div class="card-body bg-white">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label class="form-control-label">Seleccione si presenta alguna de
-                                                        las siguientes trastornos cualitativos de la conducta
-                                                        motora</label>
-                                                    <select class="form-control" name="trastornos_cualitativos">
-                                                        <option value="">Seleccione...</option>
-                                                        <option value="catatonia">Catatonía</option>
-                                                        <option value="estereotipias">Estereotipias</option>
-                                                        <option value="manierismos">Manierismos</option>
-                                                        <option value="mimica_gestualidad">Alteraciones de la mímica y
-                                                            gestualidad</option>
-                                                        <option value="ambitendencia">Ambitendencia</option>
-                                                        <option value="perseveracion">Perseveración</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <!-- alerta -->
                             <div class="tab-pane fade" id="alerta" role="tabpanel">
                                 <div class="card bg-gradient-default shadow-sm mb-4">
@@ -1538,15 +1333,220 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                            <!-- funcioanlidad -->
+                            <div class="tab-pane fade" id="funcionalidad" role="tabpanel">
+                                <div class="card bg-gradient-default shadow-sm mb-4">
+                                    <div class="card-header bg-transparent">
+                                        <h4 class="text-white mb-0">Funcionalidad</h4>
+                                    </div>
+                                    <div class="card-body bg-white">
+                                        <div class="row">
+                                            <!-- Apariencia - Descripción -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Descripción de la
+                                                        funcionalidad</label>
+                                                    <textarea class="form-control" name="funcionalidad_descripcion"
+                                                        id="funcionalidad_descripcion"></textarea>
+                                                    <small class="form-text text-muted">Descripción de la
+                                                        funcionalidad.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <!-- Independencia en actividades de la vida diaria -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Es independiente para todas las
+                                                        actividades de la vida diaria</label>
+                                                    <select class="form-control" id="independencia_vida_diaria"
+                                                        name="independencia_vida_diaria" onchange="toggleCombobox()">
+                                                        <option value="no" selected>No</option>
+                                                        <option value="si">Sí</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6" id="actividades_vida_diaria" style="display:none;">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Actividades para las que necesita
+                                                        ayuda</label>
+                                                    <div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_vida_diaria[]" value="comer">
+                                                            <label class="form-check-label">Comer</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_vida_diaria[]" value="asearse">
+                                                            <label class="form-check-label">Asearse</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_vida_diaria[]" value="vestirse">
+                                                            <label class="form-check-label">Vestirse</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_vida_diaria[]" value="desplazarse">
+                                                            <label class="form-check-label">Desplazarse</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_vida_diaria[]" value="comunicarse">
+                                                            <label class="form-check-label">Comunicarse</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_vida_diaria[]"
+                                                                value="control_esfinteres">
+                                                            <label class="form-check-label">Control de
+                                                                esfínteres</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                        <!-- Botones de acción -->
-                        <div class="row mt-4">
-                            <div class="col-12 text-right">
-                                <button type="submit" class="btn btn-primary">Guardar Antecedentes</button>
-                                <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
-                                    Ver Paciente
-                                </a>
+
+                                            <!-- Independencia en actividades instrumentales complejas -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Es independiente para todas las
+                                                        actividades instrumentales complejas</label>
+                                                    <select class="form-control"
+                                                        id="independencia_actividades_complejas"
+                                                        name="independencia_actividades_complejas"
+                                                        onchange="toggleActividadesComplejas()">
+                                                        <option value="no" selected>No</option>
+                                                        <option value="si">Sí</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <!-- Checkboxes de actividades (solo aparecen si la respuesta es "No") -->
+                                            <div class="col-md-6" id="actividades_complejas" style="display:none;">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Actividades para las que necesita
+                                                        ayuda</label>
+                                                    <div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]" value="telefono">
+                                                            <label class="form-check-label">Teléfono</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]" value="compras">
+                                                            <label class="form-check-label">Compras</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]" value="cocinar">
+                                                            <label class="form-check-label">Cocinar</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]" value="cuidado_hogar">
+                                                            <label class="form-check-label">Cuidado del hogar</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]" value="lavar_ropa">
+                                                            <label class="form-check-label">Lavar ropa</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]" value="transporte">
+                                                            <label class="form-check-label">Transporte</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]" value="medicacion">
+                                                            <label class="form-check-label">Manejo de medicación</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="actividades_complejas[]"
+                                                                value="asuntos_economicos">
+                                                            <label class="form-check-label">Asuntos económicos</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card bg-gradient-default shadow-sm mb-4">
+                                    <div class="card-header bg-transparent">
+                                        <h4 class="text-white mb-0">Conducta Motora - Trastornos Cuantitativos</h4>
+                                    </div>
+                                    <div class="card-body bg-white">
+                                        <div class="row">
+                                            <!-- Apariencia - Descripción -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Conducta Motora</label>
+                                                    <textarea class="form-control" name="conducta_motora_descripcion"
+                                                        id="funcionalidad_descripcion"></textarea>
+                                                    <small class="form-text text-muted">Descripción de la
+                                                        Conducta Motora.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Seleccione si presenta alguna de
+                                                        las siguientes trastornos cuantitativos de la conducta
+                                                        motora</label>
+                                                    <select class="form-control" name="trastornos_cuantitativos">
+                                                        <option value="">Seleccione...</option>
+                                                        <option value="hiperactividad">Hiperactividad</option>
+                                                        <option value="inquietud">Inquietud</option>
+                                                        <option value="agitacion">Agitación</option>
+                                                        <option value="retardo_psicomotor">Retardo psicomotor</option>
+                                                        <option value="hipoactividad">Hipoactividad</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card bg-gradient-default shadow-sm mb-4">
+                                    <div class="card-header bg-transparent">
+                                        <h4 class="text-white mb-0">Conducta Motora - Trastornos Cualitativos</h4>
+                                    </div>
+                                    <div class="card-body bg-white">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label class="form-control-label">Seleccione si presenta alguna de
+                                                        las siguientes trastornos cualitativos de la conducta
+                                                        motora</label>
+                                                    <select class="form-control" name="trastornos_cualitativos">
+                                                        <option value="">Seleccione...</option>
+                                                        <option value="catatonia">Catatonía</option>
+                                                        <option value="estereotipias">Estereotipias</option>
+                                                        <option value="manierismos">Manierismos</option>
+                                                        <option value="mimica_gestualidad">Alteraciones de la mímica y
+                                                            gestualidad</option>
+                                                        <option value="ambitendencia">Ambitendencia</option>
+                                                        <option value="perseveracion">Perseveración</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Botones de acción -->
+                                <div class="row mt-4">
+                                    <div class="col-12 text-right">
+                                        <button type="submit" class="btn btn-primary">Guardar Antecedentes</button>
+                                        <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
+                                            Ver Paciente
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
