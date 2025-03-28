@@ -27,7 +27,8 @@
           <div class="card-body pt-0">
             <div class="row">
               <div class="col-md-12 text-center">
-                <h5 class="h3 mt-4">{{ paciente.primer_nombre }} {{ paciente.segundo_nombre }} {{paciente.primer_apellido }} {{ paciente.segundo_apellido }}</h5>
+                <h5 class="h3 mt-4">{{ paciente.primer_nombre }} {{ paciente.segundo_nombre }}
+                  {{paciente.primer_apellido }} {{ paciente.segundo_apellido }}</h5>
                 <p class="h6 text-muted">
                   <i class="ni business_briefcase-24 mr-2"></i>{{ paciente.escolaridad }}
                 </p>
@@ -44,7 +45,9 @@
                       </select>
                       <input type="hidden" name="paciente_id" value="{{ paciente.id }}">
                     </div>
-                    <button type="submit" class="btn btn-sm btn-neutral" onclick="return confirm('¿Estás seguro de que deseas agregar el paciente al proyecto?');">Agregar al proyecto</button>
+                    <button type="submit" class="btn btn-sm btn-neutral"
+                      onclick="return confirm('¿Estás seguro de que deseas agregar el paciente al proyecto?');">Agregar
+                      al proyecto</button>
                   </form>
                 </div>
               </div>
@@ -121,10 +124,12 @@
               <hr class="my-2">
               <h5 class="card-title text-uppercase text-muted mb-3">{{ proyecto.nombre }}</h5>
               <div class="mb-3">
-                <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#modalAgregarVisita-{{ proyecto.id }}">
+                <button class="btn btn-primary mt-3" data-bs-toggle="modal"
+                  data-bs-target="#modalAgregarVisita-{{ proyecto.id }}">
                   Agregar Visita
                 </button>
               </div>
+
 
               {% for visita in visitas_paciente %}
               {% if visita.Tipo_visita.proyecto == proyecto %}
@@ -141,7 +146,8 @@
                     </div>
                     <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
                       <h3>Exámenes</h3>
-                      <button class="btn btn-info" data-toggle="collapse" data-target="#examenes-visita-{{ visita.id }}" data-toggle="tooltip" data-placement="mid" title="Ver Exámenes">
+                      <button class="btn btn-info" data-toggle="collapse" data-target="#examenes-visita-{{ visita.id }}"
+                        data-toggle="tooltip" data-placement="mid" title="Ver Exámenes">
                         <i class="fas fa-list"></i>
                       </button>
                     </div>
@@ -151,51 +157,61 @@
                     <p>
                       <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
                       {% if visita_examen.resultado %}
-                      <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen" data-nombre="{{ visita_examen.examen.nombre}}" data-resultado="{{ visita_examen.resultado }}">Ver Resultado</a>
-                      <div class="modal fade" id="modalExamen" tabindex="-1" aria-labelledby="modalExamenLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="modalExamenLabel">Resultado del Examen</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              <p><strong>Nombre:</strong> <span id="examenNombre"></span></p>
-                              <p><strong>Resultado:</strong> <span id="examenResultado"></span></p>
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            </div>
+                      <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen"
+                        data-nombre="{{ visita_examen.examen.nombre}}"
+                        data-resultado="{{ visita_examen.resultado }}">Ver Resultado</a>
+                    <div class="modal fade" id="modalExamen" tabindex="-1" aria-labelledby="modalExamenLabel"
+                      aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="modalExamenLabel">Resultado del Examen</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p><strong>Nombre:</strong> <span id="examenNombre"></span></p>
+                            <p><strong>Resultado:</strong> <span id="examenResultado"></span></p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                           </div>
                         </div>
                       </div>
-                      <form method="POST" action="{% url 'eliminar_resultado_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar examen" style="font-size: 1rem; padding: 5px 5px;">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </form>
-                      {% else %}
-                      <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}" class="btn btn-primary btn-sm">Realizar Examen</a>
-                      {% endif %}
+                    </div>
+                    <form method="POST"
+                      action="{% url 'eliminar_resultado_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
+                      style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger" data-toggle="tooltip" data-placement="top"
+                        title="Eliminar examen" style="font-size: 1rem; padding: 5px 5px;">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </form>
+                    {% else %}
+                    <a href="{% url 'realizar_examen' visita_examen.visita.id visita_examen.examen.id visita_examen.visita.paciente.id %}"
+                      class="btn btn-primary btn-sm">Realizar Examen</a>
+                    {% endif %}
                     </p>
                     {% empty %}
                     <p>No se realizaron exámenes en esta visita.</p>
                     {% endfor %}
                   </div>
                   <div class="d-flex justify-content-end mt-3">
-                    <form action="{% url 'eliminar_v' visita.id %}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
+                    <form action="{% url 'eliminar_v' visita.id %}" method="POST"
+                      onsubmit="return confirm('¿Estás seguro de eliminar esta visita?');">
                       {% csrf_token %}
                       <button type="submit" class="btn btn-danger btn-sm me-2">Eliminar visita</button>
                     </form>
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarVisita-{{ visita.id }}">
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                      data-bs-target="#modalEditarVisita-{{ visita.id }}">
                       Editar Visita
                     </button>
                   </div>
                 </div>
               </div>
 
-              <div class="modal fade" id="modalEditarVisita-{{ visita.id }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+              <div class="modal fade" id="modalEditarVisita-{{ visita.id }}" tabindex="-1" aria-labelledby="modalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -211,7 +227,8 @@
                         </div>
                         <div class="mb-3">
                           <label for="fecha" class="form-label">Fecha</label>
-                          <input type="date" class="form-control" name="fecha" value="{{ visita.fecha|date:'Y-m-d' }}" required>
+                          <input type="date" class="form-control" name="fecha" value="{{ visita.fecha|date:'Y-m-d' }}"
+                            required>
                         </div>
                         <div class="mb-3">
                           <label for="evaluador" class="form-label">Evaluador</label>
@@ -220,19 +237,23 @@
                         <h4>Acompañante</h4>
                         <div class="mb-3">
                           <label for="acompanante_nombre" class="form-label">Nombre</label>
-                          <input type="text" class="form-control" name="acompanante_nombre" value="{{ visita.acompanante_nombre }}">
+                          <input type="text" class="form-control" name="acompanante_nombre"
+                            value="{{ visita.acompanante_nombre }}">
                         </div>
                         <div class="mb-3">
                           <label for="acompanante_relacion" class="form-label">Relación</label>
-                          <input type="text" class="form-control" name="acompanante_relacion" value="{{ visita.acompanante_relacion }}">
+                          <input type="text" class="form-control" name="acompanante_relacion"
+                            value="{{ visita.acompanante_relacion }}">
                         </div>
                         <div class="mb-3">
                           <label for="acompanante_correo" class="form-label">Correo</label>
-                          <input type="email" class="form-control" name="acompanante_correo" value="{{ visita.acompanante_correo }}">
+                          <input type="email" class="form-control" name="acompanante_correo"
+                            value="{{ visita.acompanante_correo }}">
                         </div>
                         <div class="mb-3">
                           <label for="acompanante_telefono" class="form-label">Teléfono</label>
-                          <input type="tel" class="form-control" name="acompanante_telefono" value="{{ visita.acompanante_telefono }}">
+                          <input type="tel" class="form-control" name="acompanante_telefono"
+                            value="{{ visita.acompanante_telefono }}">
                         </div>
                         <h4>Exámenes Asociados</h4>
                         <ul id="examenesLista">
@@ -245,7 +266,8 @@
                           <div id="examenesCheckboxes">
                             {% for examen in visita.Tipo_visita.examenes %}
                             <div class="form-check">
-                              <input class="form-check-input" type="checkbox" name="examenes_seleccionados" value="{{ examen.id }}" id="examen_{{ examen.id }}">
+                              <input class="form-check-input" type="checkbox" name="examenes_seleccionados"
+                                value="{{ examen.id }}" id="examen_{{ examen.id }}">
                               <label class="form-check-label" for="examen_{{ examen.id }}">
                                 {{ examen.nombre }}
                               </label>
@@ -260,82 +282,84 @@
                   </div>
                 </div>
               </div>
-              {% endif %}
-              {% empty %}
-              <p>No hay visitas registradas para este proyecto.</p>
-              {% endfor %}
+            </div>
+            {% endif %}
+            {% empty %}
+            <p>No hay visitas registradas para este proyecto.</p>
+            {% endfor %}
 
-              <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title">Nueva Visita para {{ proyecto.nombre }}</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <form method="POST" action="{% url 'crear_visita' paciente.id %}">
-                      {% csrf_token %}
-                      <div class="modal-body">
-                        <div class="mb-3">
-                          <label for="nombre_visita" class="form-label">Nombre de la Visita</label>
-                          <input type="text" class="form-control" name="nombre" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="tipo_visita" class="form-label">Tipo de Visita</label>
-                          <select class="form-control tipo-visita" name="tipo_visita" id="visitaSelect">
-                            <option value="">Seleccione un tipo de visita</option>
-                            {% for visita in proyecto.visitas.all %}
-                            <option value="{{ visita.id }}" data-examenes="{{ visita.examenes }}">
-                              {{ visita.nombre }}
-                            </option>
-                            {% endfor %}
-                          </select>
-                        </div>
-                        <div class="mb-3">
-                          <h4>Exámenes Asociados:</h4>
-                          <ul id="examenesLista" class="p-0"></ul>
-                        </div>
-                        <div class="mb-3">
-                          <label for="fecha" class="form-label">Fecha</label>
-                          <input type="date" class="form-control" name="fecha" required>
-                        </div>
-                        <div class="mb-3">
-                          <label for="evaluador" class="form-label">Evaluador</label>
-                          <input type="text" class="form-control" name="evaluador">
-                        </div>
-                        <div class="mb-3">
-                          <label for="acompanante_nombre" class="form-label">Nombre del Acompañante</label>
-                          <input type="text" class="form-control" name="acompanante_nombre">
-                        </div>
-                        <div class="mb-3">
-                          <label for="acompanante_relacion" class="form-label">Relación con el Paciente</label>
-                          <input type="text" class="form-control" name="acompanante_relacion">
-                        </div>
-                        <div class="mb-3">
-                          <label for="acompanante_correo" class="form-label">Correo del Acompañante</label>
-                          <input type="email" class="form-control" name="acompanante_correo">
-                        </div>
-                        <div class="mb-3">
-                          <label for="acompanante_telefono" class="form-label">Teléfono del Acompañante</label>
-                          <input type="tel" class="form-control" name="acompanante_telefono">
-                        </div>
-                        <div class="modal-footer">
-                          <button type="submit" class="btn btn-primary">Guardar Visita</button>
-                        </div>
-                      </div>
-                    </form>
+            <div class="modal fade" id="modalAgregarVisita-{{ proyecto.id }}" tabindex="-1" aria-labelledby="modalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Nueva Visita para {{ proyecto.nombre }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
+                  <form method="POST" action="{% url 'crear_visita' paciente.id %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <label for="nombre_visita" class="form-label">Nombre de la Visita</label>
+                        <input type="text" class="form-control" name="nombre" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="tipo_visita" class="form-label">Tipo de Visita</label>
+                        <select class="form-control tipo-visita" name="tipo_visita" id="visitaSelect">
+                          <option value="">Seleccione un tipo de visita</option>
+                          {% for visita in proyecto.visitas.all %}
+                          <option value="{{ visita.id }}" data-examenes="{{ visita.examenes }}">
+                            {{ visita.nombre }}
+                          </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <h4>Exámenes Asociados:</h4>
+                        <ul id="examenesLista" class="p-0"></ul>
+                      </div>
+                      <div class="mb-3">
+                        <label for="fecha" class="form-label">Fecha</label>
+                        <input type="date" class="form-control" name="fecha" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="evaluador" class="form-label">Evaluador</label>
+                        <input type="text" class="form-control" name="evaluador">
+                      </div>
+                      <div class="mb-3">
+                        <label for="acompanante_nombre" class="form-label">Nombre del Acompañante</label>
+                        <input type="text" class="form-control" name="acompanante_nombre">
+                      </div>
+                      <div class="mb-3">
+                        <label for="acompanante_relacion" class="form-label">Relación con el Paciente</label>
+                        <input type="text" class="form-control" name="acompanante_relacion">
+                      </div>
+                      <div class="mb-3">
+                        <label for="acompanante_correo" class="form-label">Correo del Acompañante</label>
+                        <input type="email" class="form-control" name="acompanante_correo">
+                      </div>
+                      <div class="mb-3">
+                        <label for="acompanante_telefono" class="form-label">Teléfono del Acompañante</label>
+                        <input type="tel" class="form-control" name="acompanante_telefono">
+                      </div>
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar Visita</button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </div>
-              {% empty %}
-              <p>No hay visitas registradas en este proyecto.</p>
-              {% endfor %}
             </div>
+            {% empty %}
+            <p>No hay visitas registradas en este proyecto.</p>
+            {% endfor %}
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     var visitaSelect = document.querySelectorAll(".tipo-visita");
