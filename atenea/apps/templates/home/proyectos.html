@@ -136,6 +136,14 @@
                       data-placement="top" title="Ver Exámenes">
                       <i class="fas fa-list"></i> <!-- Ícono de Font Awesome -->
                     </button>
+
+                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                      data-bs-target="#modalEditarVisita-{{ visita.id }}" data-visita-id="{{ visita.id }}"
+                      data-nombre="{{ visita.nombre }}" data-observaciones="{{ visita.observaciones }}"
+                      data-proyecto="{{ visita.proyecto }}" data-examenes="{{ visita.examenes }}">
+                      Editar Visita
+                    </button>
+
                     <!-- Contenedor de exámenes (colapsable) -->
                     <div id="examenes-visita-{{ proyecto.id }}-{{ forloop.counter }}" class="collapse mt-3">
                       <ul class="list-group">
@@ -148,6 +156,58 @@
                       </ul>
                     </div>
                   </li>
+
+                  <div class="modal fade" id="modalEditarVisita-{{ visita.id }}" tabindex="-1"
+                    aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Editar Visita</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="#">
+                          {% csrf_token %}
+                          <div class="modal-body">
+                            <!-- Nombre -->
+                            <div class="mb-3">
+                              <label class="form-label">Nombre del Tipo de Visita</label>
+                              <input type="text" class="form-control" id="nombre_visita_{{ visita.id }}"
+                                name="nombre_visita" value="{{ visita.nombre }}" required>
+                            </div>
+
+                            <!-- Observaciones -->
+                            <div class="mb-3">
+                              <label class="form-label">Observaciones</label>
+                              <textarea class="form-control" id="observaciones_{{ visita.id }}"
+                                name="observaciones">{{ visita.observaciones }}</textarea>
+                            </div>
+
+                            <!-- Exámenes Asociados -->
+                            <h4>Exámenes Asociados</h4>
+                            <div class="mb-3">
+                              {% for examen in visita.examenes %}
+                              <div class="form-check">
+                                <input class="form-check-input examen-checkbox" type="checkbox"
+                                  name="examenes_seleccionados" value="{{ examen.id }}"
+                                  id="examen_{{ visita.id }}_{{ examen.id }}">
+                                <label class="form-check-label" for="examen_{{ visita.id }}_{{ examen.id }}">
+                                  {{ examen }}
+                                </label>
+                              </div>
+                              {% endfor %}
+
+
+                            </div>
+                          </div>
+
+                          <!-- Botón Guardar -->
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
                   {% endfor %}
                 </ul>
                 {% endif %}
