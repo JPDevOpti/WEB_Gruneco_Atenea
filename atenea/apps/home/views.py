@@ -511,12 +511,12 @@ def realizar_examen(request, visita_id, examen_id, paciente_id):
         17: "sleepexams/sueno_Berlín.html",
         18: "sleepexams/sueno_atenas.html",
         19: "sleepexams/sueno_ISI.html",
+        20: "sleepexams/cognitivo_Anamnesis.html",
     }
 
     template = exam_templates.get(examen_id, "sleepexams/anamnesisTest.html")  
 
     return render(request, template, {'visita_examen': visita_id, 'paciente_id':paciente_id,'examen_id':examen_id})
-
 
 @login_required
 def eliminar_resultado_examen(request, visita_id, examen_id, paciente_id):
@@ -1022,7 +1022,7 @@ def guardar_examen_medicamentos(request):
                 "indicacion": indicaciones[i]
             })
 
-         # Obtener la visita y el examen correspondiente
+        # Obtener la visita y el examen correspondiente
         visita_id = request.POST.get('visita_id')
         examen_id = request.POST.get('examen_id')
         # Obtener las instancias de Visita y Examen
@@ -1838,6 +1838,72 @@ def guardar_examen_ISI(request):
             visita_examen.resultado.update(datos_formulario_ISI)
         else:
             visita_examen.resultado = datos_formulario_ISI
+
+        # Guardar cambios
+        visita_examen.save()
+
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+
+
+@login_required
+def guardar_examen_cognitivo_anamnesis(request):
+    if request.method == 'POST':
+        print("aqui")
+        # Obtener los datos del formulario para antecedentes epidemiológicos
+        datos_formulario_medicamentos = {
+        "Medicamentos": []
+            }
+
+        # Obtener las listas de medicamentos del formulario (coincidiendo con los nombres en el HTML)
+        nombres_comerciales = request.POST.getlist('nombre_comercial[]')
+        nombres_genericos = request.POST.getlist('nombre_generico[]')
+        presentaciones = request.POST.getlist('presentacion[]')
+        concentraciones = request.POST.getlist('concentracion[]')
+        unidades = request.POST.getlist('unidad[]')
+        vias_administracion = request.POST.getlist('via_administracion[]')
+        cantidades = request.POST.getlist('cantidad[]')
+        frecuencias = request.POST.getlist('frecuencia[]')
+        fechas_inicio = request.POST.getlist('fecha_inicio[]')
+        fechas_finalizacion = request.POST.getlist('fecha_finalizacion[]')
+        indicaciones = request.POST.getlist('indicacion[]')
+
+        # Iterar sobre las listas y construir la lista de medicamentos
+        for i in range(len(nombres_comerciales)):
+            datos_formulario_medicamentos["Medicamentos"].append({
+                "nombre_comercial": nombres_comerciales[i],
+                "nombre_generico": nombres_genericos[i],
+                "presentacion": presentaciones[i],
+                "concentracion": concentraciones[i],
+                "unidad": unidades[i],
+                "via_administracion": vias_administracion[i],
+                "cantidad": cantidades[i],
+                "frecuencia": frecuencias[i],
+                "fecha_inicio": fechas_inicio[i],
+                "fecha_finalizacion": fechas_finalizacion[i],
+                "indicacion": indicaciones[i]
+            })
+
+         # Obtener la visita y el examen correspondiente
+        visita_id = request.POST.get('visita_id')
+        examen_id = request.POST.get('examen_id')
+        # Obtener las instancias de Visita y Examen
+        visita = get_object_or_404(Visita, id=visita_id)
+        examen = get_object_or_404(Examen, id=examen_id)
+        
+        paciente_id = request.POST.get('paciente_id') 
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
+        documento_paciente = paciente.id
+        
+        # Obtener o crear el VisitaExamen con la relación correcta
+        visita_examen, created = VisitaExamen.objects.get_or_create(
+            visita=visita, examen=examen
+        )
+
+        # Si ya tiene un resultado, lo actualizamos
+        if visita_examen.resultado:
+            visita_examen.resultado.update(datos_formulario_medicamentos)
+        else:
+            visita_examen.resultado = datos_formulario_medicamentos
 
         # Guardar cambios
         visita_examen.save()

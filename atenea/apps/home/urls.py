@@ -52,6 +52,7 @@ urlpatterns = [
     path('guardar-examen-Berlín', views.guardar_examen_Berlin, name='guardar_examen_Berlin'),
     path('guardar-examen-Atenas', views.guardar_examen_atenas, name='guardar_examen_atenas'),
     path('guardar-examen-ISI', views.guardar_examen_ISI, name='guardar_examen_ISI'),
+    path('guardar-examen-cognitvio-anamnesis', views.guardar_examen_cognitivo_anamnesis, name='guardar_examen_cognitivo_anamnesis'),
     
     #proyectos
     path('proyectos/', views.proyectos, name='proyectos'),
