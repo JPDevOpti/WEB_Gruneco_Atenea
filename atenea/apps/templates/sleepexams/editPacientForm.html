@@ -47,15 +47,20 @@
               <div class="row mt-3">
                 <div class="col-lg-3"><label>Tipo Documento</label>{{ form.tipo_documento }}</div>
                 <div class="col-lg-3"><label>Número de Documento</label>{{ form.numero_documento }}</div>
-                <div class="col-lg-3"><label>Fecha de Nacimiento</label>{{ form.fecha_nacimiento }}</div>
+                <div class="col-lg-3">
+                  <label>Fecha de Nacimiento</label>
+                  <input type="date" class="form-control" name="fecha_nacimiento"
+                    value="{{ form.fecha_nacimiento.value|date:'Y-m-d' }}">
+                </div>
+
                 <div class="col-lg-3"><label>Edad</label>{{ form.edad }}</div>
               </div>
 
               <div class="row mt-3">
                 <div class="col-lg-3"><label>Género</label>{{ form.genero }}</div>
-                <div class="col-lg-3"><label>Género</label>{{ form.municipio_nacimiento }}</div>
-                <div class="col-lg-3"><label>Género</label>{{ form.departamento_nacimiento }}</div>
-                <div class="col-lg-3"><label>Género</label>{{ form.pais_nacimiento }}</div>
+                <div class="col-lg-3"><label>Municipio de Nacimiento</label>{{ form.municipio_nacimiento }}</div>
+                <div class="col-lg-3"><label>Departamento de Nacimiento</label>{{ form.departamento_nacimiento }}</div>
+                <div class="col-lg-3"><label>Pais de Nacimiento</label>{{ form.pais_nacimiento }}</div>
               </div>
             </div>
 
@@ -96,7 +101,7 @@
         </div>
         <a href="{% url 'tables.html' %}" class="btn btn-secondary">
           Cancelar
-      </a>
+        </a>
       </div>
     </div>
   </div>
