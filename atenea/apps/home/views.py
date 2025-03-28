@@ -1848,42 +1848,157 @@ def guardar_examen_ISI(request):
 @login_required
 def guardar_examen_cognitivo_anamnesis(request):
     if request.method == 'POST':
-        print("aqui")
         # Obtener los datos del formulario para antecedentes epidemiológicos
-        datos_formulario_medicamentos = {
-        "Medicamentos": []
+        datos_formulario_cognitivo_anamnesi = {
+            "Anamnesis": {
+                "motivo_consulta": request.POST.get("motivo_consulta", ""),
+                "descripcion_general": request.POST.get("descripcion_general", ""),
+            },
+            "Apariencia/Actitud": {
+                "apariencia_descripcion": request.POST.get("apariencia_descripcion", ""),
+                "apariencia_estado": request.POST.get("apariencia_estado", ""),
+                "actitud_descripcion": request.POST.get("actitud_descripcion", ""),
+                "actitudes_presentes": request.POST.getlist("actitud_seleccion"),  # Lista de actitudes
+            },
+            "Estado de Alerta": {
+                "descripcion": request.POST.get("estado_alerta_desc", ""),
+                "opciones": request.POST.getlist("estado_alerta[]")
+            },
+            "Orientación": {
+                "descripcion": request.POST.get("orientacion_desc", ""),
+                "opciones": request.POST.getlist("orientacion[]")
+            },
+            "Atención": {
+                "descripcion": request.POST.get("atencion_descripcion", ""),
+                "opciones": {
+                    "Quejas atencionales": {
+                        "seleccionado": "Quejas atencionales" in request.POST.getlist("atencion_seleccion[]"),
+                        "edad_inicio": request.POST.get("quejas_edad_inicio", ""),
+                        "caracteristicas": request.POST.get("quejas_caracteristicas", "")
+                    },
+                    "Alteración atención sostenida": {
+                        "seleccionado": "Alteración atención sostenida" in request.POST.getlist("atencion_seleccion[]"),
+                        "edad_inicio": request.POST.get("sostenida_edad_inicio", ""),
+                        "caracteristicas": request.POST.get("sostenida_caracteristicas", "")
+                    },
+                    "Alteración atención dividida": {
+                        "seleccionado": "Alteración atención dividida" in request.POST.getlist("atencion_seleccion[]"),
+                        "edad_inicio": request.POST.get("dividida_edad_inicio", ""),
+                        "caracteristicas": request.POST.get("dividida_caracteristicas", "")
+                    },
+                    "Incapacidad para quedarse quieto": {
+                        "seleccionado": "Incapacidad para quedarse quieto" in request.POST.getlist("atencion_seleccion[]"),
+                        "edad_inicio": request.POST.get("quieto_edad_inicio", ""),
+                        "caracteristicas": request.POST.get("quieto_caracteristicas", "")
+                    },
+                    "Dificultad para finalizar una tarea": {
+                        "seleccionado": "Dificultad para finalizar una tarea" in request.POST.getlist("atencion_seleccion[]"),
+                        "edad_inicio": request.POST.get("tarea_edad_inicio", ""),
+                        "caracteristicas": request.POST.get("tarea_caracteristicas", "")
+                    },
+                    "Dificultad para seguir instrucciones": {
+                        "seleccionado": "Dificultad para seguir instrucciones" in request.POST.getlist("atencion_seleccion[]"),
+                        "edad_inicio": request.POST.get("instrucciones_edad_inicio", ""),
+                        "caracteristicas": request.POST.get("instrucciones_caracteristicas", "")
+                    },
+                    "Distracción con estímulos irrelevantes": {
+                        "seleccionado": "Distracción con estímulos irrelevantes" in request.POST.getlist("atencion_seleccion[]"),
+                        "edad_inicio": request.POST.get("distraccion_edad_inicio", ""),
+                        "caracteristicas": request.POST.get("distraccion_caracteristicas", "")
+                    }
+                }
+            },
+            "Funcionalidad": {
+                "funcionalidad_descripcion": request.POST.get("funcionalidad_descripcion", ""),
+                "independencia_vida_diaria": request.POST.get("independencia_vida_diaria", ""),
+                "actividades_vida_diaria": request.POST.getlist("actividades_vida_diaria[]"),
+                "independencia_actividades_complejas": request.POST.get("independencia_actividades_complejas", ""),
+                "actividades_complejas": request.POST.getlist("actividades_complejas[]"),
+            },
+            "Conducta Motora": {
+                "conducta_motora_descripcion": request.POST.get("conducta_motora_descripcion", ""),
+                "trastornos_cuantitativos": request.POST.getlist("trastornos_cuantitativos[]"),
+                "trastornos_cualitativos": request.POST.getlist("trastornos_cualitativos[]"),
+            },
+            "Memoria": {
+                "descripcion": request.POST.get("memoria_descripcion", ""),
+                "valoracion_memoria": {
+                    "de_toda_la_vida": request.POST.get("memoria_lopera_vida", ""),
+                    "actual": request.POST.get("memoria_lopera_actual", "")
+                },
+                "quejas_memoria": {
+                    "presenta_quejas": request.POST.get("memoria_quejas", "No"),  # Por defecto "No"
+                    "detalles": {}
+                }
+            },
+            "Lenguaje": {
+                "descripcion": request.POST.get("lenguaje_descripcion", ""),
+                "caracteristicas": {
+                    "cantidad": request.POST.get("lenguaje_cantidad"),
+                    "fluido": request.POST.get("lenguaje_fluido"),
+                    "tono": request.POST.get("lenguaje_tono"),
+                    "articulacion": request.POST.get("lenguaje_articulacion"),
+                    "comprension": request.POST.get("lenguaje_comprension"),
+                    "escritura": request.POST.get("lenguaje_escritura"),
+                    "lectura": request.POST.get("lenguaje_lectura"),
+                    "repeticion": request.POST.get("lenguaje_repeticion")
+                },
+                "errores": request.POST.getlist("lenguaje_errores[]", [])
+            }, 
+            "Pensamiento": {
+                "descripcion": request.POST.get("pensamiento_descripcion", ""),
+                "forma": request.POST.get("pensamiento_forma", ""),
+                "contenido": request.POST.get("pensamiento_contenido", ""),
+                "juicio": request.POST.get("pensamiento_juicio", ""),
+                "introspeccion": request.POST.get("pensamiento_introspeccion", ""),
+                "prospeccion": request.POST.get("pensamiento_prospeccion", "")
+            },
+            "Sensopercepcion": {
+                "descripcion": request.POST.get("sensopercepcion_descripcion", ""),
+                "alteraciones": request.POST.get("sensopercepcion_alteraciones", "")
+            },
+            "FuncionEjecutiva": {
+                "descripcion": request.POST.get("funcion_ejecutiva_descripcion", ""),
+                "comportamientos": {
+                    "tipo": request.POST.get("funcion_ejecutiva_comportamientos", ""),
+                    "edad_inicio": request.POST.get("comportamiento_edad_inicio", ""),
+                    "caracteristicas": request.POST.get("comportamiento_caracteristicas", "")
+                },
+                "sintomas_ejecutivos": {
+                    "tipo": request.POST.get("funcion_ejecutiva_sintomas", ""),
+                    "edad_inicio": request.POST.get("sintomas_edad_inicio", ""),
+                    "caracteristicas": request.POST.get("sintomas_caracteristicas", "")
+                }
+            },
+            "EstadoAnimo": {
+                "descripcion": request.POST.get("estado_animo_descripcion", ""),
+                "cualidades_afectivas": request.POST.get("estado_animo_cualidades", ""),
+                "expresiones_afectivas": request.POST.get("estado_animo_expresiones", "")
+            },
+            "Apetito": {
+                "descripcion": request.POST.get("apetito_descripcion", ""),
+                "cambios": {
+                    "tipo": request.POST.get("apetito_cambios", ""),
+                    "edad_inicio": request.POST.get("apetito_edad_inicio", ""),
+                    "caracteristicas": request.POST.get("apetito_caracteristicas", "")
+                }
+            }
+        }
+            
+        # Solo si hay quejas de memoria, añadir los detalles adicionales
+        if datos_formulario_cognitivo_anamnesi["Memoria"]["quejas_memoria"]["presenta_quejas"] == "Si":
+            datos_formulario_cognitivo_anamnesi["Memoria"]["quejas_memoria"]["detalles"] = {
+                "edad_inicio": request.POST.get("memoria_edad_inicio", ""),
+                "es_progresiva": request.POST.get("memoria_progresivas", ""),
+                "cambio_estado_previo": request.POST.get("memoria_cambio_previo", ""),
+                "compromete_actividades": {
+                    "basicas": request.POST.get("memoria_compromete_basicas", ""),
+                    "complejas": request.POST.get("memoria_compromete_complejas", ""),
+                    "vida_cotidiana": request.POST.get("memoria_compromete_cotidiana", "")
+                }
             }
 
-        # Obtener las listas de medicamentos del formulario (coincidiendo con los nombres en el HTML)
-        nombres_comerciales = request.POST.getlist('nombre_comercial[]')
-        nombres_genericos = request.POST.getlist('nombre_generico[]')
-        presentaciones = request.POST.getlist('presentacion[]')
-        concentraciones = request.POST.getlist('concentracion[]')
-        unidades = request.POST.getlist('unidad[]')
-        vias_administracion = request.POST.getlist('via_administracion[]')
-        cantidades = request.POST.getlist('cantidad[]')
-        frecuencias = request.POST.getlist('frecuencia[]')
-        fechas_inicio = request.POST.getlist('fecha_inicio[]')
-        fechas_finalizacion = request.POST.getlist('fecha_finalizacion[]')
-        indicaciones = request.POST.getlist('indicacion[]')
-
-        # Iterar sobre las listas y construir la lista de medicamentos
-        for i in range(len(nombres_comerciales)):
-            datos_formulario_medicamentos["Medicamentos"].append({
-                "nombre_comercial": nombres_comerciales[i],
-                "nombre_generico": nombres_genericos[i],
-                "presentacion": presentaciones[i],
-                "concentracion": concentraciones[i],
-                "unidad": unidades[i],
-                "via_administracion": vias_administracion[i],
-                "cantidad": cantidades[i],
-                "frecuencia": frecuencias[i],
-                "fecha_inicio": fechas_inicio[i],
-                "fecha_finalizacion": fechas_finalizacion[i],
-                "indicacion": indicaciones[i]
-            })
-
-         # Obtener la visita y el examen correspondiente
+        # Obtener la visita y el examen correspondiente
         visita_id = request.POST.get('visita_id')
         examen_id = request.POST.get('examen_id')
         # Obtener las instancias de Visita y Examen
@@ -1901,15 +2016,14 @@ def guardar_examen_cognitivo_anamnesis(request):
 
         # Si ya tiene un resultado, lo actualizamos
         if visita_examen.resultado:
-            visita_examen.resultado.update(datos_formulario_medicamentos)
+            visita_examen.resultado.update(datos_formulario_cognitivo_anamnesi)
         else:
-            visita_examen.resultado = datos_formulario_medicamentos
+            visita_examen.resultado = datos_formulario_cognitivo_anamnesi
 
         # Guardar cambios
         visita_examen.save()
 
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
-
 
 @login_required
 def descargar_examen(request, visita_examen_id):
