@@ -21,96 +21,174 @@
 </div>
 
 <div class="container-fluid mt--6">
-    <form method="post" action="{% url 'guardar_examen_Epworth' %}">
-        {% csrf_token %}
-        <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
-        <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
-        <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
-        <div class="row">
-            <div class="col">
-                <div class="card">
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <form method="post" action="{% url 'guardar_examen_Epworth' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="visita_id" id="visita_id" value="{{ visita_examen }}" />
+                    <input type="hidden" name="paciente_id" id="paciente_id" value="{{ paciente_id }}" />
+                    <input type="hidden" name="examen_id" id="examen_id" value="{{ examen_id }}" />
+
+                    <!-- Card Header -->
                     <div class="card-header border-0">
                         <div class="row align-items-center">
                             <div class="col">
-                                <h3 class="mb-0">Cuestionario de Stop-Bang</h3>
+                                <h3 class="mb-0">Cuestionario Stop-Bang</h3>
+                            </div>
+                            <div class="col text-right">
+                                <span class="text-muted">Fecha: {% now "d/m/Y" %}</span>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Card Body -->
                     <div class="card-body">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="ronca_fuerte" id="ronca_fuerte">
-                            <label class="form-check-label" for="ronca_fuerte">
-                                Ronca fuerte
-                            </label>
+                        <div class="card bg-gradient-default shadow-sm mb-4">
+                            <div class="card-header bg-transparent">
+                                <h4 class="text-white mb-0">Evaluación de Riesgo de Apnea del Sueño</h4>
+                            </div>
+                            <div class="card-body bg-white">
+                                <div class="alert alert-info">
+                                    <strong>Instrucciones:</strong> Marque las afirmaciones que apliquen al paciente.
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="ronca_fuerte"
+                                                    id="ronca_fuerte" type="checkbox">
+                                                <label class="custom-control-label" for="ronca_fuerte">
+                                                    <strong>R</strong>onca - Ronca fuerte (lo suficientemente fuerte
+                                                    como para ser escuchado a través de puertas cerradas)
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="cansado_frecuencia"
+                                                    id="cansado_frecuencia" type="checkbox">
+                                                <label class="custom-control-label" for="cansado_frecuencia">
+                                                    <strong>C</strong>ansancio - Se siente cansado, fatigado o
+                                                    somnoliento
+                                                    durante el día
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="deja_respirar"
+                                                    id="deja_respirar" type="checkbox">
+                                                <label class="custom-control-label" for="deja_respirar">
+                                                    <strong>O</strong>bservar - Lo han observado dejar de respirar o
+                                                    ahogarse mientras dormía
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="presion_arterial"
+                                                    id="presion_arterial" type="checkbox">
+                                                <label class="custom-control-label" for="presion_arterial">
+                                                    <strong>P</strong>resión - Tiene o está recibiendo tratamiento para
+                                                    la presión arterial alta
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="imc_alto" id="imc_alto"
+                                                    type="checkbox">
+                                                <label class="custom-control-label" for="imc_alto">
+                                                    <strong>I</strong>MC - IMC > 35 kg/m²
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="mayor_50" id="mayor_50"
+                                                    type="checkbox">
+                                                <label class="custom-control-label" for="mayor_50">
+                                                    <strong>E</strong>dad - Edad > 50 años
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="cuello_grande"
+                                                    id="cuello_grande" type="checkbox">
+                                                <label class="custom-control-label" for="cuello_grande">
+                                                    <strong>C</strong>uello - Circunferencia del cuello grande (Hombres
+                                                    >
+                                                    40 cm, Mujeres > 35 cm)
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input class="custom-control-input" name="masculino" id="masculino"
+                                                    type="checkbox">
+                                                <label class="custom-control-label" for="masculino">
+                                                    <strong>G</strong>enero - Género masculino
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-warning mt-4">
+                                    <strong>Interpretación del puntaje:</strong><br>
+                                    - <strong>0-2 puntos:</strong> Bajo riesgo de apnea obstructiva del sueño<br>
+                                    - <strong>3-4 puntos:</strong> Riesgo intermedio<br>
+                                    - <strong>5-8 puntos:</strong> Alto riesgo (probabilidad de apnea moderada o severa)
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="cansado_frecuencia"
-                                id="cansado_frecuencia">
-                            <label class="form-check-label" for="cansado_frecuencia">
-                                Se siente cansado con frecuencia
-                            </label>
+                        <!-- Botones de acción -->
+                        <div class="row mt-4">
+                            <div class="col-12 text-right">
+                                <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                                <a href="{% url 'detalle_paciente' paciente_id %}" class="btn btn-secondary">Ver
+                                    Paciente</a>
+                            </div>
                         </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="deja_respirar" id="deja_respirar">
-                            <label class="form-check-label" for="deja_respirar">
-                                Lo observaron dejar de respirar o ahogarse mientras dormía
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="presion_arterial"
-                                id="presion_arterial">
-                            <label class="form-check-label" for="presion_arterial">
-                                Tiene o está recibiendo tratamiento para la presión arterial
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="imc_alto" id="imc_alto">
-                            <label class="form-check-label" for="imc_alto">
-                                Presenta un índice de masa corporal de más de 35kg/m²
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="mayor_50" id="mayor_50">
-                            <label class="form-check-label" for="mayor_50">
-                                Tiene más de 50 años
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="cuello_grande" id="cuello_grande">
-                            <label class="form-check-label" for="cuello_grande">
-                                ¿El tamaño de su cuello es grande?
-                            </label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="masculino" id="masculino">
-                            <label class="form-check-label" for="masculino">
-                                Masculino
-                            </label>
-                        </div>
-
                     </div>
-                </div>
+                </form>
             </div>
         </div>
-        <div class="row mt-4">
-            <div class="col-12 text-right">
-                <button type="submit" class="btn btn-primary">Guardar Examen</button>
-                <a href="{% url 'detalle_paciente'  paciente_id %}" class="btn btn-primary">
-                    Ver Paciente
-                </a>
-            </div>
-        </div>
-    </form>
+    </div>
 </div>
 
 <script>
+    // Script para calcular automáticamente el puntaje total
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkboxes = document.querySelectorAll('.custom-control-input');
 
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', calculateTotalScore);
+        });
+
+        function calculateTotalScore() {
+            let total = 0;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) total += 1;
+            });
+
+            // Aquí podrías mostrar el total si lo deseas
+            // console.log("Puntaje total:", total);
+        }
+    });
 </script>
+
 {% endblock %}
