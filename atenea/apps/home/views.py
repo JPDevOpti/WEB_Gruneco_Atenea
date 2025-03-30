@@ -1134,7 +1134,7 @@ def guardar_examen_anamnesis(request):
             "Horario de sueño": {
                 "rutina_dormir": request.POST.get('rutina_dormir'),
                 "describa_rutina": request.POST.get('describa_rutina'),
-                "jornada_laboral": request.POST.getlist('jornada_laboral[]'),
+                "jornada_laboral": request.POST.getlist('jornada_laboral'),
                 "hora_acostarse_laboral": request.POST.get('hora_acostarse_laboral'),
                 "tiempo_dormirse_laboral": request.POST.get('tiempo_dormirse_laboral'),
                 "hora_intencion_dormir_laboral": request.POST.get('hora_intencion_dormir_laboral'),
