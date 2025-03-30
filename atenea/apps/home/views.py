@@ -330,66 +330,39 @@ def eliminar_visita(request, id):
     return redirect('proyectos')
 
 def editar_visita(request, visita_id):
-     
     visita = get_object_or_404(TipoVisita, id=visita_id)
-    
-    proyectos = Proyecto.objects.all()
-    examenes = Examen.objects.all()
-    visitas = TipoVisita.objects.all()
-    
-    # Crear un diccionario para almacenar las visitas y exámenes por proyecto
-    proyecto_data = {}
-    for proyecto in proyectos:
-        visitas_proyecto = visitas.filter(proyecto=proyecto)
-        visitas_info = []
-        for visita in visitas_proyecto:
-            # Asegurar que los datos sean una lista de diccionarios
-            examenes_data = visita.examenes if isinstance(visita.examenes, list) else json.loads(visita.examenes)
-
-            # Extraer solo los IDs de los exámenes y convertirlos a enteros
-            examenes_ids = [int(examen["id"]) for examen in examenes_data]
-            
-            # Buscar los nombres de los exámenes en la base de datos
-            examenes_nombres = Examen.objects.filter(id__in=examenes_ids).values_list('nombre', flat=True)
-            visitas_info.append({
-                'id':visita.id,
-                'nombre': visita.nombre,
-                'observaciones': visita.observaciones,
-                'examenes': examenes_nombres,
-            })
-        proyecto_data[proyecto.id] = visitas_info
-    
-    context = {
-        'proyectos': proyectos,
-        'examenes': examenes,
-        'visitas': visitas,
-        'proyecto_data': proyecto_data
-    }
     
     if request.method == 'POST':
         # Procesar el formulario de edición
         proyecto_id = request.POST.get('proyecto_id')
-        print(proyecto_id)
         nombre_visita = request.POST.get('nombre_visita')
         observaciones = request.POST.get('observaciones')
         examenes_seleccionados_ids = request.POST.getlist('examenes')
-        print(examenes_seleccionados_ids)
         
         # Actualizar los datos básicos de la visita
         visita.proyecto_id = proyecto_id
         visita.nombre = nombre_visita
         visita.observaciones = observaciones
         
+        # Obtener los exámenes existentes (si los hay)
+        examenes_existentes = visita.examenes if visita.examenes else []
+        
         # Obtener los exámenes seleccionados por sus IDs
         examenes_seleccionados = Examen.objects.filter(id__in=examenes_seleccionados_ids)
         
-        # Crear la lista de exámenes en formato JSON
-        examenes_actualizados = []
+        # Crear un diccionario de exámenes existentes para evitar duplicados
+        examenes_dict = {examen['id']: examen for examen in examenes_existentes}
+        
+        # Agregar los nuevos exámenes seleccionados
         for examen in examenes_seleccionados:
-            examenes_actualizados.append({
-                'id': examen.id,
-                'nombre': examen.nombre
-            })
+            if str(examen.id) not in examenes_dict:
+                examenes_dict[str(examen.id)] = {
+                    'id': examen.id,
+                    'nombre': examen.nombre
+                }
+        
+        # Convertir el diccionario de vuelta a lista
+        examenes_actualizados = list(examenes_dict.values())
         
         # Guardar los exámenes como JSON
         visita.examenes = examenes_actualizados
@@ -397,9 +370,6 @@ def editar_visita(request, visita_id):
         
         messages.success(request, 'Visita actualizada correctamente.')
         return redirect('proyectos')
-
-    return render(request, 'home/proyectos.html',context)
-
     
 
 #visitas del paciente 
