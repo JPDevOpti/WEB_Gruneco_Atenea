@@ -1173,9 +1173,9 @@ def guardar_examen_anamnesis(request):
                 "periodo_siestas": request.POST.get('periodo_siestas'),
             },
             "Lugar_donde_duerme": {
-                "iluminacion": request.POST.getlist('iluminacion[]'),  # Lista de condiciones de iluminación
-                "comodidad": request.POST.getlist('comodidad[]'),  # Lista de comodidad del espacio
-                "ruido": request.POST.getlist('ruido[]'),  # Lista de condiciones de ruido
+                "iluminacion": request.POST.getlist('iluminacion'),  # Lista de condiciones de iluminación
+                "comodidad": request.POST.getlist('comodidad'),  # Lista de comodidad del espacio
+                "ruido": request.POST.getlist('ruido'),  # Lista de condiciones de ruido
             },
             "Consumo_comidas_bebidas": {
                 "consume": request.POST.get('consume'),

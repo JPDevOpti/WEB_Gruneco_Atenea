@@ -179,6 +179,12 @@
                                 value="Despertares nocturnos" id="despertares_nocturnos">
                               <label class="form-check-label" for="despertares_nocturnos">Despertares nocturnos</label>
                             </div>
+                            <div class="form-check mr-3 mb-2">
+                              <input class="form-check-input queja-checkbox" type="checkbox" name="tipo_queja[]"
+                                value="trastorno de conducta del sueño" id="conducta_sueno">
+                              <label class="form-check-label" for="conducta_sueno">trastorno de conducta del
+                                sueño</label>
+                            </div>
                             <!-- Resto de checkboxes... -->
                           </div>
                         </div>
@@ -705,49 +711,49 @@
                               <div class="row">
                                 <div class="form-group">
                                   <label>Condiciones de iluminación</label>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="muy_iluminado"
-                                      name="iluminacion" value="Muy iluminado">
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="muy_iluminado"
+                                      name="iluminacion" value="Muy iluminado" required>
                                     <label class="custom-control-label" for="muy_iluminado">Muy iluminado</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="levemente_iluminado"
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="levemente_iluminado"
                                       name="iluminacion" value="Levemente iluminado">
                                     <label class="custom-control-label" for="levemente_iluminado">Levemente
                                       iluminado</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="levemente_oscuro"
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="levemente_oscuro"
                                       name="iluminacion" value="Levemente oscuro">
                                     <label class="custom-control-label" for="levemente_oscuro">Levemente oscuro</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="muy_oscuro"
-                                      name="iluminacion" value="Muy oscuro">
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="muy_oscuro" name="iluminacion"
+                                      value="Muy oscuro">
                                     <label class="custom-control-label" for="muy_oscuro">Muy oscuro</label>
                                   </div>
                                 </div>
 
                                 <div class="form-group">
                                   <label>Comodidad del espacio</label>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="muy_incomodo"
-                                      name="comodidad" value="Muy incómodo">
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="muy_incomodo" name="comodidad"
+                                      value="Muy incómodo" required>
                                     <label class="custom-control-label" for="muy_incomodo">Muy incómodo</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="levemente_incomodo"
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="levemente_incomodo"
                                       name="comodidad" value="Levemente incómodo">
                                     <label class="custom-control-label" for="levemente_incomodo">Levemente
                                       incómodo</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="levemente_comodo"
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="levemente_comodo"
                                       name="comodidad" value="Levemente cómodo">
                                     <label class="custom-control-label" for="levemente_comodo">Levemente cómodo</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="muy_comodo" name="comodidad"
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="muy_comodo" name="comodidad"
                                       value="Muy cómodo">
                                     <label class="custom-control-label" for="muy_comodo">Muy cómodo</label>
                                   </div>
@@ -755,25 +761,25 @@
 
                                 <div class="form-group">
                                   <label>Condiciones de ruido</label>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="muy_ruidoso" name="ruido"
-                                      value="Muy ruidoso">
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="muy_ruidoso" name="ruido"
+                                      value="Muy ruidoso" required>
                                     <label class="custom-control-label" for="muy_ruidoso">Muy ruidoso</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="levemente_ruidoso"
-                                      name="ruido" value="Levemente ruidoso">
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="levemente_ruidoso" name="ruido"
+                                      value="Levemente ruidoso">
                                     <label class="custom-control-label" for="levemente_ruidoso">Levemente
                                       ruidoso</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="levemente_silencioso"
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="levemente_silencioso"
                                       name="ruido" value="Levemente silencioso">
                                     <label class="custom-control-label" for="levemente_silencioso">Levemente
                                       silencioso</label>
                                   </div>
-                                  <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="muy_silencioso" name="ruido"
+                                  <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" id="muy_silencioso" name="ruido"
                                       value="Muy silencioso">
                                     <label class="custom-control-label" for="muy_silencioso">Muy silencioso</label>
                                   </div>
@@ -901,11 +907,11 @@
                 </div>
 
               </div>
-              <!-- pensamiento -->
+              <!-- Síntomas asociados al sueño-->
               <div class="tab-pane fade" id="pensamiento" role="tabpanel">
                 <div class="card bg-gradient-default shadow-sm mb-4">
                   <div class="card-header bg-transparent">
-                    <h4 class="text-white mb-0">Pensamiento</h4>
+                    <h4 class="text-white mb-0">Síntomas asociados al sueño</h4>
                   </div>
                   <div class="card-body bg-white">
                     <div class="row">
@@ -967,6 +973,13 @@
 
                           </div>
                         </div>
+                        <div class="row">
+                          <div class="col-12 text-right">
+                            <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                            <a href="{% url 'detalle_paciente' paciente_id %}" class="btn btn-primary">Ver
+                              Paciente</a>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -976,12 +989,7 @@
             </div>
           </div>
           <!-- Botones de acción -->
-          <div class="row">
-            <div class="col-12 text-right">
-              <button type="submit" class="btn btn-primary">Guardar Examen</button>
-              <a href="{% url 'detalle_paciente' paciente_id %}" class="btn btn-primary">Ver Paciente</a>
-            </div>
-          </div>
+
         </form>
       </div>
     </div>
