@@ -575,70 +575,44 @@ def eliminar_resultado_examen(request, visita_id, examen_id, paciente_id):
 
 @login_required
 def guardar_examen_general_revisionsistemas(request):
-    
     if request.method == 'POST':
-        # Obtener los datos del formulario
-        datos_formulario = {
-            "General": {
-                "sintoma_general": request.POST.get('sintoma_general'),
-                "detalle_sintoma_general": request.POST.get('detalle_sintoma_general'),
-                "tiempo_sintoma_general": request.POST.get('tiempo_sintoma_general'),
-                "caracteristicas_sintoma_general": request.POST.get('caracteristicas_sintoma_general'),
-            },
-            "Cabeza y cuello": {
-                "sintoma_cabeza_cuello": request.POST.get('sintoma_cabeza_cuello'),
-                "detalle_sintoma_cabeza_cuello": request.POST.get('detalle_sintoma_cabeza_cuello'),
-                "tiempo_sintoma_cabeza_cuello": request.POST.get('tiempo_sintoma_cabeza_cuello'),
-                "caracteristicas_sintoma_cabeza_cuello": request.POST.get('caracteristicas_sintoma_cabeza_cuello'),
-            },
-            "Cardiopulmonar": {
-                "sintoma_cardiopulmonar": request.POST.get('sintoma_cardiopulmonar'),
-                "detalle_sintoma_cardiopulmonar": request.POST.get('detalle_sintoma_cardiopulmonar'),
-                "tiempo_sintoma_cardiopulmonar": request.POST.get('tiempo_sintoma_cardiopulmonar'),
-                "caracteristicas_sintoma_cardiopulmonar": request.POST.get('caracteristicas_sintoma_cardiopulmonar'),
-            },
-            "Gastrointestinal": {
-                "sintoma_gastrointestinal": request.POST.get('sintoma_gastrointestinal'),
-                "detalle_sintoma_gastrointestinal": request.POST.get('detalle_sintoma_gastrointestinal'),
-                "tiempo_sintoma_gastrointestinal": request.POST.get('tiempo_sintoma_gastrointestinal'),
-                "caracteristicas_sintoma_gastrointestinal": request.POST.get('caracteristicas_sintoma_gastrointestinal'),
-            },
-            "Genitourinario": {
-                "sintoma_genitourinario": request.POST.get('sintoma_genitourinario'),
-                "detalle_sintoma_genitourinario": request.POST.get('detalle_sintoma_genitourinario'),
-                "tiempo_sintoma_genitourinario": request.POST.get('tiempo_sintoma_genitourinario'),
-                "caracteristicas_sintoma_genitourinario": request.POST.get('caracteristicas_sintoma_genitourinario'),
-            },
-            "Vascular periférico": {
-                "sintoma_vascular_periferico": request.POST.get('sintoma_vascular_periferico'),
-                "detalle_sintoma_vascular_periferico": request.POST.get('detalle_sintoma_vascular_periferico'),
-                "tiempo_sintoma_vascular_periferico": request.POST.get('tiempo_sintoma_vascular_periferico'),
-                "caracteristicas_sintoma_vascular_periferico": request.POST.get('caracteristicas_sintoma_vascular_periferico'),
-            },
-            "Osteomuscular": {
-                "sintoma_osteomuscular": request.POST.get('sintoma_osteomuscular'),
-                "detalle_sintoma_osteomuscular": request.POST.get('detalle_sintoma_osteomuscular'),
-                "tiempo_sintoma_osteomuscular": request.POST.get('tiempo_sintoma_osteomuscular'),
-                "caracteristicas_sintoma_osteomuscular": request.POST.get('caracteristicas_sintoma_osteomuscular'),
-            },
-            "Piel y Faneras": {
-                "sintoma_piel_faneras": request.POST.get('sintoma_piel_faneras'),
-                "detalle_sintoma_piel_faneras": request.POST.get('detalle_sintoma_piel_faneras'),
-                "tiempo_sintoma_piel_faneras": request.POST.get('tiempo_sintoma_piel_faneras'),
-                "caracteristicas_sintoma_piel_faneras": request.POST.get('caracteristicas_sintoma_piel_faneras'),
-            },
-            "Otros": {
-                "sintoma_otros": request.POST.get('sintoma_otros'),
-                "detalle_sintoma_otros": request.POST.get('detalle_sintoma_otros'),
-                "tiempo_sintoma_otros": request.POST.get('tiempo_sintoma_otros'),
-                "caracteristicas_sintoma_otros": request.POST.get('caracteristicas_sintoma_otros'),
-            },
-        }
+        # Diccionario para almacenar todos los datos
+        datos_formulario = {}
+        
+        # Lista de todos los sistemas
+        sistemas = [
+            'general', 'cabeza_cuello', 'cardiopulmonar', 'gastrointestinal',
+            'genitourinario', 'vascular_periferico', 'osteomuscular',
+            'piel_faneras', 'otros'
+        ]
+        
+        # Procesar cada sistema
+        for sistema in sistemas:
+            sintomas = []
+            
+            # Obtener arrays de datos para este sistema
+            sintomas_list = request.POST.getlist(f'{sistema}_sintoma[]')
+            tiempos_list = request.POST.getlist(f'{sistema}_tiempo[]')
+            caracteristicas_list = request.POST.getlist(f'{sistema}_caracteristicas[]')
+            
+            # Crear lista de síntomas para este sistema
+            for i in range(len(sintomas_list)):
+                if sintomas_list[i]:  # Solo agregar si hay descripción de síntoma
+                    sintomas.append({
+                        'sintoma': sintomas_list[i],
+                        'tiempo': tiempos_list[i] if i < len(tiempos_list) else '',
+                        'caracteristicas': caracteristicas_list[i] if i < len(caracteristicas_list) else ''
+                    })
+            
+            # Agregar al diccionario principal
+            datos_formulario[sistema.capitalize().replace('_', ' ')] = {
+                'activo': request.POST.get(f'sintoma_{sistema}', 'no'),
+                'sintomas': sintomas
+            }
 
-         # Obtener la visita y el examen correspondiente
+        # Obtener la visita y el examen correspondiente
         visita_id = request.POST.get('visita_id')
         examen_id = request.POST.get('examen_id')
-        # Obtener las instancias de Visita y Examen
         visita = get_object_or_404(Visita, id=visita_id)
         examen = get_object_or_404(Examen, id=examen_id)
         
@@ -646,22 +620,22 @@ def guardar_examen_general_revisionsistemas(request):
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
         documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen con la relación correcta
+        # Obtener o crear el VisitaExamen
         visita_examen, created = VisitaExamen.objects.get_or_create(
             visita=visita, examen=examen
         )
 
-        # Si ya tiene un resultado, lo actualizamos
+        # Actualizar o crear resultado
         if visita_examen.resultado:
             visita_examen.resultado.update(datos_formulario)
         else:
             visita_examen.resultado = datos_formulario
 
-        # Guardar cambios
         visita_examen.save()
 
-        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)])) # Redirigir a una página de éxito
-
+        messages.success(request, 'Revisión por sistemas guardada correctamente.')
+        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+    
 @login_required
 def guardar_examen_fisico(request):
     if request.method == 'POST':
