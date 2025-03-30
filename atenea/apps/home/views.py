@@ -1713,47 +1713,80 @@ def guardar_examen_Epworth(request):
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
     
 @login_required
-def guardar_examen_StopB(request):
-    if request.method == 'POST':
-        # Obtener los datos del formulario para antecedentes
-        datos_formulario_Stop_Bang= {
-             "Stop_Bang" : {
-                    "Ronca fuerte": request.POST.get('ronca_fuerte', 'No'),
-                    "Se siente cansado con frecuencia": request.POST.get('cansado_frecuencia', 'No'),
-                    "Lo observaron dejar de respirar o ahogarse mientras dormía": request.POST.get('deja_respirar', 'No'),
-                    "Tiene o está recibiendo tratamiento para la presión arterial": request.POST.get('presion_arterial', 'No'),
-                    "Presenta un índice de masa corporal de más de 35kg/m²": request.POST.get('imc_alto', 'No'),
-                    "Tiene más de 50 años": request.POST.get('mayor_50', 'No'),
-                    "El tamaño de su cuello es grande": request.POST.get('cuello_grande', 'No'),
-                    "Masculino": request.POST.get('masculino', 'No'),
-                }}
+def guardar_examen_Stop_Bang(request):
+    if request.method == "POST":
+        # Calcular el puntaje total
+        puntaje = 0
+        stop_questions = ['ronca_fuerte', 'cansado_frecuencia', 'deja_respirar', 'presion_arterial']
+        bang_questions = ['imc_alto', 'mayor_50', 'cuello_grande', 'masculino']
+        
+        # Contar respuestas positivas para STOP
+        stop_count = 0
+        for question in stop_questions:
+            if request.POST.get(question) == '1':
+                stop_count += 1
+                puntaje += 1
+        
+        # Contar respuestas positivas para BANG
+        bang_count = 0
+        for question in bang_questions:
+            if request.POST.get(question) == '1':
+                bang_count += 1
+                puntaje += 1
+        
+        # Determinar el riesgo según los criterios
+        riesgo = "Bajo"
+        if puntaje >= 5 or (stop_count >= 2 and bang_count >= 1):
+            riesgo = "Alto"
+        elif puntaje >= 3:
+            riesgo = "Intermedio"
+        
+        # Estructura de datos con todos los campos requeridos
+        datos_formulario_Stop_Bang = {
+            "Stop_Bang": {
+                "Ronca fuerte": "Sí" if request.POST.get('ronca_fuerte') == '1' else "No",
+                "Se siente cansado con frecuencia": "Sí" if request.POST.get('cansado_frecuencia') == '1' else "No",
+                "Lo observaron dejar de respirar o ahogarse mientras dormía": "Sí" if request.POST.get('deja_respirar') == '1' else "No",
+                "Tiene o está recibiendo tratamiento para la presión arterial": "Sí" if request.POST.get('presion_arterial') == '1' else "No",
+                "Presenta un índice de masa corporal de más de 35kg/m²": "Sí" if request.POST.get('imc_alto') == '1' else "No",
+                "Tiene más de 50 años": "Sí" if request.POST.get('mayor_50') == '1' else "No",
+                "El tamaño de su cuello es grande": "Sí" if request.POST.get('cuello_grande') == '1' else "No",
+                "Masculino": "Sí" if request.POST.get('masculino') == '1' else "No",
+                "Puntaje_total": puntaje,
+                "Interpretacion_riesgo": riesgo,
+                "Criterios_cumplidos": {
+                    "STOP_positivos": stop_count,
+                    "BANG_positivos": bang_count,
+                    "Alto_riesgo_alternativo": "Sí" if (stop_count >= 2 and bang_count >= 1) else "No"
+                }
+            }
+        }
 
-         # Obtener la visita y el examen correspondiente
+        # Obtener la visita y el examen correspondiente
         visita_id = request.POST.get('visita_id')
         examen_id = request.POST.get('examen_id')
-        # Obtener las instancias de Visita y Examen
+        paciente_id = request.POST.get('paciente_id')
+        
         visita = get_object_or_404(Visita, id=visita_id)
         examen = get_object_or_404(Examen, id=examen_id)
-        
-        paciente_id = request.POST.get('paciente_id') 
         paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
-        documento_paciente = paciente.id
         
-        # Obtener o crear el VisitaExamen con la relación correcta
+        # Obtener o crear el VisitaExamen
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            visita=visita, examen=examen
+            visita=visita, 
+            examen=examen
         )
 
-        # Si ya tiene un resultado, lo actualizamos
+        # Actualizar o crear el resultado
         if visita_examen.resultado:
             visita_examen.resultado.update(datos_formulario_Stop_Bang)
         else:
             visita_examen.resultado = datos_formulario_Stop_Bang
-
-        # Guardar cambios
+        
         visita_examen.save()
 
-        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+        messages.success(request, f'Examen STOP-BANG guardado correctamente. Puntaje: {puntaje} - Riesgo: {riesgo}')
+        return redirect(reverse('detalle_paciente', args=[int(paciente_id)]))
     
 @login_required
 def guardar_examen_MEW(request):
