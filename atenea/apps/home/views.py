@@ -1644,47 +1644,44 @@ def guardar_examen_Pitsburg(request):
 @login_required
 def guardar_examen_Epworth(request):
     if request.method == 'POST':
-        # Obtener los datos del formulario para antecedentes
-        datos_formulario_Epworth= {
-             "Epworth": {
-                "Con que frecuencia se queda dormido?": {
+        # Obtener los datos del formulario para el test de Epworth
+        datos_formulario_Epworth = {
+            "Epworth": {
                 "Sentado y leyendo": request.POST.get('epworth_leyendo'),
                 "Viendo la TV": request.POST.get('epworth_tv'),
                 "Sentado, inactivo en un espectáculo (teatro)": request.POST.get('epworth_teatro'),
-                "En coche, como piloto de un viaje de una hora": request.POST.get('epworth_piloto'),
+                "En coche, como pasajero en un viaje de una hora": request.POST.get('epworth_pasajero'),
                 "Tumbado a media tarde": request.POST.get('epworth_tumbado'),
                 "Sentado y charlando con alguien": request.POST.get('epworth_charlando'),
                 "Sentado después de comer sin ingerir alcohol": request.POST.get('epworth_comida'),
                 "En su coche, cuando se para debido al tráfico": request.POST.get('epworth_trafico'),
-                }
-                }}
+                "Puntaje_total": request.POST.get('puntaje_total')
+            }
+        }
 
-         # Obtener la visita y el examen correspondiente
+        # Obtener la visita y el examen correspondiente
         visita_id = request.POST.get('visita_id')
         examen_id = request.POST.get('examen_id')
-        # Obtener las instancias de Visita y Examen
+        paciente_id = request.POST.get('paciente_id')
+        
+        # Obtener las instancias necesarias
         visita = get_object_or_404(Visita, id=visita_id)
         examen = get_object_or_404(Examen, id=examen_id)
-        
-        paciente_id = request.POST.get('paciente_id') 
-        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)
-        documento_paciente = paciente.id
-        
-        # Obtener o crear el VisitaExamen con la relación correcta
+        paciente = get_object_or_404(DatosDemograficos, id=paciente_id)  # Cambiado de DatosDemograficos a Paciente
+
+        # Obtener o crear el VisitaExamen
         visita_examen, created = VisitaExamen.objects.get_or_create(
-            visita=visita, examen=examen
+            visita=visita,
+            examen=examen,
+            defaults={'resultado': datos_formulario_Epworth}
         )
 
-        # Si ya tiene un resultado, lo actualizamos
-        if visita_examen.resultado:
-            visita_examen.resultado.update(datos_formulario_Epworth)
-        else:
+        # Si ya existe, actualizar el resultado
+        if not created:
             visita_examen.resultado = datos_formulario_Epworth
+            visita_examen.save()
 
-        # Guardar cambios
-        visita_examen.save()
-
-        return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
+        return redirect('detalle_paciente', paciente_id=paciente.id)
     
 @login_required
 def guardar_examen_Stop_Bang(request):

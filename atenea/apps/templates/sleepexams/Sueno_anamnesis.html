@@ -713,7 +713,7 @@
                                   <label>Condiciones de iluminación</label>
                                   <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" id="muy_iluminado"
-                                      name="iluminacion" value="Muy iluminado" required>
+                                      name="iluminacion" value="Muy iluminado">
                                     <label class="custom-control-label" for="muy_iluminado">Muy iluminado</label>
                                   </div>
                                   <div class="custom-control custom-radio">
@@ -738,7 +738,7 @@
                                   <label>Comodidad del espacio</label>
                                   <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" id="muy_incomodo" name="comodidad"
-                                      value="Muy incómodo" required>
+                                      value="Muy incómodo">
                                     <label class="custom-control-label" for="muy_incomodo">Muy incómodo</label>
                                   </div>
                                   <div class="custom-control custom-radio">
@@ -763,7 +763,7 @@
                                   <label>Condiciones de ruido</label>
                                   <div class="custom-control custom-radio">
                                     <input type="radio" class="custom-control-input" id="muy_ruidoso" name="ruido"
-                                      value="Muy ruidoso" required>
+                                      value="Muy ruidoso">
                                     <label class="custom-control-label" for="muy_ruidoso">Muy ruidoso</label>
                                   </div>
                                   <div class="custom-control custom-radio">
@@ -911,7 +911,7 @@
               <div class="tab-pane fade" id="pensamiento" role="tabpanel">
                 <div class="card bg-gradient-default shadow-sm mb-4">
                   <div class="card-header bg-transparent">
-                    <h4 class="text-white mb-0">Pensamiento</h4>
+                    <h4 class="text-white mb-0">Síntomas asociados al sueño</h4>
                   </div>
                   <div class="card-body bg-white">
                     <div class="row">
@@ -977,17 +977,18 @@
                     </div>
                   </div>
                 </div>
+                <!-- Botones de acción -->
+                <div class="row">
+                  <div class="col-12 text-right">
+                    <button type="submit" class="btn btn-primary">Guardar Examen</button>
+                    <a href="{% url 'detalle_paciente' paciente_id %}" class="btn btn-primary">Ver Paciente</a>
+                  </div>
+                </div>
               </div>
 
             </div>
           </div>
-          <!-- Botones de acción -->
-          <div class="row">
-            <div class="col-12 text-right">
-              <button type="submit" class="btn btn-primary">Guardar Examen</button>
-              <a href="{% url 'detalle_paciente' paciente_id %}" class="btn btn-primary">Ver Paciente</a>
-            </div>
-          </div>
+
         </form>
       </div>
     </div>
