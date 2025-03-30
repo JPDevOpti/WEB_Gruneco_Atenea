@@ -920,15 +920,16 @@ def guardar_examen_antecedentes(request):
 
 @login_required
 def guardar_examen_analisis(request):
-     if request.method == "POST":
-
+    if request.method == "POST":
         # Estructura del análisis del examen
         datos_formulario_analisis = {
             "Analisis": {
                 "analisis_historia": request.POST.get("analisis_historia", ""),
                 "plan_tratamiento": request.POST.get("plan_tratamiento", ""),
                 "Diagnosticos_CIE10": [],
-                "Diagnosticos_DSMV": []
+                "Diagnosticos_DSMV": [],
+                "Diagnosticos_ICSD3": [],
+                "Diagnosticos_NoClasificados": []
             }
         }
 
@@ -939,11 +940,12 @@ def guardar_examen_analisis(request):
 
         # Agregar diagnósticos CIE-10 a la estructura
         for i in range(len(cie10_codigos)):
-            datos_formulario_analisis["Analisis"]["Diagnosticos_CIE10"].append({
-                "codigo": cie10_codigos[i],
-                "diagnostico": cie10_diagnosticos[i],
-                "estado": cie10_estados[i] if i < len(cie10_estados) else None
-            })
+            if cie10_codigos[i] or cie10_diagnosticos[i]:  # Solo agregar si hay datos
+                datos_formulario_analisis["Analisis"]["Diagnosticos_CIE10"].append({
+                    "codigo": cie10_codigos[i],
+                    "diagnostico": cie10_diagnosticos[i],
+                    "estado": cie10_estados[i] if i < len(cie10_estados) else None
+                })
 
         # Obtener listas de diagnósticos DSM-V
         dsmv_codigos = request.POST.getlist("dsmv_codigo[]")
@@ -952,13 +954,40 @@ def guardar_examen_analisis(request):
 
         # Agregar diagnósticos DSM-V a la estructura
         for i in range(len(dsmv_codigos)):
-            datos_formulario_analisis["Analisis"]["Diagnosticos_DSMV"].append({
-                "codigo": dsmv_codigos[i],
-                "diagnostico": dsmv_diagnosticos[i],
-                "estado": dsmv_estados[i] if i < len(dsmv_estados) else None
-            })
+            if dsmv_codigos[i] or dsmv_diagnosticos[i]:  # Solo agregar si hay datos
+                datos_formulario_analisis["Analisis"]["Diagnosticos_DSMV"].append({
+                    "codigo": dsmv_codigos[i],
+                    "diagnostico": dsmv_diagnosticos[i],
+                    "estado": dsmv_estados[i] if i < len(dsmv_estados) else None
+                })
 
-         # Obtener la visita y el examen correspondiente
+        # Obtener listas de diagnósticos ICSD-3
+        icsd3_codigos = request.POST.getlist("icsd3_codigo[]")
+        icsd3_diagnosticos = request.POST.getlist("icsd3_diagnostico[]")
+        icsd3_estados = request.POST.getlist("icsd3_estado[]")
+
+        # Agregar diagnósticos ICSD-3 a la estructura
+        for i in range(len(icsd3_codigos)):
+            if icsd3_codigos[i] or icsd3_diagnosticos[i]:  # Solo agregar si hay datos
+                datos_formulario_analisis["Analisis"]["Diagnosticos_ICSD3"].append({
+                    "codigo": icsd3_codigos[i],
+                    "diagnostico": icsd3_diagnosticos[i],
+                    "estado": icsd3_estados[i] if i < len(icsd3_estados) else None
+                })
+
+        # Obtener listas de diagnósticos No Clasificados
+        noclasi_diagnosticos = request.POST.getlist("noclasi_diagnostico[]")
+        noclasi_estados = request.POST.getlist("noclasi_estado[]")
+
+        # Agregar diagnósticos No Clasificados a la estructura
+        for i in range(len(noclasi_diagnosticos)):
+            if noclasi_diagnosticos[i]:  # Solo agregar si hay datos
+                datos_formulario_analisis["Analisis"]["Diagnosticos_NoClasificados"].append({
+                    "diagnostico": noclasi_diagnosticos[i],
+                    "estado": noclasi_estados[i] if i < len(noclasi_estados) else None
+                })
+
+        # Obtener la visita y el examen correspondiente
         visita_id = request.POST.get('visita_id')
         examen_id = request.POST.get('examen_id')
         # Obtener las instancias de Visita y Examen
@@ -976,13 +1005,31 @@ def guardar_examen_analisis(request):
 
         # Si ya tiene un resultado, lo actualizamos
         if visita_examen.resultado:
-            visita_examen.resultado.update(datos_formulario_analisis)
+            # Actualizar cada sección por separado para no perder datos existentes
+            resultado_actual = visita_examen.resultado
+            resultado_actual["Analisis"].update({
+                "analisis_historia": datos_formulario_analisis["Analisis"]["analisis_historia"],
+                "plan_tratamiento": datos_formulario_analisis["Analisis"]["plan_tratamiento"]
+            })
+            
+            # Actualizar diagnósticos solo si hay nuevos datos
+            if datos_formulario_analisis["Analisis"]["Diagnosticos_CIE10"]:
+                resultado_actual["Analisis"]["Diagnosticos_CIE10"] = datos_formulario_analisis["Analisis"]["Diagnosticos_CIE10"]
+            if datos_formulario_analisis["Analisis"]["Diagnosticos_DSMV"]:
+                resultado_actual["Analisis"]["Diagnosticos_DSMV"] = datos_formulario_analisis["Analisis"]["Diagnosticos_DSMV"]
+            if datos_formulario_analisis["Analisis"]["Diagnosticos_ICSD3"]:
+                resultado_actual["Analisis"]["Diagnosticos_ICSD3"] = datos_formulario_analisis["Analisis"]["Diagnosticos_ICSD3"]
+            if datos_formulario_analisis["Analisis"]["Diagnosticos_NoClasificados"]:
+                resultado_actual["Analisis"]["Diagnosticos_NoClasificados"] = datos_formulario_analisis["Analisis"]["Diagnosticos_NoClasificados"]
+                
+            visita_examen.resultado = resultado_actual
         else:
             visita_examen.resultado = datos_formulario_analisis
 
         # Guardar cambios
         visita_examen.save()
 
+        messages.success(request, 'Los datos del examen se han guardado correctamente.')
         return redirect(reverse('detalle_paciente', args=[int(documento_paciente)]))
 
 @login_required 
