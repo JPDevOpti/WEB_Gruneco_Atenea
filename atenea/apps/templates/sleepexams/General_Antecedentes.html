@@ -528,9 +528,9 @@
                   <div class="card-body bg-white">
                     <div class="form-group">
                       <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="antecedente_familiar"
-                          name="antecedente_familiar" value="Si">
-                        <label class="custom-control-label" for="antecedente_familiar">¿Presenta algún antecedente
+                        <input type="checkbox" class="custom-control-input" id="antecedente_fami"
+                          name="antecedente_fami" value="Si">
+                        <label class="custom-control-label" for="antecedente_fami">¿Presenta algún antecedente
                           familiar?</label>
                       </div>
                     </div>
@@ -864,6 +864,8 @@
     }
 
     // Llamar a la función para cada sección de antecedentes
+    toggleOptions('antecedente_fami', 'contenido_familiar');
+    toggleOptions('antecedente_gineco', 'contenido_gineco');
     toggleOptions('antecedente_patologico', 'contenido_patologico');
     toggleOptions('antecedente_quirurgico', 'contenido_quirurgico');
     toggleOptions('antecedente_farmacologico', 'contenido_farmacologico');
@@ -871,11 +873,10 @@
     toggleOptions('antecedente_alergico', 'contenido_alergico');
     toggleOptions('antecedente_toxico', 'contenido_toxico');
     toggleOptions('antecedente_epidemiologico', 'contenido_epidemiologico');
-    toggleOptions('antecedente_gineco', 'contenido_gineco');
     toggleOptions('antecedente_inmunizacion', 'contenido_inmunizacion');
     toggleOptions('antecedente_transfusional', 'contenido_transfusional');
     toggleOptions('antecedente_hospitalizacion', 'contenido_hospitalizacion');
-    toggleOptions('antecedente_familiar', 'contenido_familiar');
+
     // Repite para cada sección de antecedentes
   });
 </script>
