@@ -228,22 +228,21 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const radioButtons = document.querySelectorAll('input[type="radio"]');
-        const resultadoContainer = document.getElementById('resultado-container');
-        const puntajeDisplay = document.getElementById('puntaje-display');
-        const riesgoDisplay = document.getElementById('riesgo-display');
-        const interpretacionDetallada = document.getElementById('interpretacion-detallada');
-        const puntajeTotalInput = document.getElementById('puntaje_total');
-        const riesgoOsaInput = document.getElementById('riesgo_osa');
+        // Usar este event listener para los botones de Bootstrap
+        document.querySelectorAll('.btn-group-toggle label').forEach(label => {
+            label.addEventListener('click', function () {
+                setTimeout(calculateTotalScore, 50);
+            });
+        });
 
+        // También mantener los listeners originales por si acaso
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
         radioButtons.forEach(radio => {
             radio.addEventListener('change', calculateTotalScore);
         });
 
         function calculateTotalScore() {
             let total = 0;
-
-            // Sumar todos los "Sí" (valor 1)
             document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
                 total += parseInt(radio.value);
             });
@@ -252,50 +251,42 @@
             let riesgo = "Bajo";
             let interpretacion = "";
 
-            // Contar respuestas positivas en las primeras 4 preguntas (STOP)
+            // Contar respuestas positivas en STOP
             const stopQuestions = ['ronca_fuerte', 'cansado_frecuencia', 'deja_respirar', 'presion_arterial'];
-            let stopCount = 0;
-
-            stopQuestions.forEach(name => {
+            let stopCount = stopQuestions.reduce((acc, name) => {
                 const selected = document.querySelector(`input[name="${name}"]:checked`);
-                if (selected && selected.value === "1") stopCount++;
-            });
+                return acc + (selected && selected.value === "1" ? 1 : 0);
+            }, 0);
 
-            // Verificar criterio alternativo (≥2 STOP + 1 de BANG)
+            // Contar respuestas positivas en BANG (excluyendo edad)
             const bangCriteria = ['masculino', 'imc_alto', 'cuello_grande'];
-            let bangCount = 0;
-
-            bangCriteria.forEach(name => {
+            let bangCount = bangCriteria.reduce((acc, name) => {
                 const selected = document.querySelector(`input[name="${name}"]:checked`);
-                if (selected && selected.value === "1") bangCount++;
-            });
+                return acc + (selected && selected.value === "1" ? 1 : 0);
+            }, 0);
 
             // Determinar riesgo
             if (total >= 5 || (stopCount >= 2 && bangCount >= 1)) {
                 riesgo = "Alto";
-                interpretacion = "Alto riesgo de apnea obstructiva del sueño (probabilidad de apnea moderada o severa). Se recomienda evaluación adicional con un especialista en sueño.";
+                interpretacion = "Alto riesgo de apnea obstructiva del sueño...";
             } else if (total >= 3) {
                 riesgo = "Intermedio";
-                interpretacion = "Riesgo intermedio de apnea obstructiva del sueño. Podría considerarse evaluación adicional según síntomas y comorbilidades.";
+                interpretacion = "Riesgo intermedio de apnea obstructiva del sueño...";
             } else {
                 riesgo = "Bajo";
-                interpretacion = "Bajo riesgo de apnea obstructiva del sueño. Se recomienda reevaluar si aparecen nuevos síntomas.";
+                interpretacion = "Bajo riesgo de apnea obstructiva del sueño...";
             }
 
-            // Actualizar displays
-            puntajeDisplay.textContent = total;
-            riesgoDisplay.textContent = riesgo;
-            interpretacionDetallada.innerHTML = `<strong>Interpretación:</strong> ${interpretacion}`;
-
-            // Actualizar inputs hidden para el formulario
-            puntajeTotalInput.value = total;
-            riesgoOsaInput.value = riesgo;
-
-            // Mostrar resultado
-            resultadoContainer.style.display = 'block';
+            // Actualizar UI
+            document.getElementById('puntaje-display').textContent = total;
+            document.getElementById('riesgo-display').textContent = riesgo;
+            document.getElementById('interpretacion-detallada').innerHTML = `<strong>Interpretación:</strong> ${interpretacion}`;
+            document.getElementById('puntaje_total').value = total;
+            document.getElementById('riesgo_osa').value = riesgo;
+            document.getElementById('resultado-container').style.display = 'block';
         }
 
-        // Calcular al cargar por si hay valores precargados
+        // Calcular al cargar
         calculateTotalScore();
     });
 </script>
