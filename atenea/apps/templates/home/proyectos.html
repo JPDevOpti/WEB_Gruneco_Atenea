@@ -122,27 +122,32 @@
                   {% for visita in visitas %}
                   <li class="list-group-item d-flex justify-content-between align-items-center">
                     <span class="font-weight-bold">Visita: {{ visita.nombre }}</span>
-                    <!-- Formulario para eliminar proyecto -->
-                    <form method="POST" action="{% url 'eliminar_visita' id=visita.id %}" style="display:inline;">
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top"
-                        title="Eliminar Visita">
-                        <i class="fas fa-trash"></i> <!-- Ícono de Font Awesome -->
-                      </button>
-                    </form>
-                    <!-- Botón para mostrar/ocultar exámenes -->
-                    <button class="btn btn-sm btn-info" data-toggle="collapse"
-                      data-target="#examenes-visita-{{ proyecto.id }}-{{ forloop.counter }}" data-toggle="tooltip"
-                      data-placement="top" title="Ver Exámenes">
-                      <i class="fas fa-list"></i> <!-- Ícono de Font Awesome -->
-                    </button>
 
-                    <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                      data-bs-target="#modalEditarVisita-{{ visita.id }}" data-visita-id="{{ visita.id }}"
-                      data-nombre="{{ visita.nombre }}" data-observaciones="{{ visita.observaciones }}"
-                      data-proyecto="{{ visita.proyecto }}" data-examenes="{{ visita.examenes }}">
-                      Editar Visita
-                    </button>
+                    <div class="d-flex gap-2"> <!-- Contenedor flex para alinear los botones -->
+                      <!-- Botón Eliminar Visita -->
+                      <form method="POST" action="{% url 'eliminar_visita' id=visita.id %}" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top"
+                          title="Eliminar Visita">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </form>
+
+                      <!-- Botón Ver Exámenes -->
+                      <button class="btn btn-sm btn-info" data-toggle="collapse"
+                        data-target="#examenes-visita-{{ proyecto.id }}-{{ forloop.counter }}" data-toggle="tooltip"
+                        data-placement="top" title="Ver Exámenes">
+                        <i class="fas fa-list"></i>
+                      </button>
+
+                      <!-- Botón Editar Visita -->
+                      <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                        data-bs-target="#modalEditarVisita-{{ visita.id }}" data-visita-id="{{ visita.id }}"
+                        data-nombre="{{ visita.nombre }}" data-observaciones="{{ visita.observaciones }}"
+                        data-proyecto="{{ visita.proyecto }}" data-examenes="{{ visita.examenes }}">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                    </div>
 
                     <!-- Contenedor de exámenes (colapsable) -->
                     <div id="examenes-visita-{{ proyecto.id }}-{{ forloop.counter }}" class="collapse mt-3">
