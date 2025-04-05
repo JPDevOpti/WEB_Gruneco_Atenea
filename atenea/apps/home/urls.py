@@ -63,7 +63,7 @@ urlpatterns = [
     #Tipos de isitas
     path("agregar-visita/", views.agregar_visita, name="agregar_visita"),
     path('Tipovisita/eliminar/<int:id>/', views.eliminar_visita, name='eliminar_visita'),
-    path('editar-visita/<int:visita_id>/', views.editar_visita, name='editar_visita'),
+    path('editarVisita/<int:visita_id>/', views.editar_visita, name='editar_visita'),
     
     #visitas
     path('visita/<int:paciente_id>/', views.crear_visita, name='crear_visita'),
