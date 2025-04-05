@@ -1917,6 +1917,7 @@ def guardar_examen_ISI(request):
                 "notabilidad_problema": request.POST.get("notabilidad_problema"),
                 "preocupacion_sueno": request.POST.get("preocupacion_sueno"),
                 "interferencia_sueno": request.POST.get("interferencia_sueno"),
+                "puntuacion_total": request.POST.get("puntuacion_total")
             }}
 
          # Obtener la visita y el examen correspondiente
