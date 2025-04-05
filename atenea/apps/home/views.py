@@ -249,10 +249,10 @@ def eliminar_proyecto(request, id):
         proyecto = get_object_or_404(Proyecto, id=id)  # Asegúrate de que Proyecto es el nombre del modelo de tus proyectos
         proyecto.delete()
         messages.success(request, f"El proyecto con ID {id} ha sido eliminado.")
-        return render(request, 'home/proyectos.html',{'proyectos': proyectos})  # Redirige a la lista de proyectos, por ejemplo
+        return redirect('proyectos')  # Redirige a la lista de proyectos, por ejemplo
     else:
         messages.error(request, "Método no permitido.")
-        return render(request, 'home/proyectos.html',{'proyectos': proyectos})  # Redirige a la lista de proyectos si no es un POST
+        return redirect('proyectos') # Redirige a la lista de proyectos si no es un POST
 
 @login_required
 #tipos de visita visitas
