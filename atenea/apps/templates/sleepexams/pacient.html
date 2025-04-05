@@ -1,31 +1,6 @@
 {% extends 'layouts/base.html' %}
 {% block content %}
 
-</script>
-
-<style>
-  .modal-lg {
-    max-width: 800px;
-  }
-
-  .card {
-    border-radius: 0.5rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  }
-
-  .card-header {
-    font-weight: 500;
-  }
-
-  .table {
-    font-size: 0.9rem;
-  }
-
-  .table th {
-    border-top: none;
-  }
-</style>
-
 <div class="header bg-primary pb-6">
   <div class="container-fluid">
     <div class="header-body">
@@ -182,15 +157,17 @@
                     <p>
                       <strong>Examen:</strong> {{ visita_examen.examen.nombre }}<br>
                       {% if visita_examen.resultado %}
-                      <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalExamen"
+                      <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#modalExamen{{ visita_examen.id }}"
                         data-nombre="{{ visita_examen.examen.nombre}}"
                         data-resultado="{{ visita_examen.resultado }}">Ver Resultado</a>
-                    <div class="modal fade" id="modalExamen" tabindex="-1" aria-labelledby="modalExamenLabel"
-                      aria-hidden="true">
+
+                      <!-- Modal para cada examen (con ID único) -->
+                    <div class="modal fade" id="modalExamen{{ visita_examen.id }}" tabindex="-1" aria-hidden="true">
                       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                           <div class="modal-header bg-primary text-white">
-                            <h5 class="modal-title" id="modalExamenLabel">Resultado Detallado del Examen</h5>
+                            <h5 class="modal-title">Resultado: {{ visita_examen.examen.nombre }}</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                               aria-label="Close"></button>
                           </div>
@@ -204,8 +181,9 @@
                                       <i class="fas fa-user me-2"></i>Información del Paciente
                                     </div>
                                     <div class="card-body">
-                                      <p><strong>Nombre:</strong> <span id="examenNombre"></span></p>
-                                      <p><strong>Fecha:</strong> <span id="examenFecha"></span></p>
+                                      <p><strong>Nombre:</strong> {{ visita_examen.visita.paciente.primer_nombre }}
+                                        {{visita_examen.visita.paciente.primer_apellido }}</p>
+                                      <p><strong>Fecha:</strong> {{ visita_examen.visita.fecha|date:"d/m/Y" }}</p>
                                     </div>
                                   </div>
                                 </div>
@@ -215,20 +193,21 @@
                                       <i class="fas fa-info-circle me-2"></i>Detalles del Examen
                                     </div>
                                     <div class="card-body">
-                                      <p><strong>Tipo:</strong> <span id="examenTipo"></span></p>
-                                      <p><strong>Estado:</strong> <span id="examenEstado"></span></p>
+                                      <p><strong>Tipo:</strong> {{ visita_examen.examen.nombre }}</p>
+                                      <p><strong>Estado:</strong> <span class="badge bg-success">Completado</span></p>
                                     </div>
                                   </div>
                                 </div>
                               </div>
 
-                              <!-- Resultados organizados -->
+                              <!-- Resultados -->
                               <div class="card border-primary mb-4">
                                 <div class="card-header bg-primary text-white">
                                   <i class="fas fa-clipboard-list me-2"></i>Resultados
                                 </div>
-                                <div class="card-body" id="examenResultado">
-                                  <!-- Los resultados se organizarán aquí -->
+                                <div class="card-body">
+                                  <div>{{ visita_examen.resultado }}</div>
+
                                 </div>
                               </div>
                             </div>
@@ -237,7 +216,7 @@
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                               <i class="fas fa-times me-2"></i>Cerrar
                             </button>
-                            <button type="button" class="btn btn-primary" id="btnImprimirExamen">
+                            <button type="button" class="btn btn-primary" onclick="window.print()">
                               <i class="fas fa-print me-2"></i>Imprimir
                             </button>
                           </div>
@@ -428,6 +407,7 @@
 </div>
 
 <script>
+
   document.addEventListener("DOMContentLoaded", function () {
     var visitaSelect = document.querySelectorAll(".tipo-visita");
 
@@ -530,7 +510,6 @@
     }
   });
 
-
   document.addEventListener("DOMContentLoaded", function () {
     var modalExamen = document.getElementById("modalExamen");
 
@@ -578,110 +557,6 @@
       });
     });
   });
-
-  // Función para mostrar el examen con datos organizados
-  function mostrarExamen(nombreExamen, resultado, paciente = {}, fecha = '') {
-    // Configurar información básica
-    $('#examenNombre').text(paciente.nombre || 'No especificado');
-    $('#examenFecha').text(fecha || 'No especificada');
-    $('#examenTipo').text(nombreExamen);
-    $('#examenEstado').html('<span class="badge bg-success">Completado</span>');
-    $('#modalExamenLabel').text(`Resultado: ${nombreExamen}`);
-
-    // Limpiar resultados previos
-    $('#examenResultado').empty();
-
-    // Organizar y mostrar los resultados
-    if (typeof resultado === 'object' && resultado !== null) {
-      if (nombreExamen.includes('Epworth')) {
-        mostrarResultadoEpworth(resultado);
-      } else {
-        mostrarResultadoGenerico(resultado);
-      }
-    } else {
-      $('#examenResultado').html(`<p>${resultado}</p>`);
-    }
-
-    // Mostrar modal
-    const modal = new bootstrap.Modal(document.getElementById('modalExamen'));
-    modal.show();
-  }
-
-  // Función para mostrar resultados del Epworth
-  function mostrarResultadoEpworth(resultado) {
-    let html = '<div class="table-responsive"><table class="table table-hover">';
-    html += '<thead><tr><th>Situación</th><th>Puntaje</th></tr></thead><tbody>';
-
-    let puntajeTotal = 0;
-
-    Object.entries(resultado).forEach(([key, value]) => {
-      if (key !== 'Puntaje_total') {
-        html += `<tr><td>${key}</td><td>${value}</td></tr>`;
-        puntajeTotal += parseInt(value) || 0;
-      }
-    });
-
-    html += '</tbody></table></div>';
-
-    // Mostrar puntaje total
-    html += `<div class="alert alert-info mt-3">
-                <strong>Puntaje Total:</strong> ${puntajeTotal}/24<br>
-                <strong>Interpretación:</strong> ${interpretarEpworth(puntajeTotal)}
-            </div>`;
-
-    $('#examenResultado').html(html);
-  }
-
-  // Función para interpretar el puntaje Epworth
-  function interpretarEpworth(puntaje) {
-    if (puntaje <= 6) return 'Somnolencia diurna normal';
-    if (puntaje <= 8) return 'Somnolencia diurna leve';
-    return 'Somnolencia diurna severa (posiblemente patológica)';
-  }
-
-  // Función para mostrar resultados genéricos
-  function mostrarResultadoGenerico(resultado) {
-    let html = '';
-
-    Object.entries(resultado).forEach(([categoria, datos]) => {
-      if (typeof datos === 'object' && datos !== null) {
-        html += `<div class="mb-4"><h5><i class="${obtenerIconoCategoria(categoria)} me-2"></i>${categoria}</h5>`;
-
-        if (Object.keys(datos).length > 0) {
-          html += '<div class="table-responsive"><table class="table table-sm table-hover">';
-          html += '<tbody>';
-
-          Object.entries(datos).forEach(([clave, valor]) => {
-            if (valor !== null && valor !== '') {
-              const label = clave.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-              html += `<tr><td><strong>${label}:</strong></td><td>${valor}</td></tr>`;
-            }
-          });
-
-          html += '</tbody></table></div>';
-        } else {
-          html += '<p class="text-muted">No hay datos registrados</p>';
-        }
-
-        html += '</div><hr>';
-      }
-    });
-
-    $('#examenResultado').html(html);
-  }
-
-  // Función para obtener iconos según categoría
-  function obtenerIconoCategoria(categoria) {
-    const iconos = {
-      'Patológicos': 'fas fa-heartbeat',
-      'Quirúrgicos': 'fas fa-procedures',
-      'Farmacológicos': 'fas fa-pills',
-      'Familiares': 'fas fa-family',
-      'default': 'fas fa-file-medical'
-    };
-
-    return iconos[categoria] || iconos.default;
-  }
 
 </script>
 
