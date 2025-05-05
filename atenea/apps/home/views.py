@@ -33,6 +33,11 @@ def home(request):
     html_template = loader.get_template('home/home-page.html')
     return HttpResponse(html_template.render(context, request))
 
+def ads(request):
+    context = {'segment': 'ads'}
+    html_template = loader.get_template('home/ads.html')
+    return HttpResponse(html_template.render(context, request))
+
 #dasboard
 @login_required(login_url="/login/")
 def index(request):

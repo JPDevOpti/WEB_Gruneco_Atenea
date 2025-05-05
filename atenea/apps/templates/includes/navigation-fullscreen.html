@@ -3,7 +3,9 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
          <!-- Logo -->
       
-        <img src="/static/assets/img/theme/GRUNECO_CPT_T.png" alt="Logo GRUNECO" class="logo-img">
+        <a href="/">
+          <img src="/static/assets/img/theme/GRUNECO_CPT_T.png" alt="Logo GRUNECO" class="logo-img">
+        </a>
       
 
     <!-- Botón de menú para móviles -->
@@ -32,6 +34,12 @@
 
       <!-- Elementos del menú -->
       <ul class="navbar-nav align-items-lg-center ml-lg-auto">
+        <!-- Enlace a Noticias -->
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'ads' %}" data-toggle="tooltip" data-original-title="Ir a Proyectos ESI+JI 2025" style="color: black !important;">
+            <i class="fas fa-newspaper" style="color: black !important;"></i> Proyectos ESI+JI 2025
+          </a>
+        </li>
         <!-- Enlace a Atenea -->
         <li class="nav-item">
           <a class="nav-link atenea-text" href="index/" target="_blank" data-toggle="tooltip" data-original-title="Ingresar">
