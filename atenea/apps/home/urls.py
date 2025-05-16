@@ -10,6 +10,7 @@ from .views import login_view, descargar_examen, profile_view
 urlpatterns = [
     # Páginas principales
     path('', views.home, name='home'),  # Página de inicio gruneco.com.co
+    path('ads/', views.ads, name='ads'),
     
     path('index/', views.index, name='index'),  # Página de inicio de Atenea
     path('login/', login_view, name='login'),
